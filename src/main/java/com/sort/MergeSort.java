@@ -43,9 +43,9 @@ public final class MergeSort {
         }
 
         if (notOutBound(i, copyOfSortedL)) {
-            appendRemain(copyOfSortedL, i, a, k, copyOfSortedL.length - i);
+            appendRemains(copyOfSortedL, i, a, k, copyOfSortedL.length - i);
         } else if (notOutBound(j, copyOfSortedR)) {
-            appendRemain(copyOfSortedR, j, a, k, copyOfSortedR.length - j);
+            appendRemains(copyOfSortedR, j, a, k, copyOfSortedR.length - j);
         }
     }
 
@@ -53,7 +53,7 @@ public final class MergeSort {
         return index < array.length;
     }
 
-    private static void appendRemain(int[] src, int srcPos, int[] des, int desPos, int length) {
+    private static void appendRemains(int[] src, int srcPos, int[] des, int desPos, int length) {
         System.arraycopy(src, srcPos, des, desPos, length);
     }
 }

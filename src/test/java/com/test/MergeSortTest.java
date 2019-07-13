@@ -14,7 +14,6 @@ public class MergeSortTest extends TestCase {
             fail();
         } catch (NullPointerException ex) {
         }
-
     }
 
     public void testInput_empty() {
