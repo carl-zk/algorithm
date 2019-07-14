@@ -5,6 +5,8 @@ import java.util.Arrays;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * 归并排序
+ *
  * @author carl
  */
 public final class MergeSort {
@@ -18,7 +20,7 @@ public final class MergeSort {
     }
 
     /**
-     * splitThenMerge and merge
+     * split then merge
      *
      * @param a     array of data
      * @param first first index of a, inclusive
