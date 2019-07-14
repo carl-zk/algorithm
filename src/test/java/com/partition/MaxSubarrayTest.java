@@ -1,12 +1,15 @@
 package com.partition;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author carl
  */
-public class MaxSubarrayTest extends TestCase {
+public class MaxSubarrayTest {
 
+    @Test
     public void testInput_oneElement() {
         int[] a = {1};
         MaxSubarray.Sub expect = new MaxSubarray.Sub(0, 0, 1);
@@ -16,6 +19,7 @@ public class MaxSubarrayTest extends TestCase {
         assertEquals(result, expect);
     }
 
+    @Test
     public void testInput_twoElements() {
         int[] a = {-1, 2};
         MaxSubarray.Sub expect = new MaxSubarray.Sub(1, 1, 2);
@@ -25,6 +29,7 @@ public class MaxSubarrayTest extends TestCase {
         assertEquals(result, expect);
     }
 
+    @Test
     public void testInput_threeElements() {
         int[] a = {9, -1, 2};
         MaxSubarray.Sub expect = new MaxSubarray.Sub(0, 2, 10);
@@ -34,6 +39,7 @@ public class MaxSubarrayTest extends TestCase {
         assertEquals(result, expect);
     }
 
+    @Test
     public void testResultIn_left() {
         int[] a = {1, 9, -10, 2, 4};
         MaxSubarray.Sub expect = new MaxSubarray.Sub(0, 1, 10);
@@ -43,6 +49,7 @@ public class MaxSubarrayTest extends TestCase {
         assertEquals(result, expect);
     }
 
+    @Test
     public void testResultIn_right() {
         int[] a = {1, -9, -10, 2, 4};
         MaxSubarray.Sub expect = new MaxSubarray.Sub(3, 4, 6);
@@ -52,6 +59,7 @@ public class MaxSubarrayTest extends TestCase {
         assertEquals(result, expect);
     }
 
+    @Test
     public void testResultIn_cross() {
         int[] a = {-10, 9, -1, 2, -5};
         MaxSubarray.Sub expect = new MaxSubarray.Sub(1, 3, 10);
