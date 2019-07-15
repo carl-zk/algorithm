@@ -6,6 +6,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * 归并排序
+ * O(nlgn)
+ * 非原址排序
  *
  * @author carl
  */
