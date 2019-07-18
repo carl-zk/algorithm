@@ -2,6 +2,8 @@ package com.data.structure;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -12,7 +14,7 @@ public class QueueTest {
     @Test
     public void testDeQueue_whenEmpty() {
         Queue queue = new Queue();
-        assertThrows(IllegalStateException.class, () -> queue.deQueue());
+        assertThrows(NoSuchElementException.class, () -> queue.deQueue());
     }
 
     @Test

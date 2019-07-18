@@ -3,6 +3,8 @@ package com.data.structure;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.NoSuchElementException;
+
 /**
  * @author carl
  */
@@ -23,7 +25,7 @@ public class Stack {
 
     public int pop() {
         if (isEmpty()) {
-            throw new IllegalStateException("stack is empty");
+            throw new NoSuchElementException();
         }
         Node top = this.top;
         this.top = this.top.next;

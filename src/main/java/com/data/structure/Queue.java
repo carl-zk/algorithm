@@ -2,6 +2,8 @@ package com.data.structure;
 
 import lombok.Data;
 
+import java.util.NoSuchElementException;
+
 /**
  * @author carl
  */
@@ -26,7 +28,7 @@ public class Queue {
 
     public int deQueue() {
         if (head == null) {
-            throw new IllegalStateException("queue is empty");
+            throw new NoSuchElementException();
         }
         Node h = head;
         head = head.next;
