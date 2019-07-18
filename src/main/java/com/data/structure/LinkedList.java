@@ -16,7 +16,6 @@ public class LinkedList {
     }
 
     public int getFirst() {
-        44
         checkEmpty();
         return head.value;
     }
