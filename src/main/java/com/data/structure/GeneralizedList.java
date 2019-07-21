@@ -14,35 +14,28 @@ public class GeneralizedList {
 
     public static TreeNode buildTree(List<String> list) {
         TreeNode root = null;
+        TreeNode p = null;
         Stack<TreeNode> stack = new Stack<>();
         String flag = LEFT;
-        boolean lastIsParenthesis = false;
         for (String s : list) {
             switch (s) {
                 case "(":
                     flag = LEFT;
-                    lastIsParenthesis = true;
+                    stack.push(p);
                     break;
                 case ")":
                     stack.pop();
-                    lastIsParenthesis = false;
                     break;
                 case ",":
                     flag = RIGHT;
-                    if (!lastIsParenthesis) {
-                        stack.pop();
-                    }
-                    lastIsParenthesis = false;
                     break;
                 default:
-                    TreeNode e = new TreeNode(Integer.parseInt(s));
+                    p = new TreeNode(Integer.parseInt(s));
                     if (stack.isEmpty()) {
-                        root = e;
+                        root = p;
                     } else {
-                        append(flag, stack.top(), e);
+                        append(flag, stack.top(), p);
                     }
-                    stack.push(e);
-                    lastIsParenthesis = false;
             }
         }
         return root;
