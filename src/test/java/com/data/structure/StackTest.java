@@ -14,13 +14,13 @@ public class StackTest {
 
     @Test
     public void testPop_empty() {
-        Stack stack = new Stack();
+        Stack<Integer> stack = new Stack();
         assertThrows(NoSuchElementException.class, () -> stack.pop());
     }
 
     @Test
     public void testPop_notEmpty() {
-        Stack stack = new Stack();
+        Stack<Integer> stack = new Stack();
         for (int i = 0; i < 5; i++) {
             stack.push(i);
         }

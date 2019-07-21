@@ -8,22 +8,22 @@ import java.util.NoSuchElementException;
 /**
  * @author carl
  */
-public class Stack {
+public class Stack<T> {
 
-    Node top;
+    private Node top;
 
     public Stack() {
         this.top = null;
     }
 
-    public int push(int e) {
+    public T push(T e) {
         Node node = new Node(e);
         node.next = top;
         top = node;
         return e;
     }
 
-    public int pop() {
+    public T pop() {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
@@ -36,13 +36,20 @@ public class Stack {
         return top == null;
     }
 
+    public T top() {
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return top.value;
+    }
+
     @Data
     @NoArgsConstructor
     private class Node {
-        int value;
+        T value;
         Node next;
 
-        public Node(int value) {
+        public Node(T value) {
             this.value = value;
         }
     }
