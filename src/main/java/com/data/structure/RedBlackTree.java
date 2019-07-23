@@ -15,7 +15,7 @@ public class RedBlackTree {
      * root的父节点指向 LEAF；
      * 所有指向null的指针均指向 LEAF;
      */
-    private static final RbTreeNode LEAF = new RbTreeNode(0);
+    public static final RbTreeNode LEAF = new RbTreeNode(0);
 
     private RedBlackTree() {
     }
@@ -42,7 +42,7 @@ public class RedBlackTree {
         }
         e.leftChild = e.rightChild = LEAF;
         e.black = false;
-        // TODO fixup
+        root = fixupInsert(root, e);
         return root;
     }
 
@@ -62,11 +62,9 @@ public class RedBlackTree {
                     z.parent.parent.black = false;
                     root = rightRotate(root, z.parent.parent);
                 } else {
-                    z = z.parent;
-                    root = rightRotate(root, z);
                     z.parent.black = true;
                     z.parent.parent.black = false;
-                    root = leftRotate(root, z.parent.parent);
+                    root = rightRotate(root, z.parent.parent);
                 }
             } else {
                 RbTreeNode y = z.parent.parent.leftChild;
@@ -75,10 +73,16 @@ public class RedBlackTree {
                     y.black = true;
                     z.parent.parent.black = false;
                     z = z.parent.parent;
-                } else if (z == z.parent.rightChild) {
-
+                } else if (z == z.parent.leftChild) {
+                    z = z.parent;
+                    root = rightRotate(root, z);
+                    z.parent.black = true;
+                    z.parent.parent.black = false;
+                    root = leftRotate(root, z.parent.parent);
                 } else {
-
+                    z.parent.black = true;
+                    z.parent.parent.black = false;
+                    root = leftRotate(root, z.parent.parent);
                 }
             }
         }
@@ -129,6 +133,4 @@ public class RedBlackTree {
         y.parent = x;
         return root;
     }
-
-
 }

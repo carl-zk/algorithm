@@ -20,4 +20,12 @@ public class RbTreeNode {
         parent = leftChild = rightChild = null;
         black = true;
     }
+
+    @Override
+    public String toString() {
+        return "(" +
+                "value=" + value +
+                ", black=" + black +
+                ')';
+    }
 }
