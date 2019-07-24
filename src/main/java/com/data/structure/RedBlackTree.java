@@ -133,4 +133,67 @@ public class RedBlackTree {
         y.parent = x;
         return root;
     }
+
+    public static RbTreeNode search(final RbTreeNode root, int value) {
+        RbTreeNode x = root;
+        while (x != RedBlackTree.LEAF && x.value != value) {
+            x = value < x.value ? x.leftChild : x.rightChild;
+        }
+        return x == RedBlackTree.LEAF ? null : x;
+    }
+
+    public static RbTreeNode remove(RbTreeNode root, int value) {
+        RbTreeNode z = search(root, value);
+        if (z == null) {
+            return root;
+        }
+        RbTreeNode y = z;
+        boolean yIsBlack = y.black;
+        if (z.leftChild == RedBlackTree.LEAF) {
+            RbTreeNode x = z.rightChild;
+            root = transplant(root, z, z.rightChild);
+        } else if (z.rightChild == RedBlackTree.LEAF) {
+            RbTreeNode x = z.leftChild;
+            root = transplant(root, z, z.leftChild);
+        } else {
+            y = successor(root, z);
+            // TODO
+        }
+        return root;
+    }
+
+    private static RbTreeNode transplant(RbTreeNode root, RbTreeNode u, RbTreeNode v) {
+        if (u.parent == RedBlackTree.LEAF) {
+            root = v;
+        } else if (u.parent.leftChild == u) {
+            u.parent.leftChild = v;
+        } else {
+            u.parent.rightChild = v;
+        }
+        v.parent = u.parent;
+        return root;
+    }
+
+    private static RbTreeNode successor(final RbTreeNode root, RbTreeNode x) {
+        if (x.rightChild != RedBlackTree.LEAF) {
+            return minimum(x.rightChild);
+        }
+        RbTreeNode y = RedBlackTree.LEAF;
+        while (x.parent != RedBlackTree.LEAF && x.parent.rightChild == x) {
+            y = x.parent;
+            x = x.parent;
+        }
+        return y != RedBlackTree.LEAF ? y : null;
+    }
+
+    public static RbTreeNode minimum(final RbTreeNode root) {
+        if (root == null || root == RedBlackTree.LEAF) {
+            return null;
+        }
+        RbTreeNode x = root;
+        while (x.leftChild != RedBlackTree.LEAF) {
+            x = x.leftChild;
+        }
+        return x;
+    }
 }
