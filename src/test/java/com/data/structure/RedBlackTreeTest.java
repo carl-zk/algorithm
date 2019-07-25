@@ -36,10 +36,21 @@ public class RedBlackTreeTest {
         }
     }
 
+    @Test
+    public void testDelete() {
+        RbTreeNode root = null;
+        for (int i = 0; i < input.length; i++) {
+            root = RedBlackTree.insert(root, input[i]);
+        }
+        root = RedBlackTree.delete(root, 7);
+        int[] res = new int[input.length - 1];
+        inOrderPrint(root, res);
+    }
+
     public void inOrderPrint(RbTreeNode root, int[] res) {
         if (root != RedBlackTree.LEAF) {
             inOrderPrint(root.leftChild, res);
-            //System.out.println(root);
+            System.out.println(root);
             res[stack++] = root.value;
             inOrderPrint(root.rightChild, res);
         }

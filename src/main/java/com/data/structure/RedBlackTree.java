@@ -142,22 +142,38 @@ public class RedBlackTree {
         return x == RedBlackTree.LEAF ? null : x;
     }
 
-    public static RbTreeNode remove(RbTreeNode root, int value) {
+    public static RbTreeNode delete(RbTreeNode root, int value) {
         RbTreeNode z = search(root, value);
         if (z == null) {
             return root;
         }
         RbTreeNode y = z;
         boolean yIsBlack = y.black;
+        RbTreeNode x;
         if (z.leftChild == RedBlackTree.LEAF) {
-            RbTreeNode x = z.rightChild;
+            x = z.rightChild;
             root = transplant(root, z, z.rightChild);
         } else if (z.rightChild == RedBlackTree.LEAF) {
-            RbTreeNode x = z.leftChild;
+            x = z.leftChild;
             root = transplant(root, z, z.leftChild);
         } else {
             y = successor(root, z);
-            // TODO
+            yIsBlack = y.black;
+            x = y.rightChild;
+            if (y.parent == z) {
+                x.parent = y;
+            } else {
+                root = transplant(root, y, y.rightChild);
+                y.rightChild = z.rightChild;
+                y.rightChild.parent = y;
+            }
+            root = transplant(root, z, y);
+            y.leftChild = z.leftChild;
+            y.leftChild.parent = y;
+            y.black = z.black;
+        }
+        if (yIsBlack) {
+            root = fixupDelete(root, x);
         }
         return root;
     }
@@ -195,5 +211,57 @@ public class RedBlackTree {
             x = x.leftChild;
         }
         return x;
+    }
+
+    private static RbTreeNode fixupDelete(RbTreeNode root, RbTreeNode x) {
+        while (x != RedBlackTree.LEAF && x.isBlack()) {
+            if (x == x.parent.leftChild) {
+                RbTreeNode w = x.parent.rightChild;
+                if (!w.isBlack()) {
+                    w.black = true;
+                    x.parent.black = false;
+                    root = leftRotate(root, x.parent);
+                    w = x.parent.rightChild;
+                }
+                if (w.leftChild.isBlack() && w.rightChild.isBlack()) {
+                    w.black = false;
+                    x = x.parent;
+                } else if (w.rightChild.isBlack()) {
+                    w.leftChild.black = true;
+                    w.black = false;
+                    root = rightRotate(root, w);
+                    w = x.parent.rightChild;
+                }
+                w.black = x.parent.black;
+                x.parent.black = true;
+                w.rightChild.black = true;
+                root = leftRotate(root, x.parent);
+                x = root;
+            } else {
+                RbTreeNode w = x.parent.leftChild;
+                if (!w.isBlack()) {
+                    w.black = true;
+                    x.parent.black = false;
+                    root = rightRotate(root, x.parent);
+                    w = x.parent.leftChild;
+                }
+                if (w.leftChild.isBlack() && w.rightChild.isBlack()) {
+                    w.black = false;
+                    x = x.parent;
+                } else if (w.leftChild.isBlack()) {
+                    w.rightChild.black = true;
+                    w.black = false;
+                    root = leftRotate(root, w);
+                    w = x.parent.leftChild;
+                }
+                w.black = x.parent.black;
+                x.parent.black = true;
+                w.leftChild.black = true;
+                root = rightRotate(root, x.parent);
+                x = root;
+            }
+            x.black = true;
+        }
+        return root;
     }
 }
