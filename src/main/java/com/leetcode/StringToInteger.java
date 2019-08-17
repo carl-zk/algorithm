@@ -48,63 +48,38 @@ package com.leetcode;
  * @author carl
  */
 public class StringToInteger {
-
     int positive = Integer.MAX_VALUE / 10;
-    int negative = Integer.MIN_VALUE / 10;
 
     public int myAtoi(String str) {
-        if (str == null) {
+        if (str == null || str.length() == 0) {
             return 0;
         }
 
+        int sign = 1;
+        int r = 0;
         int index = 0;
 
-        while (index < str.length() && str.charAt(index) == ' ') {
+        while (index < str.length() - 1 && str.charAt(index) == ' ') {
             index++;
         }
 
-        if (str.length() == index || !isValidStart(str.charAt(index))) {
-            return 0;
+        if (str.charAt(index) == '+' || str.charAt(index) == '-') {
+            sign = str.charAt(index) == '+' ? 1 : -1;
+            index++;
         }
 
-        int r = 0;
-
-        if (isNumber(str.charAt(index))) {
-            r = charToInt(str.charAt(index));
-        } else if ('-' == str.charAt(index)) {
-            for (index += 1; index < str.length() && '0' == str.charAt(index); index++) ;
-            if (index == str.length() || !isNumber(str.charAt(index))) {
-                return 0;
+        for (; index < str.length(); index++) {
+            int d = str.charAt(index) - '0';
+            if (d > 9 || d < 0) {
+                break;
             }
-            r = 0 - charToInt(str.charAt(index));
+            if (r > positive || r == positive && d > 7) {
+                return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+            }
+
+            r = r * 10 + d;
         }
 
-        for (index += 1; index < str.length(); index++) {
-            if (!isNumber(str.charAt(index))) {
-                return r;
-            }
-            int top = charToInt(str.charAt(index));
-            if (r > positive || r == positive && top > 7) {
-                return Integer.MAX_VALUE;
-            }
-            if (r < negative || r == negative && top > 8) {
-                return Integer.MIN_VALUE;
-            }
-            r = r >= 0 ? r * 10 + top : r * 10 - top;
-        }
-
-        return r;
-    }
-
-    private boolean isValidStart(char c) {
-        return '-' == c || '+' == c || isNumber(c);
-    }
-
-    private boolean isNumber(char c) {
-        return c >= '0' && c <= '9';
-    }
-
-    private int charToInt(char c) {
-        return c - '0';
+        return sign * r;
     }
 }
