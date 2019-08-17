@@ -23,30 +23,18 @@ package com.leetcode;
  * @author carl
  */
 public class PalindromeNumber {
-    int[] a = new int[15];
-    int l, r;
 
     public boolean isPalindrome(int x) {
-        if (x < 0) {
+        if (x < 0 || x != 0 && x % 10 == 0) {
             return false;
         }
-        if (x == 0) {
-            return true;
-        }
 
-        l = r = 0;
-        while (x > 0) {
-            a[r] = x % 10;
+        int reverse = 0;
+        while (x > reverse) {
+            reverse = reverse * 10 + x % 10;
             x /= 10;
-            r++;
         }
 
-        r--;
-        while (l < r && a[l] == a[r]) {
-            l++;
-            r--;
-        }
-
-        return l >= r;
+        return x == reverse || x == reverse / 10;
     }
 }
