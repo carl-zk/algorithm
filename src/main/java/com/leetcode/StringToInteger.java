@@ -67,12 +67,10 @@ public class StringToInteger {
             return 0;
         }
 
-        int r = 0, i = 0;
+        int r = 0, i = 1;
         if (isNumber(str.charAt(0))) {
             r = charToInt(str.charAt(0));
-            i++;
         } else if ('-' == str.charAt(0)) {
-            i = 1;
             while (i < str.length() && '0' == str.charAt(i)) {
                 i++;
             }
@@ -80,8 +78,6 @@ public class StringToInteger {
                 return 0;
             }
             r = 0 - charToInt(str.charAt(i));
-            i++;
-        } else if ('+' == str.charAt(0)) {
             i++;
         }
 
@@ -106,15 +102,8 @@ public class StringToInteger {
         return '-' == c || '+' == c || isNumber(c);
     }
 
-    char[] numbers = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-
     private boolean isNumber(char c) {
-        for (char i : numbers) {
-            if (i == c) {
-                return true;
-            }
-        }
-        return false;
+        return c >= '0' && c <= '9';
     }
 
     private int charToInt(char c) {
