@@ -57,35 +57,33 @@ public class StringToInteger {
             return 0;
         }
 
-        str = str.trim();
+        int index = 0;
 
-        if (str.length() == 0 || !isValidStart(str.charAt(0))) {
+        while (index < str.length() && str.charAt(index) == ' ') {
+            index++;
+        }
+
+        if (str.length() == index || !isValidStart(str.charAt(index))) {
             return 0;
         }
 
-        if (str.length() == 1 && !isNumber(str.charAt(0))) {
-            return 0;
-        }
+        int r = 0;
 
-        int r = 0, i = 1;
-        if (isNumber(str.charAt(0))) {
-            r = charToInt(str.charAt(0));
-        } else if ('-' == str.charAt(0)) {
-            while (i < str.length() && '0' == str.charAt(i)) {
-                i++;
-            }
-            if (i == str.length() || !isNumber(str.charAt(i))) {
+        if (isNumber(str.charAt(index))) {
+            r = charToInt(str.charAt(index));
+        } else if ('-' == str.charAt(index)) {
+            for (index += 1; index < str.length() && '0' == str.charAt(index); index++) ;
+            if (index == str.length() || !isNumber(str.charAt(index))) {
                 return 0;
             }
-            r = 0 - charToInt(str.charAt(i));
-            i++;
+            r = 0 - charToInt(str.charAt(index));
         }
 
-        for (; i < str.length(); i++) {
-            if (!isNumber(str.charAt(i))) {
+        for (index += 1; index < str.length(); index++) {
+            if (!isNumber(str.charAt(index))) {
                 return r;
             }
-            int top = charToInt(str.charAt(i));
+            int top = charToInt(str.charAt(index));
             if (r > positive || r == positive && top > 7) {
                 return Integer.MAX_VALUE;
             }
