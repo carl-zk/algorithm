@@ -27,25 +27,26 @@ package com.leetcode;
 public class ReverseInteger {
 
     public int reverse(int x) {
-        if (x == 0 || x == Integer.MIN_VALUE) {
-            return 0;
-        }
 
-        boolean positive = x >= 0;
-        x = positive ? x : -x;
-        int tail = x % 10;
+        int positive = Integer.MAX_VALUE / 10;
+        int negative = Integer.MIN_VALUE / 10;
 
-        int r = 0, base = 0;
-        while (x > 0) {
-            r = r * 10 + (x % 10);
+        int r = 0;
+        while (x != 0) {
+            int top = x % 10;
+
+            if (r > positive || r == positive && top > 7) {
+                return 0;
+            }
+
+            if (r < negative || r == negative && top < -8) {
+                return 0;
+            }
+
+            r = r * 10 + top;
             x /= 10;
-            base = base == 0 ? 1 : base * 10;
         }
 
-        if (r / base != tail) {
-            return 0;
-        }
-
-        return positive ? r : -r;
+        return r;
     }
 }
