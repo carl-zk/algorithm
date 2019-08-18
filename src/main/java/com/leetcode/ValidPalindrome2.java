@@ -20,25 +20,21 @@ package com.leetcode;
 public class ValidPalindrome2 {
 
     public boolean validPalindrome(String s) {
-        int l = 0, r = s.length() - 1;
+        return process(s, 0, s.length() - 1, 0);
+    }
+
+    private boolean process(String s, int l, int r, int skipCount) {
+        if (skipCount > 1) {
+            return false;
+        }
         while (l < r) {
             if (s.charAt(l) == s.charAt(r)) {
                 l++;
                 r--;
             } else {
-                return process(s, l, r - 1) || process(s, l + 1, r);
+                return process(s, l, r - 1, skipCount + 1)
+                        || process(s, l + 1, r, skipCount + 1);
             }
-        }
-        return true;
-    }
-
-    private boolean process(String s, int l, int r) {
-        while (l < r) {
-            if (s.charAt(l) != s.charAt(r)) {
-                return false;
-            }
-            l++;
-            r--;
         }
         return true;
     }
