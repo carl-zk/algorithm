@@ -16,6 +16,7 @@ public class PalindromeLinkedListTest {
     public void test() {
         PalindromeLinkedList p = new PalindromeLinkedList();
 
+        assertTrue(p.isPalindrome(null));
         assertTrue(p.isPalindrome(build(1)));
         assertTrue(p.isPalindrome(build(1, 1)));
         assertTrue(p.isPalindrome(build(1, 2, 1)));

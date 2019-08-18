@@ -21,23 +21,34 @@ package com.leetcode;
 public class PalindromeLinkedList {
 
     public boolean isPalindrome(ListNode head) {
-        int size = 0;
-        for (ListNode t = head; t != null; t = t.next) {
-            size++;
+        if (head == null || head.next == null) {
+            return true;
         }
-        int[] halfBefore = new int[size >> 1];
-        ListNode halfAfter = head;
-        for (int i = 0; i < (size + 1) >> 1; i++) {
-            if (i < halfBefore.length) {
-                halfBefore[i] = halfAfter.val;
-            }
-            halfAfter = halfAfter.next;
+
+        ListNode jump = head;
+        ListNode current = head;
+        ListNode prev = null;
+        while (jump != null && jump.next != null) {
+            jump = jump.next.next;
+
+            ListNode t = current.next;
+            current.next = prev;
+            prev = current;
+            current = t;
         }
-        for (int i = (size >> 1) - 1; i > -1; i--, halfAfter = halfAfter.next) {
-            if (halfBefore[i] != halfAfter.val) {
+
+        if (jump != null) {
+            current = current.next;
+        }
+
+        while (prev != null) {
+            if (prev.val != current.val) {
                 return false;
             }
+            current = current.next;
+            prev = prev.next;
         }
+
         return true;
     }
 
