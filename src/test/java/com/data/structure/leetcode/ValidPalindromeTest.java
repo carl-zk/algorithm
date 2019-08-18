@@ -24,13 +24,17 @@ public class ValidPalindromeTest {
 
     @Test
     public void t() {
+        int n = '0';
+        int m = '9';
         int a = 'a';
         int z = 'z';
         int A = 'A';
         int Z = 'Z';
+        System.out.println(n);
+        System.out.println(m);  //48-57
         System.out.println(a);
-        System.out.println(z);
+        System.out.println(z);  //97-122
         System.out.println(A);
-        System.out.println(Z);
+        System.out.println(Z);  //65-90
     }
 }

@@ -19,62 +19,37 @@ package com.leetcode;
  * @author carl
  */
 public class ValidPalindrome {
-    int h, t;
+    private static final char[] charMap = new char[256];
+
+    static {
+        for (int i = 0; i < 10; i++) {
+            charMap['0' + i] = (char) (1 + i);
+        }
+        for (int i = 0; i < 26; i++) {
+            charMap['a' + i] = charMap['A' + i] = (char) (11 + i);
+        }
+    }
 
     public boolean isPalindrome(String s) {
-        if (s.length() == 0) {
-            return true;
-        }
+        int l = 0, r = s.length() - 1;
+        int a, b;
 
-        h = 0;
-        t = s.length() - 1;
-
-        while (h <= t) {
-            char head = next(s, true);
-            char tail = next(s, false);
-            if (head == '-' && tail == '-') {
-                return true;
-            } else if (head == '-' || tail == '-') {
-                return false;
-            } else if (head != tail) {
-                return false;
+        while (l < r) {
+            a = charMap[s.charAt(l)];
+            b = charMap[s.charAt(r)];
+            if (a != 0 && b != 0) {
+                if (a != b) {
+                    return false;
+                }
+                l++;
+                r--;
+            } else if (a == 0) {
+                l++;
+            } else {
+                r--;
             }
-            h++;
-            t--;
         }
 
         return true;
-    }
-
-    private char next(String s, boolean isHead) {
-        if (isHead) {
-            while (h <= t) {
-                char c = transform(s.charAt(h));
-                if ('-' != c) {
-                    return c;
-                }
-                h++;
-            }
-        } else {
-            while (h <= t) {
-                char c = transform(s.charAt(t));
-                if ('-' != c) {
-                    return c;
-                }
-                t--;
-            }
-        }
-        return '-';
-    }
-
-    private char transform(char c) {
-        if (c >= 'a' && c <= 'z') {
-            return c;
-        } else if (c >= 'A' && c <= 'Z') {
-            return (char) (c + 32);
-        } else if (c >= '0' && c <= '9') {
-            return c;
-        }
-        return '-';
     }
 }
