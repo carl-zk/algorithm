@@ -25,23 +25,25 @@ package com.leetcode;
 public class ContainerWithMostWater {
 
     public int maxArea(int[] height) {
-        int highest = 0;
-        int max = 0;
+        int l = 0, r = height.length - 1;
+        int max = 0, w;
 
-        for (int i = 0; i < height.length; i++) {
-            if (height[i] > highest) {
-                highest = height[i];
-                for (int j = height.length - 1; j > i; j--) {
-                    if (height[j] == 0) {
-                        continue;
-                    }
-                    if (max / height[i] > j) {
-                        break;
-                    }
-                    max = Math.max(max, Math.min(height[i], height[j]) * (j - i));
+        while (l < r) {
+            if (height[l] > height[r]) {
+                w = height[r] * (r - l);
+                if (w > max) {
+                    max = w;
                 }
+                r--;
+            } else {
+                w = height[l] * (r - l);
+                if (w > max) {
+                    max = w;
+                }
+                l++;
             }
         }
+
         return max;
     }
 }
