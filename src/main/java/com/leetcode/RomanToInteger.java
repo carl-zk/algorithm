@@ -55,38 +55,33 @@ public class RomanToInteger {
     static {
         ref = new HashMap<>(16);
         ref.put("M", 1000);
-        ref.put("CM", 900);
         ref.put("D", 500);
-        ref.put("CD", 400);
         ref.put("C", 100);
-        ref.put("XC", 90);
         ref.put("L", 50);
-        ref.put("XL", 40);
         ref.put("X", 10);
-        ref.put("IX", 9);
         ref.put("V", 5);
-        ref.put("IV", 4);
         ref.put("I", 1);
     }
 
     public int romanToInt(String s) {
         int res = 0;
 
-        int i = 0, a, b;
+        int[] a = new int[16];
+        for (int i = 0; i < s.length(); i++) {
+            a[i] = ref.get(s.substring(i, i + 1));
+        }
+        int i = 0;
         while (i < s.length() - 1) {
-            a = ref.get(s.substring(i, i + 1));
-            b = ref.get(s.substring(i + 1, i + 2));
-            if (a >= b) {
-                res += a;
+            if (a[i] >= a[i + 1]) {
+                res += a[i];
                 i++;
             } else {
-                res += ref.get(s.substring(i, i + 2));
+                res += (a[i + 1] - a[i]);
                 i += 2;
             }
         }
-
         if (i == s.length() - 1) {
-            res += ref.get(s.substring(s.length() - 1));
+            res += a[i];
         }
 
         return res;
