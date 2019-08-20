@@ -1,7 +1,5 @@
 package com.leetcode;
 
-import java.util.HashMap;
-
 /**
  * https://leetcode.com/problems/roman-to-integer/
  * <p>
@@ -50,40 +48,46 @@ import java.util.HashMap;
  * @author carl
  */
 public class RomanToInteger {
-    static HashMap<String, Integer> ref;
-
-    static {
-        ref = new HashMap<>(16);
-        ref.put("M", 1000);
-        ref.put("D", 500);
-        ref.put("C", 100);
-        ref.put("L", 50);
-        ref.put("X", 10);
-        ref.put("V", 5);
-        ref.put("I", 1);
-    }
 
     public int romanToInt(String s) {
         int res = 0;
 
-        int[] a = new int[16];
-        for (int i = 0; i < s.length(); i++) {
-            a[i] = ref.get(s.substring(i, i + 1));
-        }
-        int i = 0;
+        int i = 0, a, b;
         while (i < s.length() - 1) {
-            if (a[i] >= a[i + 1]) {
-                res += a[i];
+            a = toInt(s.charAt(i));
+            b = toInt(s.charAt(i + 1));
+            if (a >= b) {
+                res += a;
                 i++;
             } else {
-                res += (a[i + 1] - a[i]);
+                res += (b - a);
                 i += 2;
             }
         }
         if (i == s.length() - 1) {
-            res += a[i];
+            res += toInt(s.charAt(i));
         }
 
         return res;
+    }
+
+    private int toInt(char c) {
+        switch (c) {
+            case 'M':
+                return 1000;
+            case 'D':
+                return 500;
+            case 'C':
+                return 100;
+            case 'L':
+                return 50;
+            case 'X':
+                return 10;
+            case 'V':
+                return 5;
+            case 'I':
+                return 1;
+        }
+        return 0;
     }
 }
