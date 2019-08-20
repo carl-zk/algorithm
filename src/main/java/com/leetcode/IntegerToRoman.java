@@ -1,9 +1,5 @@
 package com.leetcode;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-
 /**
  * https://leetcode.com/problems/integer-to-roman/
  * <p>
@@ -52,54 +48,20 @@ import java.util.Stack;
  * @author carl
  */
 public class IntegerToRoman {
-    static final Map<Integer, String> ref = new HashMap<>(64);
-
-    static {
-        ref.put(0, "");
-        ref.put(1, "I");
-        ref.put(10, "X");
-        ref.put(100, "C");
-        ref.put(1000, "M");
-        ref.put(2, "II");
-        ref.put(20, "XX");
-        ref.put(200, "CC");
-        ref.put(2000, "MM");
-        ref.put(3, "III");
-        ref.put(30, "XXX");
-        ref.put(300, "CCC");
-        ref.put(3000, "MMM");
-        ref.put(4, "IV");
-        ref.put(40, "XL");
-        ref.put(400, "CD");
-        ref.put(5, "V");
-        ref.put(50, "L");
-        ref.put(500, "D");
-        ref.put(6, "VI");
-        ref.put(60, "LX");
-        ref.put(600, "DC");
-        ref.put(7, "VII");
-        ref.put(70, "LXX");
-        ref.put(700, "DCC");
-        ref.put(8, "VIII");
-        ref.put(80, "LXXX");
-        ref.put(800, "DCCC");
-        ref.put(9, "IX");
-        ref.put(90, "XC");
-        ref.put(900, "CM");
-    }
+    String[] symbol = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+    int[] base = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
 
     public String intToRoman(int num) {
-        Stack<String> stack = new Stack<>();
         StringBuilder sb = new StringBuilder(16);
-        int i = 0, j;
-        while (num > 0) {
-            j = (int) ((num % 10) * Math.pow(10, i++));
-            stack.push(ref.get(j));
-            num /= 10;
-        }
 
-        while (!stack.isEmpty()) {
-            sb.append(stack.pop());
+        int i = 0;
+        while (num > 0) {
+            if (num >= base[i]) {
+                num -= base[i];
+                sb.append(symbol[i]);
+            } else {
+                i++;
+            }
         }
 
         return sb.toString();
