@@ -28,20 +28,12 @@ public class LongestCommonPrefix {
         if (strs.length == 0) {
             return "";
         }
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            for (int j = 0; j < strs.length; j++) {
-                if (strs[j].length() == 0 || i == strs[j].length()) {
-                    return sb.toString();
-                }
-                if (j > 0 && strs[j].charAt(i) != strs[j - 1].charAt(i)) {
-                    return sb.toString();
-                }
+        String pre = strs[0];
+        for (int i = 1; i < strs.length; i++) {
+            while (strs[i].indexOf(pre) != 0) {
+                pre = pre.substring(0, pre.length() - 1);
             }
-            sb.append(strs[0].charAt(i));
         }
-        return sb.toString();
+        return pre;
     }
 }
