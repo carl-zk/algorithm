@@ -50,44 +50,33 @@ package com.leetcode;
 public class RomanToInteger {
 
     public int romanToInt(String s) {
-        int res = 0;
+        int sum = 0;
 
-        int i = 0, a, b;
-        while (i < s.length() - 1) {
-            a = toInt(s.charAt(i));
-            b = toInt(s.charAt(i + 1));
-            if (a >= b) {
-                res += a;
-                i++;
-            } else {
-                res += (b - a);
-                i += 2;
+        for (int i = s.length() - 1; i > -1; i--) {
+            switch (s.charAt(i)) {
+                case 'I':
+                    sum += sum > 4 ? -1 : 1;
+                    break;
+                case 'V':
+                    sum += sum > 8 ? -5 : 5;
+                    break;
+                case 'X':
+                    sum += sum > 49 ? -10 : 10;
+                    break;
+                case 'L':
+                    sum += sum > 89 ? -50 : 50;
+                    break;
+                case 'C':
+                    sum += sum > 499 ? -100 : 100;
+                    break;
+                case 'D':
+                    sum += sum > 899 ? -500 : 500;
+                    break;
+                default:
+                    sum += 1000;
+                    break;
             }
         }
-        if (i == s.length() - 1) {
-            res += toInt(s.charAt(i));
-        }
-
-        return res;
-    }
-
-    private int toInt(char c) {
-        switch (c) {
-            case 'M':
-                return 1000;
-            case 'D':
-                return 500;
-            case 'C':
-                return 100;
-            case 'L':
-                return 50;
-            case 'X':
-                return 10;
-            case 'V':
-                return 5;
-            case 'I':
-                return 1;
-        }
-        return 0;
+        return sum;
     }
 }
