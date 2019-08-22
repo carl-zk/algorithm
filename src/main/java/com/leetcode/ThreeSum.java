@@ -34,56 +34,52 @@ public class ThreeSum {
     public List<List<Integer>> threeSum(int[] nums) {
         List<List<Integer>> ans = new LinkedList<>();
         Arrays.sort(nums);
-        Set<E> pairs = new HashSet<>(nums.length * nums.length);
-        for (int i = 0; i < nums.length; i++) {
-            for (int j = i + 1; j < nums.length; j++) {
-                int idx = Arrays.binarySearch(nums, -(nums[i] + nums[j]));
-                if (idx < nums.length && idx > -1 && idx != i && idx != j) {
-                    pairs.add(new E(nums[i], nums[j]));
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                while (i < nums.length && nums[i] == nums[i - 1]) {
+                    i++;
                 }
             }
-        }
-
-        Iterator<E> iter = pairs.iterator();
-        while (iter.hasNext()) {
-            ans.add(iter.next().toList());
+            for (int j = i + 1, idx; j < nums.length - 1; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    while (j < nums.length && nums[j] == nums[j - 1]) {
+                        j++;
+                    }
+                }
+                if (j == nums.length) {
+                    break;
+                }
+                idx = search(nums, j + 1, nums.length - 1, -(nums[i] + nums[j]));
+                if (idx != -1) {
+                    ans.add(Arrays.asList(nums[i], nums[j], nums[idx]));
+                }
+            }
         }
         return ans;
     }
 
-    static class E {
-        public int a;
-        public int b;
-        public int c;
+    /**
+     * binary search
+     *
+     * @param a    array
+     * @param from include
+     * @param to   include
+     * @param key  search value
+     * @return
+     */
+    private int search(int[] a, int from, int to, int key) {
+        int mid;
+        while (from <= to) {
+            mid = (from + to) >> 1;
+            if (a[mid] == key) {
+                return mid;
+            } else if (a[mid] < key) {
 
-        public E(int a, int b) {
-            this.a = a;
-            this.b = b;
-            this.c = -(a + b);
+                from = mid + 1;
+            } else {
+                to = mid - 1;
+            }
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof E)) return false;
-            E e = (E) o;
-            int min = Math.min(Math.min(a, b), c);
-            int max = Math.max(Math.max(a, b), c);
-            int oMin = Math.min(Math.min(e.a, e.b), e.c);
-            int oMax = Math.max(Math.max(e.a, e.b), e.c);
-
-            return min == oMin && max == oMax;
-        }
-
-        @Override
-        public int hashCode() {
-            int min = Math.min(Math.min(a, b), c);
-            int max = Math.max(Math.max(a, b), c);
-            return Objects.hash(min, max);
-        }
-
-        public List<Integer> toList() {
-            return Arrays.asList(a, b, c);
-        }
+        return -1;
     }
 }
