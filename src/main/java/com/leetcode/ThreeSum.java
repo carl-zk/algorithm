@@ -1,12 +1,8 @@
 package com.leetcode;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * https://leetcode.com/problems/3sum/
@@ -35,18 +31,14 @@ public class ThreeSum {
         List<List<Integer>> ans = new LinkedList<>();
         Arrays.sort(nums);
         for (int i = 0; i < nums.length - 2; i++) {
-            if (i > 0 && nums[i] == nums[i - 1]) {
-                while (i < nums.length && nums[i] == nums[i - 1]) {
-                    i++;
-                }
+            while (i > 0 && i < nums.length && nums[i] == nums[i - 1]) {
+                i++;
             }
             for (int j = i + 1, idx; j < nums.length - 1; j++) {
-                if (j > i + 1 && nums[j] == nums[j - 1]) {
-                    while (j < nums.length && nums[j] == nums[j - 1]) {
-                        j++;
-                    }
+                while (j > i + 1 && j < nums.length && nums[j] == nums[j - 1]) {
+                    j++;
                 }
-                if (j == nums.length) {
+                if (j >= nums.length - 1 || nums[i] + nums[j] + nums[j + 1] > 0) {
                     break;
                 }
                 idx = search(nums, j + 1, nums.length - 1, -(nums[i] + nums[j]));
@@ -74,7 +66,6 @@ public class ThreeSum {
             if (a[mid] == key) {
                 return mid;
             } else if (a[mid] < key) {
-
                 from = mid + 1;
             } else {
                 to = mid - 1;
