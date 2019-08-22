@@ -30,47 +30,35 @@ public class ThreeSum {
     public List<List<Integer>> threeSum(int[] nums) {
         List<List<Integer>> ans = new LinkedList<>();
         Arrays.sort(nums);
-        for (int i = 0; i < nums.length - 2; i++) {
-            while (i > 0 && i < nums.length && nums[i] == nums[i - 1]) {
-                i++;
+        for (int i = 0, j, k; i < nums.length - 2; i++) {
+            if (nums[i] > 0) {
+                break;
             }
-            for (int j = i + 1, idx; j < nums.length - 1; j++) {
-                while (j > i + 1 && j < nums.length && nums[j] == nums[j - 1]) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+
+            j = i + 1;
+            k = nums.length - 1;
+
+            while (j < k) {
+                if (nums[j] + nums[k] > -nums[i]) {
+                    k--;
+                } else if (nums[j] + nums[k] < -nums[i]) {
                     j++;
-                }
-                if (j >= nums.length - 1 || nums[i] + nums[j] + nums[j + 1] > 0) {
-                    break;
-                }
-                idx = search(nums, j + 1, nums.length - 1, -(nums[i] + nums[j]));
-                if (idx != -1) {
-                    ans.add(Arrays.asList(nums[i], nums[j], nums[idx]));
+                } else {
+                    ans.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                    j++;
+                    k--;
+                    while (j < k && nums[j] == nums[j - 1]) {
+                        j++;
+                    }
+                    while (j < k && nums[k] == nums[k + 1]) {
+                        k--;
+                    }
                 }
             }
         }
         return ans;
-    }
-
-    /**
-     * binary search
-     *
-     * @param a    array
-     * @param from include
-     * @param to   include
-     * @param key  search value
-     * @return
-     */
-    private int search(int[] a, int from, int to, int key) {
-        int mid;
-        while (from <= to) {
-            mid = (from + to) >> 1;
-            if (a[mid] == key) {
-                return mid;
-            } else if (a[mid] < key) {
-                from = mid + 1;
-            } else {
-                to = mid - 1;
-            }
-        }
-        return -1;
     }
 }
