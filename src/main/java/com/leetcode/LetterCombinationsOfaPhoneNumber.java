@@ -1,8 +1,26 @@
 package com.leetcode;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * https://leetcode.com/problems/letter-combinations-of-a-phone-number/
+ * <p>
+ * Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent.
+ * <p>
+ * A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+ * <p>
+ * <p>
+ * <p>
+ * Example:
+ * <p>
+ * Input: "23"
+ * Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+ * Note:
+ * <p>
+ * Although the above answer is in lexicographical order, your answer could be in any order you want.
+ *
  * @author carl
  */
 public class LetterCombinationsOfaPhoneNumber {
@@ -20,13 +38,34 @@ public class LetterCombinationsOfaPhoneNumber {
         n2c[9] = new char[]{'w', 'x', 'y', 'z'};
     }
 
+    List<String> ans;
+
     public List<String> letterCombinations(String digits) {
-        return null;
+        if (digits.length() == 0) {
+            return Arrays.asList();
+        }
+        char[] numbers = digits.toCharArray();
+        ans = new LinkedList<>();
+        char[] chars = new char[numbers.length];
+        process(numbers, 0, chars, 0);
+        return ans;
     }
 
+    private void process(char[] numbers, int i, char[] chars, int j) {
+        if (j == numbers.length) {
+            ans.add(new String(chars));
+            return;
+        }
+        for (int k = 0; k < n2c[numbers[i] - '0'].length; k++) {
+            chars[j] = n2c[numbers[i] - '0'][k];
+            process(numbers, i + 1, chars, j + 1);
+        }
+    }
+
+
     public static void main(String[] args) {
-        int[] a = {1, 2, 3};
-        int[] b = new int[3];
+        int[] a = {2, 3};
+        int[] b = new int[a.length];
 
         permutation(a, 0, b, 0);
     }
@@ -36,6 +75,9 @@ public class LetterCombinationsOfaPhoneNumber {
             for (int i = 0; i < ansLen; i++) {
                 System.out.print(ans[i] + ", ");
             }
+            System.out.println();
+            char[] chars = new char[ansLen];
+            print(ans, 0, chars, 0);
             System.out.println("\n==============");
             return;
         }
@@ -44,6 +86,20 @@ public class LetterCombinationsOfaPhoneNumber {
             ans[ansLen] = a[h];
             permutation(a, h + 1, ans, ansLen + 1);
             swap(a, i, h);
+        }
+    }
+
+    private static void print(int[] ans, int i, char[] chars, int j) {
+        if (j == ans.length) {
+            for (int k = 0; k < chars.length; k++) {
+                System.out.print(chars[k] + ", ");
+            }
+            System.out.println();
+            return;
+        }
+        for (int k = 0; k < n2c[ans[i]].length; k++) {
+            chars[j] = n2c[ans[i]][k];
+            print(ans, i + 1, chars, j + 1);
         }
     }
 
