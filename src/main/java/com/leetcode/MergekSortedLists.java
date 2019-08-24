@@ -1,7 +1,5 @@
 package com.leetcode;
 
-import java.util.Arrays;
-
 import static com.leetcode.MergeTwoSortedLists.ListNode;
 
 /**
@@ -24,33 +22,16 @@ import static com.leetcode.MergeTwoSortedLists.ListNode;
 public class MergekSortedLists {
 
     public ListNode mergeKLists(ListNode[] lists) {
-        if (lists == null || lists.length == 0) {
-            return null;
-        }
-        if (lists.length == 1) {
-            return lists[0];
-        }
-        if (lists.length == 2) {
-            return merge(lists[0], lists[1]);
-        }
-        int mid = lists.length >> 1;
-        ListNode[] a = Arrays.copyOfRange(lists, 0, mid);
-        ListNode[] b = Arrays.copyOfRange(lists, mid, lists.length);
-        return merge(mergeKLists(a), mergeKLists(b));
+        return merge(lists, 0, lists.length - 1);
     }
 
-    private ListNode merge(ListNode a, ListNode b) {
-        if (a == null || b == null) {
-            return a == null ? b : a;
-        }
-        ListNode head, p;
-        if (a.val < b.val) {
-            head = p = a;
-            a = a.next;
-        } else {
-            head = p = b;
-            b = b.next;
-        }
+    private ListNode merge(ListNode[] lists, int l, int r) {
+        if (l > r) return null;
+        if (l == r) return lists[l];
+        int m = (l + r) >> 1;
+        ListNode a = merge(lists, l, m);
+        ListNode b = merge(lists, m + 1, r);
+        ListNode h = new ListNode(0), p = h;
         while (a != null && b != null) {
             if (a.val < b.val) {
                 p.next = a;
@@ -62,7 +43,7 @@ public class MergekSortedLists {
             p = p.next;
         }
         p.next = a == null ? b : a;
-        return head;
+        return h.next;
     }
 
     public static void main(String[] args) {
