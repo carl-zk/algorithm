@@ -1,6 +1,5 @@
-package com.data.structure.leetcode;
+package com.leetcode;
 
-import com.leetcode.PalindromeNumber;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

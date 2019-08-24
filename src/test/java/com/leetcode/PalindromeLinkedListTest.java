@@ -1,6 +1,5 @@
-package com.data.structure.leetcode;
+package com.leetcode;
 
-import com.leetcode.PalindromeLinkedList;
 import org.junit.jupiter.api.Test;
 
 import static com.leetcode.PalindromeLinkedList.ListNode;

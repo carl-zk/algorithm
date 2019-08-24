@@ -1,6 +1,5 @@
-package com.data.structure.leetcode;
+package com.leetcode;
 
-import com.leetcode.LetterCombinationsOfaPhoneNumber;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
