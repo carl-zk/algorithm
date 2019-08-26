@@ -20,17 +20,28 @@ package com.leetcode;
 public class NextPermutation {
 
     public void nextPermutation(int[] nums) {
-        if (nums.length < 2) return;
-        int boundary = nums.length - 2;
-        while (boundary > -1) {
-            for (int i = boundary + 1; i < nums.length; i++) {
-                if (nums[i] > nums[boundary]) {
-                    swap(nums, i, boundary);
-                    return;
-                }
+        int l = nums.length - 2;
+        while (l > -1) {
+            if (nums[l] < nums[l + 1]) {
+                break;
             }
-            leftShift(nums, boundary);
-            boundary--;
+            l--;
+        }
+
+        if (l > -1) {
+            int r = nums.length - 1;
+            while (nums[r] <= nums[l]) {
+                r--;
+            }
+            swap(nums, l, r);
+        }
+
+        l++;
+        int r = nums.length - 1;
+        while (l < r) {
+            swap(nums, l, r);
+            l++;
+            r--;
         }
     }
 
@@ -38,13 +49,5 @@ public class NextPermutation {
         int t = nums[i];
         nums[i] = nums[j];
         nums[j] = t;
-    }
-
-    private void leftShift(int[] nums, int boundary) {
-        int t = nums[boundary];
-        for (int i = boundary + 1; i < nums.length; i++) {
-            nums[i - 1] = nums[i];
-        }
-        nums[nums.length - 1] = t;
     }
 }
