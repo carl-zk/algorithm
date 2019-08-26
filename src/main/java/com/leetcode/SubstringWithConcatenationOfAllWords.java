@@ -1,80 +1,89 @@
 package com.leetcode;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author carl
  */
 public class SubstringWithConcatenationOfAllWords {
-    boolean[] flags;
+    int wl;
+    int cl;
+    Map<String, Integer> wds;
+    Map<String, Integer> used;
+    List<Integer> ans;
 
     public List<Integer> findSubstring(String s, String[] words) {
-        if (words.length == 0) return Arrays.asList();
-        char[] sour = s.toCharArray();
-        flags = new boolean[s.length()];
-        perm(sour, words, 0, 0);
-        List<Integer> ans = new LinkedList<>();
-        for (int i = 0; i < flags.length; i++) {
-            if (flags[i]) {
-                ans.add(i);
-            }
+        if (s.length() == 0 || words.length == 0) {
+            return Collections.emptyList();
+        }
+        wl = words[0].length();
+        cl = wl * words.length;
+        wds = new HashMap<>(words.length);
+        ans = new LinkedList<>();
+        for (int i = 0; i < words.length; i++) {
+            int cnt = wds.getOrDefault(words[i], 0);
+            wds.put(words[i], cnt + 1);
+        }
+
+        for (int i = 0; i < wl; i++) {
+            handle(s, i);
         }
         return ans;
     }
 
-    private void perm(char[] sour, String[] words, int idx, int n) {
-        if (n == words.length) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < words.length; i++) {
-                sb.append(words[i]);
-            }
-            char[] tar = sb.toString().toCharArray();
+    private void handle(String s, int start) {
+        used = new HashMap<>(wds.size());
+        // 滑动窗口左端
+        int i = start;
+        // 滑动窗口右端
+        int j = start;
 
-            for (int i = 0; i < sour.length; i++) {
-                if (sour[i] == tar[0]) {
-                    int j = indexOf(sour, i, tar);
-                    if (j != -1) {
-                        flags[j] = true;
+        while (j <= s.length() - wl) {
+            if (i > s.length() - cl) {
+                return;
+            }
+            String wd = s.substring(j, j + wl);
+            if (wds.containsKey(wd)) {
+                int total = wds.get(wd);
+                int cnt = used.getOrDefault(wd, 0);
+                if (cnt < total) {
+                    // word 没达到上限
+                    used.put(wd, cnt + 1);
+                    j += wl;
+                    if (j - i == cl) {
+                        // 窗口内满足条件，i 右移一字，重置 j、used
+                        ans.add(i);
+                        i += wl;
+                        j = i;
+                        used.clear();
                     }
-                }
-            }
-            return;
-        }
-        for (int i = idx; i < words.length; i++) {
-            swap(words, idx, i);
-            perm(sour, words, idx + 1, n + 1);
-            swap(words, idx, i);
-        }
-    }
-
-    public int indexOf(char[] sour, int i, char[] tar) {
-        if (i + tar.length <= sour.length) {
-            boolean f = true;
-            int l = i + 1;
-            int r = i + tar.length - 1;
-            while (l <= r) {
-                if (sour[l] == tar[l - i] && sour[r] == tar[r - i]) {
-                    l++;
-                    r--;
                 } else {
-                    f = false;
-                    break;
+                    // 窗口内 word 重复，i 右移，重置 j、used
+                    int offset = s.substring(i, j).indexOf(wd);
+                    i += wl + offset;
+                    j = i;
+                    used.clear();
                 }
+            } else {
+                // 出现未知 word，j 右移一字，重置 i、used
+                j += wl;
+                i = j;
+                used.clear();
             }
-            if (f) {
-                return i;
-            }
-        } else {
-            return -1;
         }
-        return -1;
     }
 
-    private void swap(String[] words, int i, int j) {
-        String s = words[i];
-        words[i] = words[j];
-        words[j] = s;
+    public static void main(String[] args) {
+        SubstringWithConcatenationOfAllWords sub = new SubstringWithConcatenationOfAllWords();
+
+        //List<Integer> result = sub.findSubstring("barfoothefoobarman", new String[]{"foo", "bar"}); // 0, 9
+        //List<Integer> result = sub.findSubstring("wordgoodgoodgoodbestword", new String[]{"word", "good", "best", "word"});
+        //List<Integer> result = sub.findSubstring("goodgoodbestword", new String[]{"word", "good", "best", "word"});
+        List<Integer> result = sub.findSubstring("barfoofoobarthefoobarman", new String[]{"bar", "foo", "the"}); // 6, 9, 12
+        result.forEach(x -> System.out.println(x));
     }
 }
