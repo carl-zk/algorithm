@@ -43,6 +43,9 @@ public class SubstringWithConcatenationOfAllWords {
         int j = start;
 
         while (j <= s.length() - wl) {
+            if (i > s.length() - cl) {
+                return;
+            }
             String wd = s.substring(j, j + wl);
             if (wds.containsKey(wd)) {
                 int total = wds.get(wd);
