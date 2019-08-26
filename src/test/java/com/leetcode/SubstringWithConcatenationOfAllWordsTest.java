@@ -19,8 +19,23 @@ public class SubstringWithConcatenationOfAllWordsTest {
         List<Integer> res = sub.findSubstring("barfoothefoobarman", new String[]{"foo", "bar"});
         assertTrue(res.size() == 2);
         assertTrue(() -> {
-            for (int i = 0; i < 2; i++) {
-                if (exp.get(i) != res.get(i)) {
+            for (int i = 0; i < res.size(); i++) {
+                if (!exp.get(i).equals(res.get(i))) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    }
+
+    @Test
+    public void testExists() {
+        List<Integer> exp = Arrays.asList(6, 9, 12);
+        List<Integer> res = sub.findSubstring("barfoofoobarthefoobarman", new String[]{"bar", "foo", "the"});
+        assertTrue(res.size() == 3);
+        assertTrue(() -> {
+            for (int i = 0; i < res.size(); i++) {
+                if (!exp.get(i).equals(res.get(i))) {
                     return false;
                 }
             }
@@ -37,11 +52,17 @@ public class SubstringWithConcatenationOfAllWordsTest {
 
     @Test
     public void testLarge() {
+        List<Integer> exp = Arrays.asList(935);
         List<Integer> res = sub.findSubstring("pjzkrkevzztxductzzxmxsvwjkxpvukmfjywwetvfnujhweiybwvvsrfequzkhossmootkmyxgjgfordrpapjuunmqnxxdrqrfgkrsjqbszgiqlcfnrpjlcwdrvbumtotzylshdvccdmsqoadfrpsvnwpizlwszrtyclhgilklydbmfhuywotjmktnwrfvizvnmfvvqfiokkdprznnnjycttprkxpuykhmpchiksyucbmtabiqkisgbhxngmhezrrqvayfsxauampdpxtafniiwfvdufhtwajrbkxtjzqjnfocdhekumttuqwovfjrgulhekcpjszyynadxhnttgmnxkduqmmyhzfnjhducesctufqbumxbamalqudeibljgbspeotkgvddcwgxidaiqcvgwykhbysjzlzfbupkqunuqtraxrlptivshhbihtsigtpipguhbhctcvubnhqipncyxfjebdnjyetnlnvmuxhzsdahkrscewabejifmxombiamxvauuitoltyymsarqcuuoezcbqpdaprxmsrickwpgwpsoplhugbikbkotzrtqkscekkgwjycfnvwfgdzogjzjvpcvixnsqsxacfwndzvrwrycwxrcismdhqapoojegggkocyrdtkzmiekhxoppctytvphjynrhtcvxcobxbcjjivtfjiwmduhzjokkbctweqtigwfhzorjlkpuuliaipbtfldinyetoybvugevwvhhhweejogrghllsouipabfafcxnhukcbtmxzshoyyufjhzadhrelweszbfgwpkzlwxkogyogutscvuhcllphshivnoteztpxsaoaacgxyaztuixhunrowzljqfqrahosheukhahhbiaxqzfmmwcjxountkevsvpbzjnilwpoermxrtlfroqoclexxisrdhvfsindffslyekrzwzqkpeocilatftymodgztjgybtyheqgcpwogdcjlnlesefgvimwbxcbzvaibspdjnrpqtyeilkcspknyylbwndvkffmzuriilxagyerjptbgeqgebiaqnvdubrtxibhvakcyotkfonmseszhczapxdlauexehhaireihxsplgdgmxfvaevrbadbwjbdrkfbbjjkgcztkcbwagtcnrtqryuqixtzhaakjlurnumzyovawrcjiwabuwretmdamfkxrgqgcdgbrdbnugzecbgyxxdqmisaqcyjkqrntxqmdrczxbebemcblftxplafnyoxqimkhcykwamvdsxjezkpgdpvopddptdfbprjustquhlazkjfluxrzopqdstulybnqvyknrchbphcarknnhhovweaqawdyxsqsqahkepluypwrzjegqtdoxfgzdkydeoxvrfhxusrujnmjzqrrlxglcmkiykldbiasnhrjbjekystzilrwkzhontwmehrfsrzfaqrbbxncphbzuuxeteshyrveamjsfiaharkcqxefghgceeixkdgkuboupxnwhnfigpkwnqdvzlydpidcljmflbccarbiegsmweklwngvygbqpescpeichmfidgsjmkvkofvkuehsmkkbocgejoiqcnafvuokelwuqsgkyoekaroptuvekfvmtxtqshcwsztkrzwrpabqrrhnlerxjojemcxel",
                 new String[]{"dhvf", "sind", "ffsl", "yekr", "zwzq", "kpeo", "cila", "tfty", "modg", "ztjg", "ybty", "heqg", "cpwo", "gdcj", "lnle", "sefg", "vimw", "bxcb"});
-        for (Integer i : res) {
-            System.out.print(i + ", ");
-        }
-        System.out.println();
+        assertTrue(res.size() == exp.size());
+        assertTrue(() -> {
+            for (int i = 0; i < res.size(); i++) {
+                if (!exp.get(i).equals(res.get(i))) {
+                    return false;
+                }
+            }
+            return true;
+        });
     }
 }

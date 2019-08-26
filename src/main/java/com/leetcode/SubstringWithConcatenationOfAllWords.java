@@ -43,6 +43,7 @@ public class SubstringWithConcatenationOfAllWords {
         int j = start;
 
         while (j <= s.length() - wl) {
+            // 剩余窗口总长度小于所需，终止
             if (i > s.length() - cl) {
                 return;
             }
@@ -55,35 +56,28 @@ public class SubstringWithConcatenationOfAllWords {
                     used.put(wd, cnt + 1);
                     j += wl;
                     if (j - i == cl) {
-                        // 窗口内满足条件，i 右移一字，重置 j、used
+                        // 窗口内满足条件，i 右移一字，窗口第一个字统计减一
                         ans.add(i);
+                        String first = s.substring(i, i + wl);
+                        used.put(first, used.get(first) - 1);
                         i += wl;
-                        j = i;
-                        used.clear();
                     }
                 } else {
-                    // 窗口内 word 重复，i 右移，重置 j、used
+                    // 窗口内 word 重复，i 右移，offset 之前的 word 统计减一
                     int offset = s.substring(i, j).indexOf(wd);
+                    for (int k = i; k + wl <= offset; k += wl) {
+                        String preWd = s.substring(k, k + wl);
+                        used.put(preWd, used.get(preWd) - 1);
+                    }
                     i += wl + offset;
-                    j = i;
-                    used.clear();
+                    j += wl;
                 }
             } else {
                 // 出现未知 word，j 右移一字，重置 i、used
                 j += wl;
                 i = j;
-                used.clear();
+                used = new HashMap<>(wds.size());
             }
         }
-    }
-
-    public static void main(String[] args) {
-        SubstringWithConcatenationOfAllWords sub = new SubstringWithConcatenationOfAllWords();
-
-        //List<Integer> result = sub.findSubstring("barfoothefoobarman", new String[]{"foo", "bar"}); // 0, 9
-        //List<Integer> result = sub.findSubstring("wordgoodgoodgoodbestword", new String[]{"word", "good", "best", "word"});
-        //List<Integer> result = sub.findSubstring("goodgoodbestword", new String[]{"word", "good", "best", "word"});
-        List<Integer> result = sub.findSubstring("barfoofoobarthefoobarman", new String[]{"bar", "foo", "the"}); // 6, 9, 12
-        result.forEach(x -> System.out.println(x));
     }
 }
