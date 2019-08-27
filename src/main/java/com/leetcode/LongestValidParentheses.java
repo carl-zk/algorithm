@@ -6,24 +6,24 @@ package com.leetcode;
 public class LongestValidParentheses {
 
     public int longestValidParentheses(String s) {
-        // 滑动窗口左
-        int i = 0;
-        // 滑动窗口右
-        int j;
-        char[] cs = s.toCharArray();
-        char expect = '(';
         int ans = 0;
+        int leftCount = 0;
+        int len = 0;
+        char[] cs = s.toCharArray();
 
-        for (j = 0; j < cs.length; j++) {
-            if (cs[j] == expect) {
-                if (cs[j] == ')') {
-                    ans = Math.max(ans, j - i + 1);
+        for (int i = 0; i < cs.length; i++) {
+            if ('(' == cs[i]) {
+                leftCount++;
+            } else if (leftCount > 0) {
+                len += 2;
+                ans = Math.max(ans, len);
+                leftCount--;
+                if (leftCount == 0) {
+                    len = 0;
                 }
-                expect = expect == '(' ? ')' : '(';
-            } else if (cs[j] == '(') {
-                i = j;
             } else {
-                i = j + 1;
+                leftCount = 0;
+                len = 0;
             }
         }
         return ans;

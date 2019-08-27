@@ -26,6 +26,8 @@ public class LongestValidParenthesesTest {
                 arguments("(()", 2),
                 arguments("", 0),
                 arguments("()(())", 6),
+                arguments("()(()", 2),
+                arguments("()(()()", 4),
                 arguments(")()())", 4)
         );
     }
