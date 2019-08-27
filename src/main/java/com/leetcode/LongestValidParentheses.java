@@ -1,5 +1,7 @@
 package com.leetcode;
 
+import java.util.Stack;
+
 /**
  * https://leetcode.com/problems/longest-valid-parentheses/
  * <p>
@@ -23,26 +25,19 @@ public class LongestValidParentheses {
     public int longestValidParentheses(String s) {
         int ans = 0;
         char[] cs = s.toCharArray();
-        int leftCount;
-
+        Stack<Integer> stack = new Stack<>();
+        stack.push(-1);
         for (int i = 0; i < cs.length; i++) {
-            int len = 0;
-            leftCount = 0;
             if ('(' == cs[i]) {
-                for (int j = i; j < cs.length; j++) {
-                    if ('(' == cs[j]) {
-                        leftCount++;
-                    } else if (leftCount > 0) {
-                        leftCount--;
-                        if (leftCount == 0) {
-                            len = Math.max(len, j - i + 1);
-                        }
-                    } else {
-                        break;
-                    }
+                stack.push(i);
+            } else {
+                stack.pop();
+                if (stack.isEmpty()) {
+                    stack.push(i);
+                } else {
+                    ans = Math.max(ans, i - stack.peek().intValue());
                 }
             }
-            ans = Math.max(ans, len);
         }
         return ans;
     }
