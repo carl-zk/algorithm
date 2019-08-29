@@ -1,8 +1,5 @@
 package com.leetcode;
 
-import java.util.Arrays;
-import java.util.PriorityQueue;
-
 /**
  * https://leetcode.com/problems/sudoku-solver/
  * <p>
@@ -30,77 +27,53 @@ import java.util.PriorityQueue;
  * @author carl
  */
 public class SudokuSolver {
-    boolean find;
-    PriorityQueue<Node> queue = new PriorityQueue<>();
+    boolean[][] rowsUsed = new boolean[9][9];
+    boolean[][] columnsUsed = new boolean[9][9];
+    boolean[][] boxesUsed = new boolean[9][9];
 
     public void solveSudoku(char[][] board) {
-        Node node = new Node(board);
-        queue.add(node);
-        while (!queue.isEmpty()) {
-            Node sudoku = queue.poll();
-            int ro = -1;
-            int co = -1;
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    if (sudoku.board[i][j] == '.') {
-                        ro = i;
-                        co = j;
-                        j = 9;
-                        i = 9;
-                    }
-                }
-            }
-            if (ro == -1) {
-                find = true;
-                //print(sudoku.board);
-                for (int i = 0; i < 9; i++) {
-                    for (int j = 0; j < 9; j++) {
-                        board[i][j] = sudoku.board[i][j];
-                    }
-                }
-                break;
-            }
-            boolean[] used = new boolean[9];
-            for (int i = 0; i < 9; i++) {
-                if (sudoku.board[ro][i] != '.') {
-                    used[sudoku.board[ro][i] - '1'] = true;
-                }
-                if (sudoku.board[i][co] != '.') {
-                    used[sudoku.board[i][co] - '1'] = true;
-                }
-            }
-            for (int i = 0; i < 9; i++) {
-                if (!used[i]) {
-                    sudoku.board[ro][co] = (char) ('1' + i);
-                    if (isValid(sudoku.board)) {
-                        Node no = new Node(sudoku.board);
-                        queue.add(no);
-                    }
+        init(board);
+        fillSudoku(board, 0, 0);
+    }
+
+    private void init(char[][] board) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] != '.') {
+                    rowsUsed[i][board[i][j] - '1'] = true;
+                    columnsUsed[board[i][j] - '1'][j] = true;
+                    boxesUsed[3 * (i / 3) + j / 3][board[i][j] - '1'] = true;
                 }
             }
         }
     }
 
-    private boolean isValid(char[][] sudoku) {
-        for (int i = 0; i < 9; i += 3) {
-            for (int j = 0; j < 9; j += 3) {
-                boolean[] used = new boolean[9];
-                for (int k = 0; k < 3; k++) {
-                    for (int l = 0; l < 3; l++) {
-                        int ro = i + k;
-                        int co = j + l;
-                        if (sudoku[ro][co] != '.') {
-                            if (used[sudoku[ro][co] - '1']) {
-                                return false;
-                            } else {
-                                used[sudoku[ro][co] - '1'] = true;
-                            }
-                        }
-                    }
+    private boolean fillSudoku(char[][] board, int row, int col) {
+        int ro = -1;
+        int co = -1;
+        for (int i = row; i < 9; i++) {
+            if (ro != -1) break;
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] == '.') {
+                    ro = i;
+                    co = j;
+                    break;
                 }
             }
         }
-        return true;
+        if (ro == -1) return true;
+        for (int i = 0; i < 9; i++) {
+            if (!rowsUsed[ro][i]
+                    && !columnsUsed[i][co]
+                    && !boxesUsed[3 * (ro / 3) + co / 3][i]) {
+                rowsUsed[ro][i] = columnsUsed[i][co] = boxesUsed[3 * (ro / 3) + co / 3][i] = true;
+                board[ro][co] = (char) ('1' + i);
+                if (fillSudoku(board, ro, co)) return true;
+                rowsUsed[ro][i] = columnsUsed[i][co] = boxesUsed[3 * (ro / 3) + co / 3][i] = false;
+                board[ro][co] = '.';
+            }
+        }
+        return false;
     }
 
     private void print(char[][] sudoku) {
@@ -109,30 +82,6 @@ public class SudokuSolver {
                 System.out.print(sudoku[i][j] + ", ");
             }
             System.out.println();
-        }
-    }
-
-    static class Node implements Comparable<Node> {
-        char[][] board;
-        int weight;
-
-        public Node(char[][] board) {
-            this.board = new char[9][9];
-            for (int i = 0; i < 9; i++) {
-                this.board[i] = Arrays.copyOfRange(board[i], 0, 9);
-            }
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    if (board[i][j] != '.') {
-                        this.weight++;
-                    }
-                }
-            }
-        }
-
-        @Override
-        public int compareTo(Node o) {
-            return o.weight - weight;
         }
     }
 
@@ -150,5 +99,6 @@ public class SudokuSolver {
                 new char[]{'.', '.', '.', '.', '8', '.', '.', '7', '9'}
         };
         sudokuSolver.solveSudoku(input);
+        sudokuSolver.print(input);
     }
 }
