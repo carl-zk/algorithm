@@ -23,6 +23,7 @@ public class FirstMissingPositiveTest {
 
     static Stream<Arguments> source() {
         return Stream.of(
+                arguments(new int[]{1, 1}, 2),
                 arguments(new int[]{1, 2, 0}, 3),
                 arguments(new int[]{3, 4, -1, 1}, 2),
                 arguments(new int[]{7, 8, 9, 11, 12}, 1)

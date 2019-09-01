@@ -26,18 +26,22 @@ package com.leetcode;
 public class FirstMissingPositive {
 
     public int firstMissingPositive(int[] nums) {
-        if (nums.length == 0) return 1;
-        boolean[] visited = new boolean[nums.length + 2];
         for (int i = 0; i < nums.length; i++) {
-            if (1 <= nums[i] && nums[i] <= nums.length) {
-                visited[nums[i]] = true;
+            while (1 <= nums[i] && nums[i] <= nums.length && nums[i] != nums[nums[i] - 1]) {
+                swap(nums, i, nums[i] - 1);
             }
         }
-        for (int i = 1; i < visited.length; i++) {
-            if (!visited[i]) {
-                return i;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
             }
         }
-        return 0;
+        return nums.length + 1;
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int t = nums[i];
+        nums[i] = nums[j];
+        nums[j] = t;
     }
 }
