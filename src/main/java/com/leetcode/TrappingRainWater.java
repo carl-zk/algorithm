@@ -1,7 +1,5 @@
 package com.leetcode;
 
-import java.util.Stack;
-
 /**
  * https://leetcode.com/problems/trapping-rain-water/
  * <p>
@@ -21,20 +19,19 @@ public class TrappingRainWater {
 
     public int trap(int[] height) {
         int ans = 0;
-        int current = 0;
-        Stack<Integer> stack = new Stack<>();
+        int left = 0, right = height.length - 1;
+        int leftMax = 0, rightMax = 0;
 
-        while (current < height.length) {
-            while (!stack.isEmpty() && height[current] > height[stack.peek()]) {
-                int top = stack.pop();
-                if (stack.isEmpty()) {
-                    break;
-                }
-                int h = Math.min(height[current], height[stack.peek()]) - height[top];
-                int distance = current - stack.peek() - 1;
-                ans += h * distance;
+        while (left < right) {
+            if (height[left] < height[right]) {
+                leftMax = Math.max(leftMax, height[left]);
+                ans += leftMax - height[left];
+                left++;
+            } else {
+                rightMax = Math.max(rightMax, height[right]);
+                ans += rightMax - height[right];
+                right--;
             }
-            stack.push(current++);
         }
         return ans;
     }
