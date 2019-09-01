@@ -25,33 +25,28 @@ package com.leetcode;
 public class MultiplyStrings {
 
     public String multiply(String num1, String num2) {
-        if ("0".equals(num1) || "0".equals(num2)) return "0";
-        int tail = 0, up = 0;
-        int[] ans = new int[12101];
-
+        int[] ans = new int[num1.length() + num2.length()];
         for (int i = num1.length() - 1; i > -1; i--) {
-            tail = num1.length() - i - 1;
-            up = 0;
             for (int j = num2.length() - 1; j > -1; j--) {
                 int mul = (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
-                ans[tail] += mul + up;
-                up = ans[tail] / 10;
-                ans[tail++] %= 10;
+                ans[i + j + 1] += mul;
+                ans[i + j] += ans[i + j + 1] / 10;
+                ans[i + j + 1] %= 10;
             }
-            ans[tail] += up;
         }
-
-        StringBuilder sb = new StringBuilder(tail + 1);
-        while (ans[tail] == 0) tail--;
-        while (tail > -1) {
-            sb.append(ans[tail--]);
+        StringBuilder sb = new StringBuilder(ans.length);
+        for (int i = 0; i < ans.length; i++) {
+            if (ans[i] != 0 || sb.length() != 0) {
+                sb.append(ans[i]);
+            }
         }
-        return sb.toString();
+        return sb.length() == 0 ? "0" : sb.toString();
     }
 
     public static void main(String[] args) {
         MultiplyStrings ms = new MultiplyStrings();
 
+        System.out.println(ms.multiply("0", "456"));
         System.out.println(ms.multiply("789", "456"));
         System.out.println(ms.multiply("123", "456"));
     }
