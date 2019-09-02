@@ -4,18 +4,47 @@ package com.leetcode;
  * @author carl
  */
 public class JumpGameII {
-    boolean[] visited;
+    static class Node {
+        public int i;
+        public int step;
+
+        public Node(int i, int step) {
+            this.i = i;
+            this.step = step;
+        }
+    }
+
     int[] dist;
     int ans;
+    Node[] stack = new Node[Integer.MAX_VALUE >> 15];
+    int tp;
 
     public int jump(int[] nums) {
-        visited = new boolean[nums.length];
         dist = new int[nums.length];
         for (int i = 0; i < nums.length; i++) {
-            dist[i] = Integer.MAX_VALUE;
+            dist[i] = 1 << 30;
         }
         ans = Integer.MAX_VALUE;
-        solve(nums, 0, 0);
+        tp = -1;
+        //solve(nums, 0, 0);
+        stack[++tp] = new Node(0, 0);
+
+        while (tp > -1) {
+            Node top = stack[tp--];
+            if (top.step > dist[top.i] || top.step > ans) {
+                continue;
+            }
+            dist[top.i] = top.step;
+            if (nums[top.i] + top.i + 1 >= nums.length) {
+                ans = Math.min(ans, top.i == nums.length - 1 ? dist[top.i] : dist[top.i] + 1);
+                continue;
+            }
+            for (int j = top.i + 1, k = 0; k < nums[top.i] && j + k < nums.length; k++) {
+                if (top.step + 1 < dist[j + k] && top.step + 1 < ans) {
+                    stack[++tp] = new Node(j + k, top.step + 1);
+                }
+            }
+        }
         return ans;
     }
 
@@ -35,6 +64,7 @@ public class JumpGameII {
             }
         }
     }
+
 
     public static void main(String[] args) {
         JumpGameII jg = new JumpGameII();
