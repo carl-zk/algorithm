@@ -1,7 +1,5 @@
 package com.leetcode;
 
-import java.util.LinkedList;
-
 /**
  * https://leetcode.com/problems/jump-game-ii/
  * <p>
@@ -24,36 +22,19 @@ import java.util.LinkedList;
  * @author carl
  */
 public class JumpGameII {
-    int[] dist;
-    boolean[] reach;
-    LinkedList<Integer> queue;
 
     public int jump(int[] nums) {
-        dist = new int[nums.length];
-        reach = new boolean[nums.length];
-        for (int i = 0; i < nums.length; i++) {
-            dist[i] = Integer.MAX_VALUE;
-            reach[i] = nums[i] + i + 1 >= nums.length;
-        }
-        dist[0] = 0;
-        queue = new LinkedList<>();
-        queue.addLast(0);
+        int step = 0;
+        int cur_max = 0;
+        int next_max = 0;
 
-        while (!queue.isEmpty()) {
-            int i = queue.removeFirst();
-            if (reach[i]) {
-                return i == nums.length - 1 ? dist[i] : dist[i] + 1;
+        for (int i = 0; i < nums.length; i++) {
+            if (cur_max < i) {
+                cur_max = next_max;
+                step++;
             }
-            for (int j = i + 1, k = 0; k < nums[i] && j + k < nums.length; k++) {
-                if (dist[j + k] == Integer.MAX_VALUE) {
-                    dist[j + k] = dist[i] + 1;
-                    if (reach[j + k]) {
-                        return j + k == nums.length - 1 ? dist[j + k] : dist[j + k] + 1;
-                    }
-                    queue.addLast(j + k);
-                }
-            }
+            next_max = Math.max(next_max, nums[i] + i);
         }
-        return 0;
+        return step;
     }
 }
