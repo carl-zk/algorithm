@@ -5,7 +5,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.stream.Stream;
 
@@ -36,7 +40,8 @@ public class JumpGameIITest {
 
     @Test
     public void test2() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(new File(Thread.currentThread().getContextClassLoader().getResource("JumpGameII.text").toURI())))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(new File(
+                Thread.currentThread().getContextClassLoader().getResource("JumpGameII.text").toURI())))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] s = line.split(",");
