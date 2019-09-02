@@ -18,6 +18,7 @@ public class RegularExpressionMatchingTest {
         assertTrue(matcher.isMatch("a", "."));
         assertTrue(matcher.isMatch("ab", ".*"));
         assertTrue(matcher.isMatch("aa", "a*"));
+        assertTrue(matcher.isMatch("ab", "b*ab"));
         assertTrue(matcher.isMatch("aaa", "a*a"));
         assertTrue(matcher.isMatch("aaa", "a*aaa"));
         assertTrue(matcher.isMatch("aab", "c*a*b"));

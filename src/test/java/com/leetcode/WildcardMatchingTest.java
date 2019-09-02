@@ -24,10 +24,10 @@ public class WildcardMatchingTest {
 
     static Stream<Arguments> source() {
         return Stream.of(
+                arguments("aa", "a", false),
                 arguments("abbabaaabbabbaababbabbbbbabbbabbbabaaaaababababbbabababaabbababaabbbbbbaaaabababbbaabbbbaabbbbababababbaabbaababaabbbababababbbbaaabbbbbabaaaabbababbbbaababaabbababbbbbababbbabaaaaaaaabbbbbaabaaababaaaabb"
                         , "**aa*****ba*a*bb**aa*ab****a*aaaaaa***a*aaaa**bbabb*b*b**aaaaaaaaa*a********ba*bbb***a*ba*bb*bb**a*b*bb", false),
                 arguments("aaabbbaabaaaaababaabaaabbabbbbbbbbaabababbabbbaaaaba", "a*******b", false),
-                arguments("aa", "a", false),
                 arguments("aa", "*", true),
                 arguments("adceb", "*a*b", true),
                 arguments("mississippi", "m??*ss*?i*pi", false),
