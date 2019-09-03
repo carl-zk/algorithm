@@ -20,11 +20,14 @@ import java.util.*;
  * @auther carl
  */
 public class PermutationsII {
-    List<List<Integer>> ans;
+    private List<List<Integer>> ans;
+    private boolean[] visited;
 
     public List<List<Integer>> permuteUnique(int[] nums) {
         ans = new LinkedList<>();
+        visited = new boolean[nums.length];
         int[] tmp = new int[nums.length];
+        Arrays.sort(nums);
         perm(nums, 0, tmp, 0);
         return ans;
     }
@@ -38,29 +41,26 @@ public class PermutationsII {
             ans.add(list);
             return;
         }
-        Set<Integer> set = new HashSet<>();
-        for (int k = i; k < nums.length; k++) {
-            if (!set.contains(nums[k])) {
-                set.add(nums[k]);
-                swap(nums, i, k);
-                arr[j] = nums[i];
+        for (int k = i, pre = nums[i]; k < nums.length; k++) {
+            if (!visited[k] && (k == i || nums[k] != pre)) {
+                visited[k] = true;
+                arr[j] = nums[k];
                 perm(nums, i + 1, arr, j + 1);
-                swap(nums, i, k);
+                visited[k] = false;
+                pre = nums[k];
             }
         }
     }
 
-    private void swap(int[] nums, int i, int j) {
-        int t = nums[i];
-        nums[i] = nums[j];
-        nums[j] = t;
-    }
-
     public static void main(String[] args) {
         PermutationsII perm = new PermutationsII();
-        assert 630 == perm.permuteUnique(new int[]{-1, 2, 0, -1, 1, 0, 1}).size();
-        assert 3 == perm.permuteUnique(new int[]{1, 1, 2}).size();
-        assert 6 == perm.permuteUnique(new int[]{1, 1, 2, 2}).size();
-        assert 20 == perm.permuteUnique(new int[]{0, 0, 0, 1, 9}).size();
+        //3
+        System.out.println(perm.permuteUnique(new int[]{1, 1, 2}).size());
+        //630
+        System.out.println(perm.permuteUnique(new int[]{-1, 2, 0, -1, 1, 0, 1}).size());
+        //6
+        System.out.println(perm.permuteUnique(new int[]{1, 1, 2, 2}).size());
+        //20
+        System.out.println(perm.permuteUnique(new int[]{0, 0, 0, 1, 9}).size());
     }
 }
