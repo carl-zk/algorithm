@@ -1,6 +1,8 @@
 package com.leetcode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * https://leetcode.com/problems/permutations-ii/
@@ -21,32 +23,31 @@ import java.util.*;
  */
 public class PermutationsII {
     private List<List<Integer>> ans;
-    private boolean[] visited;
+    private boolean[] used;
+    private List<Integer> tmp;
 
     public List<List<Integer>> permuteUnique(int[] nums) {
-        ans = new LinkedList<>();
-        visited = new boolean[nums.length];
-        int[] tmp = new int[nums.length];
+        ans = new ArrayList<>();
+        used = new boolean[nums.length];
+        tmp = new ArrayList<>();
         Arrays.sort(nums);
-        perm(nums, 0, tmp, 0);
+        dfs(nums, 0);
         return ans;
     }
 
-    private void perm(int[] nums, int i, int[] arr, int j) {
-        if (j == nums.length) {
-            List<Integer> list = new LinkedList<>();
-            for (int k = 0; k < j; k++) {
-                list.add(arr[k]);
-            }
-            ans.add(list);
+    private void dfs(int[] nums, int level) {
+        if (level == nums.length) {
+            ans.add(new ArrayList<>(tmp));
             return;
         }
-        for (int k = i, pre = nums[i]; k < nums.length; k++) {
-            if (!visited[k] && (k == i || nums[k] != pre)) {
-                visited[k] = true;
-                arr[j] = nums[k];
-                perm(nums, i + 1, arr, j + 1);
-                visited[k] = false;
+        Integer pre = null;
+        for (int k = 0; k < nums.length; k++) {
+            if (!used[k] && (pre == null || nums[k] != pre.intValue())) {
+                used[k] = true;
+                tmp.add(nums[k]);
+                dfs(nums, level + 1);
+                tmp.remove(tmp.size() - 1);
+                used[k] = false;
                 pre = nums[k];
             }
         }
