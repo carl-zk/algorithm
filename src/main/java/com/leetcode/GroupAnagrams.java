@@ -24,27 +24,29 @@ import java.util.*;
  * @auther carl
  */
 public class GroupAnagrams {
-    List<List<String>> ans;
 
     public List<List<String>> groupAnagrams(String[] strs) {
-        ans = new LinkedList<>();
-        Map<String, List<String>> map = new HashMap<>();
+        Map<String, List<String>> ans = new HashMap<>();
+        int[] cnt = new int[26];
 
         for (int i = 0; i < strs.length; i++) {
             char[] chars = strs[i].toCharArray();
-            Arrays.sort(chars);
-            String sortedStr = String.valueOf(chars);
-            List<String> list = map.get(sortedStr);
-            if (list == null) {
-                list = new LinkedList<>();
-                list.add(strs[i]);
-                map.put(sortedStr, list);
-            } else {
-                list.add(strs[i]);
+            Arrays.fill(cnt, 0);
+
+            for (int j = 0; j < chars.length; j++) {
+                cnt[chars[j] - 'a']++;
             }
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int j = 0; j < cnt.length; j++) {
+                sb.append(cnt[j]).append("#");
+            }
+            String key = sb.toString();
+            if (!ans.containsKey(key)) ans.put(key, new ArrayList<>());
+            ans.get(key).add(strs[i]);
         }
-        map.entrySet().forEach(entry -> ans.add(entry.getValue()));
-        return ans;
+        return new ArrayList<>(ans.values());
     }
 
     public static void main(String[] args) {
