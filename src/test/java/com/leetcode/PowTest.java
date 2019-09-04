@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
@@ -18,7 +18,7 @@ public class PowTest {
     @ParameterizedTest
     @MethodSource("source")
     public void test(double x, int n, double expect) {
-        assertEquals(expect, pow.myPow(x, n));
+        assertTrue(() -> Math.abs(expect - pow.myPow(x, n)) < 0.000001);
     }
 
     static Stream<Arguments> source() {
