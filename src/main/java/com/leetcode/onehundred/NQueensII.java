@@ -37,6 +37,9 @@ public class NQueensII {
     private int ans;
     private char[][] board;
     private int N;
+    private boolean[] y;
+    private boolean[] p;
+    private boolean[] q;
 
     public int totalNQueens(int n) {
         ans = 0;
@@ -45,75 +48,30 @@ public class NQueensII {
             Arrays.fill(board[i], EMPTY);
         }
         N = n;
+        y = new boolean[n];
+        p = new boolean[2 * n];
+        q = new boolean[2 * n];
         dfs(0);
         return ans;
     }
 
-    private void dfs(int level) {
-        if (level == N) {
+    private void dfs(int x) {
+        if (x == N) {
             ans++;
             return;
         }
         for (int i = 0; i < N; i++) {
-            if (board[level][i] == EMPTY) {
-                mark(level, i);
-                dfs(level + 1);
-                unMark(level, i);
+            if (!y[i] && !p[i - x + N] && !q[x + i]) {
+                y[i] = true;
+                p[i - x + N] = true;
+                q[x + i] = true;
+                board[x][i] = QUEEN;
+                dfs(x + 1);
+                board[x][i] = EMPTY;
+                q[x + i] = false;
+                p[i - x + N] = false;
+                y[i] = false;
             }
         }
-    }
-
-    private void mark(int i, int j) {
-        // bottom
-        int k = i + 1;
-        int l = j;
-        while (k < N) {
-            board[k][l]++;
-            k++;
-        }
-        // bottom left
-        k = i + 1;
-        l = j - 1;
-        while (k < N && l > -1) {
-            board[k][l]++;
-            k++;
-            l--;
-        }
-        // bottom right
-        k = i + 1;
-        l = j + 1;
-        while (k < N && l < N) {
-            board[k][l]++;
-            k++;
-            l++;
-        }
-        board[i][j] = QUEEN;
-    }
-
-    private void unMark(int i, int j) {
-        // bottom
-        int k = i + 1;
-        int l = j;
-        while (k < N) {
-            board[k][l]--;
-            k++;
-        }
-        // bottom left
-        k = i + 1;
-        l = j - 1;
-        while (k < N && l > -1) {
-            board[k][l]--;
-            k++;
-            l--;
-        }
-        // bottom right
-        k = i + 1;
-        l = j + 1;
-        while (k < N && l < N) {
-            board[k][l]--;
-            k++;
-            l++;
-        }
-        board[i][j] = EMPTY;
     }
 }
