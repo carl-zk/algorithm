@@ -64,24 +64,12 @@ public class NQueensII {
     }
 
     private void mark(int i, int j) {
-        for (int k = 0; k < N; k++) {
-            board[i][k]++;
-            board[k][j]++;
-        }
-        // up left
-        int k = i - 1, l = j - 1;
-        while (k > -1 && l > -1) {
+        // bottom
+        int k = i + 1;
+        int l = j;
+        while (k < N) {
             board[k][l]++;
-            k--;
-            l--;
-        }
-        // up right
-        k = i - 1;
-        l = j + 1;
-        while (k > -1 && l < N) {
-            board[k][l]++;
-            k--;
-            l++;
+            k++;
         }
         // bottom left
         k = i + 1;
@@ -103,24 +91,12 @@ public class NQueensII {
     }
 
     private void unMark(int i, int j) {
-        for (int k = 0; k < N; k++) {
-            board[i][k]--;
-            board[k][j]--;
-        }
-        // up left
-        int k = i - 1, l = j - 1;
-        while (k > -1 && l > -1) {
+        // bottom
+        int k = i + 1;
+        int l = j;
+        while (k < N) {
             board[k][l]--;
-            k--;
-            l--;
-        }
-        // up right
-        k = i - 1;
-        l = j + 1;
-        while (k > -1 && l < N) {
-            board[k][l]--;
-            k--;
-            l++;
+            k++;
         }
         // bottom left
         k = i + 1;
