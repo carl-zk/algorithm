@@ -28,44 +28,19 @@ package com.leetcode.fifty;
 public class Pow {
 
     public double myPow(double x, int n) {
-        int flag = n < 0 ? -1 : 1;
-        double ans = 1.0;
-        double y = 1;
-        int times = 0;
-
-        while (n != 0) {
-            if (times == 0) {
-                y = n < 0 ? 1 / x : x;
-                ans *= y;
-                times = 1;
-                n = n < 0 ? n + 1 : n - 1;
-            } else if (flag * n >= 2 * times) {
-                y *= y;
-                ans *= y;
-                times *= 2;
-                n = n < 0 ? n + times : n - times;
-            } else if (flag * n >= times) {
-                ans *= y;
-                n = n < 0 ? n + times : n - times;
-            } else {
-                times /= 2;
-                y = 1;
-                for (int i = 0; i < times; i++) {
-                    y *= (n < 0 ? 1 / x : x);
-                }
+        long m = n;
+        if (m < 0) {
+            m = -m;
+            x = 1 / x;
+        }
+        double ans = 1;
+        double cur = x;
+        for (long i = m; i > 0; i /= 2) {
+            if (i % 2 == 1) {
+                ans = ans * cur;
             }
+            cur *= cur;
         }
         return ans;
-    }
-
-    private double pow(double base, int n, double y, int times, double ans) {
-        if (n == 0) return ans;
-        if (times == 0) {
-            return pow(base, n - 1, base, 1, base);
-        }
-        if (n >= 2 * times) {
-            return pow(base, n - 2 * times, y * y, 2 * times, ans * (y * y));
-        }
-        return pow(base, n - 1, base, 1, ans * base);
     }
 }
