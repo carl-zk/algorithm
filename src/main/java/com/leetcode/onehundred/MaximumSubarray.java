@@ -19,13 +19,26 @@ package com.leetcode.onehundred;
 public class MaximumSubarray {
 
     public int maxSubArray(int[] nums) {
-        int ans = nums[0];
-        int[] dp = new int[nums.length];
-        dp[0] = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            dp[i] = Math.max(nums[i], dp[i - 1] + nums[i]);
-            ans = Math.max(ans, dp[i]);
+        return solve(nums, 0, nums.length - 1);
+    }
+
+    private int solve(int[] nums, int s, int e) {
+        if (s == e) {
+            return nums[s];
         }
-        return ans;
+        int mid = (s + e) / 2;
+        int left = solve(nums, s, mid);
+        int right = solve(nums, mid + 1, e);
+        int leftMax = 0, leftSum = 0;
+        int rightMax = 0, rightSum = 0;
+        for (int i = mid - 1; i >= s; i--) {
+            leftSum += nums[i];
+            leftMax = Math.max(leftMax, leftSum);
+        }
+        for (int i = mid + 1; i <= e; i++) {
+            rightSum += nums[i];
+            rightMax = Math.max(rightMax, rightSum);
+        }
+        return Math.max(Math.max(left, right), leftMax + nums[mid] + rightMax);
     }
 }
