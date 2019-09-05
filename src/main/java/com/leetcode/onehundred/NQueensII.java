@@ -60,17 +60,17 @@ public class NQueensII {
             ans++;
             return;
         }
-        for (int i = 0; i < N; i++) {
-            if (!y[i] && !p[i - x + N] && !q[x + i]) {
-                y[i] = true;
-                p[i - x + N] = true;
-                q[x + i] = true;
-                board[x][i] = QUEEN;
+        for (int j = 0; j < N; j++) {
+            if (!y[j] && !p[j - x + N] && !q[x + j]) {
+                y[j] = true;
+                p[j - x + N] = true;
+                q[x + j] = true;
+                board[x][j] = QUEEN;
                 dfs(x + 1);
-                board[x][i] = EMPTY;
-                q[x + i] = false;
-                p[i - x + N] = false;
-                y[i] = false;
+                board[x][j] = EMPTY;
+                q[x + j] = false;
+                p[j - x + N] = false;
+                y[j] = false;
             }
         }
     }
