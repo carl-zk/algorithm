@@ -26,52 +26,27 @@ public class MergeIntervals {
     public int[][] merge(int[][] intervals) {
         if (intervals.length == 0) return intervals;
 
-        Seg[] segs = new Seg[intervals.length];
+        List<int[]> ans = new ArrayList<>();
+        int[] starts = new int[intervals.length];
+        int[] ends = new int[intervals.length];
+
         for (int i = 0; i < intervals.length; i++) {
-            segs[i] = new Seg(intervals[i][0], intervals[i][1]);
+            starts[i] = intervals[i][0];
+            ends[i] = intervals[i][1];
         }
-        Arrays.sort(segs, Comparator.comparingInt(a -> a.t));
-        ArrayList<Seg> list = new ArrayList<>();
-        Seg cur = segs[0];
-        for (int i = 1; i < segs.length; i++) {
-            if (cur.t < segs[i].h) {
-                list.add(cur);
-                cur = segs[i];
-            } else if (cur.h < segs[i].h) {
-                cur.t = segs[i].t;
-            } else {
-                cur = segs[i];
+
+        Arrays.sort(starts);
+        Arrays.sort(ends);
+
+        int j = 0;
+        for (int i = 0; i < intervals.length - 1; i++) {
+            if (ends[i] < starts[i + 1]) {
+                ans.add(new int[]{starts[j], ends[i]});
+                j = i + 1;
             }
         }
-        list.add(cur);
-        list.sort(Comparator.comparingInt(a -> a.h));
-        List<Seg> res = new LinkedList<>();
-        cur = list.get(0);
-        for (int i = 1; i < list.size(); i++) {
-            if (cur.t < list.get(i).h) {
-                res.add(cur);
-                cur = list.get(i);
-            } else if (cur.t < list.get(i).t) {
-                cur.t = list.get(i).t;
-            }
-        }
-        res.add(cur);
-
-        int[][] ans = new int[res.size()][2];
-        for (int i = 0; i < res.size(); i++) {
-            ans[i] = new int[]{res.get(i).h, res.get(i).t};
-        }
-        return ans;
-    }
-
-    static class Seg {
-        public int h;
-        public int t;
-
-        public Seg(int h, int t) {
-            this.h = h;
-            this.t = t;
-        }
+        ans.add(new int[]{starts[j], ends[intervals.length - 1]});
+        return ans.toArray(new int[ans.size()][]);
     }
 
     public static void main(String[] args) {
