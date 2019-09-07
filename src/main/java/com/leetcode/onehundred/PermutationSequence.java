@@ -1,5 +1,8 @@
 package com.leetcode.onehundred;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * https://leetcode.com/problems/permutation-sequence/
  * <p>
@@ -31,41 +34,25 @@ package com.leetcode.onehundred;
  * @auther carl
  */
 public class PermutationSequence {
-    char[] nums;
-    boolean[] visit;
-    int N;
-    int K;
-    String ans;
 
     public String getPermutation(int n, int k) {
-        nums = new char[n];
+        List<Integer> nums = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            nums[i] = (char) ('1' + i);
+            nums.add(i + 1);
         }
-        visit = new boolean[n];
-        N = n;
-        K = k;
-        ans = "";
-        perm(0, new char[n]);
-        return ans;
-    }
+        int[] fact = new int[n];
+        fact[0] = 1;
+        for (int i = 1; i < n; i++) {
+            fact[i] = i * fact[i - 1];
+        }
 
-    private void perm(int i, char[] stack) {
-        if (i == N) {
-            K--;
-            if (K == 0) {
-                ans = new String(stack);
-            }
-            return;
+        k = k - 1;
+        StringBuilder sb = new StringBuilder(n);
+        for (int i = n - 1, index; i > -1; i--) {
+            index = k / fact[i];
+            k %= fact[i];
+            sb.append(nums.remove(index));
         }
-        if (!"".equals(ans)) return;
-        for (int j = 0; j < N; j++) {
-            if (!visit[j]) {
-                stack[i] = nums[j];
-                visit[j] = true;
-                perm(i + 1, stack);
-                visit[j] = false;
-            }
-        }
+        return sb.toString();
     }
 }
