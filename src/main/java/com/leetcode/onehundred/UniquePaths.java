@@ -31,40 +31,20 @@ package com.leetcode.onehundred;
  * @author carl
  */
 public class UniquePaths {
-    Integer[][] dp;
-    int[] x = {0, 1};
-    int[] y = {1, 0};
-    int M, N;
 
     public int uniquePaths(int m, int n) {
-        if (m == 0 || n == 0) return 0;
-
-        dp = new Integer[m][n];
-        M = m;
-        N = n;
-        solve(0, 0);
-        return dp[0][0];
-    }
-
-    private int solve(int m, int n) {
-        if (m == M || n == N) return 0;
-
-        if (dp[m][n] != null) {
-            return dp[m][n];
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            dp[i][0] = 1;
         }
-        if (m == M - 1 && n == N - 1) {
-            dp[m][n] = 1;
-            return dp[m][n];
+        for (int i = 0; i < n; i++) {
+            dp[0][i] = 1;
         }
-
-        dp[m][n] = 0;
-        for (int i = 0; i < x.length; i++) {
-            int j = m + x[i], k = n + y[i];
-            if (j < M && k < N) {
-                dp[j][k] = solve(j, k);
-                dp[m][n] += dp[j][k];
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
             }
         }
-        return dp[m][n];
+        return dp[m - 1][n - 1];
     }
 }
