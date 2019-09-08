@@ -25,6 +25,7 @@ public class ValidNumberTest {
         return Stream.of(
                 arguments(" -1.", true),
                 arguments("+42e+76125", true),
+                arguments("e9", false),
                 arguments("6e6.5", false),
                 arguments("1e.66", false)
         );
