@@ -51,32 +51,16 @@ public class SimplifyPath {
         char[] chars = path.toCharArray();
         int s = 0;
         while (s < chars.length) {
-            if (chars[s] == '.') {
-                if (s + 1 < chars.length && chars[s + 1] == '.') {
-                    if (s + 1 == chars.length - 1 || chars[s + 2] == '/') {
-                        while (len > 0 && arr[len - 1] != '/') len--;
-                        if (len > 1 && arr[len - 1] == '/') len--;
-                    } else {
-                        if (arr[len - 1] != '/') {
-                            arr[len++] = '/';
-                        }
-                        arr[len++] = '.';
-                        arr[len++] = '.';
-                        s += 2;
-                        while (s < chars.length && chars[s] != '/') {
-                            arr[len++] = chars[s++];
-                        }
-                    }
-                } else if (s + 1 < chars.length && chars[s + 1] != '/') {
-                    if (arr[len - 1] != '/') {
-                        arr[len++] = '/';
-                    }
-                    arr[len++] = '.';
-                    s++;
-                    while (s < chars.length && chars[s] != '/') {
-                        arr[len++] = chars[s++];
-                    }
-                }
+            // skip .
+            if (chars[s] == '.' && (s == chars.length - 1 || chars[s + 1] == '/')) {
+                s++;
+                continue;
+            }
+            // reverse ..
+            if (chars[s] == '.' && s + 1 < chars.length && chars[s + 1] == '.'
+                    && (s + 1 == chars.length - 1 || chars[s + 2] == '/')) {
+                while (len > 0 && arr[len - 1] != '/') len--;
+                if (len > 1 && arr[len - 1] == '/') len--;
             } else if (chars[s] != '/') {
                 if (arr[len - 1] != '/') {
                     arr[len++] = '/';
