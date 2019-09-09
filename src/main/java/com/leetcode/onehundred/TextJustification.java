@@ -67,29 +67,20 @@ public class TextJustification {
 
     public List<String> fullJustify(String[] words, int maxWidth) {
         List<String> ans = new LinkedList<>();
-        int wl = 0, wn = 0;
-        int pre = 0, cur = -1;
-        while (cur + 1 < words.length) {
-            while (cur + 1 < words.length && wl + words[cur + 1].length() <= maxWidth) {
-                ++cur;
-                wl += words[cur].length();
-                wn++;
-            }
-            while (wl + wn - 1 > maxWidth) {
-                wl -= words[cur].length();
-                wn--;
-                cur--;
+        int wl, gap;
+        int cur = 0, last = 0;
+        while (last < words.length) {
+            wl = words[last].length();
+            gap = 1;
+            while (last + 1 < words.length && wl + words[last + 1].length() + gap <= maxWidth) {
+                wl += words[++last].length();
+                gap++;
             }
             StringBuilder sb = new StringBuilder();
-            if (wn == 1) {
-                sb.append(words[cur]);
-                for (int i = words[cur].length(); i < maxWidth; i++) {
-                    sb.append(' ');
-                }
-            } else if (cur == words.length - 1) {
-                for (int i = pre; i <= cur; i++) {
+            if (cur == last || last == words.length - 1) {
+                for (int i = cur; i <= last; i++) {
                     sb.append(words[i]);
-                    if (i < cur) {
+                    if (i < last) {
                         sb.append(' ');
                     }
                 }
@@ -98,29 +89,31 @@ public class TextJustification {
                 }
             } else {
                 int blankLen = maxWidth - wl;
-                int blankSeg = wn - 1;
+                int blankSeg = last - cur;
                 int[] blanks = new int[blankSeg];
                 Arrays.fill(blanks, blankLen / blankSeg);
                 for (int j = 0, k = blankLen % blankSeg; j < blanks.length && k > 0; j++, k--) {
                     blanks[j]++;
                 }
-                for (int i = pre, j = 0; i <= cur; i++, j++) {
+                for (int i = cur, j = 0; i <= last; i++, j++) {
                     sb.append(words[i]);
-                    for (int k = 0; i < cur && k < blanks[j]; k++) {
+                    for (int k = 0; i < last && k < blanks[j]; k++) {
                         sb.append(' ');
                     }
                 }
             }
             ans.add(sb.toString());
-            pre = cur + 1;
-            wl = 0;
-            wn = 0;
+            cur = last + 1;
+            last = cur;
         }
         return ans;
     }
 
     public static void main(String[] args) {
         TextJustification tj = new TextJustification();
-        tj.fullJustify(new String[]{"This", "is", "an", "example", "of", "text", "justification."}, 16);
+        List<String> res = tj.fullJustify(new String[]{"This", "is", "an", "example", "of", "text", "justification."}, 16);
+        for (String line : res) {
+            System.out.println(line);
+        }
     }
 }
