@@ -23,11 +23,14 @@ public class MinimumWindowSubstringTest {
 
     static Stream<Arguments> source() {
         return Stream.of(
+                arguments("wegdtzwabazduwwdysdetrrctotpcepalxdewzezbfewbabbseinxbqqplitpxtcwwhuyntbtzxwzyaufihclztckdwccpeyonumbpnuonsnnsjscrvpsqsftohvfnvtbphcgxyumqjzltspmphefzjypsvugqqjhzlnylhkdqmolggxvneaopadivzqnpzurmhpxqcaiqruwztroxtcnvhxqgndyozpcigzykbiaucyvwrjvknifufxducbkbsmlanllpunlyohwfsssiazeixhebipfcdqdrcqiwftutcrbxjthlulvttcvdtaiwqlnsdvqkrngvghupcbcwnaqiclnvnvtfihylcqwvderjllannflchdklqxidvbjdijrnbpkftbqgpttcagghkqucpcgmfrqqajdbynitrbzgwukyaqhmibpzfxmkoeaqnftnvegohfudbgbbyiqglhhqevcszdkokdbhjjvqqrvrxyvvgldtuljygmsircydhalrlgjeyfvxdstmfyhzjrxsfpcytabdcmwqvhuvmpssingpmnpvgmpletjzunewbamwiirwymqizwxlmojsbaehupiocnmenbcxjwujimthjtvvhenkettylcoppdveeycpuybekulvpgqzmgjrbdrmficwlxarxegrejvrejmvrfuenexojqdqyfmjeoacvjvzsrqycfuvmozzuypfpsvnzjxeazgvibubunzyuvugmvhguyojrlysvxwxxesfioiebidxdzfpumyon", "ozgzyywxvtublcl", "tcnvhxqgndyozpcigzykbiaucyvwrjvknifufxducbkbsmlanl"),
                 arguments("ADOBECODEBANC", "ABC", "BANC"),
                 arguments("ADOBECODEBACN", "ABC", "BAC"),
                 arguments("ADOBECODEBACN", "AD", "AD"),
+                arguments("aa", "aa", "aa"),
                 arguments("ADOBECODEBACN", "ACN", "ACN"),
                 arguments("abc", "de", "")
         );
     }
 }
+
