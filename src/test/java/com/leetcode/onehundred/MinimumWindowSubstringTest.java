@@ -41,5 +41,17 @@ public class MinimumWindowSubstringTest {
         i = 'Z';
         System.out.println(i);
     }
+
+    @Test
+    public void test3() {
+        int i = 0;
+        int[] a = new int[]{1};
+        if (a[i++]-- == 0) {
+            System.out.println(i);
+            System.out.println(a[i]);
+        }
+        System.out.println(i);
+        System.out.println(a[0]);
+    }
 }
 

@@ -23,44 +23,26 @@ public class MinimumWindowSubstring {
 
     public String minWindow(String s, String t) {
         int[] counter = new int[256];
-        LinkedList<Integer>[] slider = new LinkedList[256];
-        PriorityQueue<Integer> que = new PriorityQueue<>();
-        Integer first = null, last = null;
-
         for (int i = 0; i < t.length(); i++) {
             counter[t.charAt(i)]++;
         }
+        int start = -1, end = s.length(), i = 0, j = 0, target = t.length();
+        char[] sc = s.toCharArray();
 
-        for (int i = 0; i < s.length(); i++) {
-            int count = counter[s.charAt(i)];
-            if (count > 0) {
-                LinkedList<Integer> ids = slider[s.charAt(i)];
-                if (ids == null) {
-                    ids = new LinkedList<>();
-                }
-                if (ids.size() == count) {
-                    que.remove(ids.getFirst());
-                    que.add(i);
-                    ids.removeFirst();
-                    ids.addLast(i);
-                    slider[s.charAt(i)] = ids;
-                } else {
-                    que.add(i);
-                    ids.addLast(i);
-                    slider[s.charAt(i)] = ids;
-                    if (que.size() == t.length()) {
-                        if (first == null || last - first > i - que.peek()) {
-                            first = que.peek();
-                            last = i;
-                        }
-                        LinkedList<Integer> list = slider[s.charAt(que.peek())];
-                        list.removeFirst();
-                        slider[s.charAt(que.peek())] = list;
-                        que.poll();
-                    }
+        while (j < sc.length) {
+            if (counter[sc[j++]]-- > 0) {
+                target--;
+            }
+            if (target == 0 && j - i < end - start) {
+                start = i;
+                end = j;
+            }
+            while (i < j && (target == 0 || counter[sc[i]] < 0)) {
+                if (counter[sc[i++]]++ == 0) {
+                    target++;
                 }
             }
         }
-        return first == null ? "" : new String(s.toCharArray(), first, last - first + 1);
+        return start == -1 ? "" : s.substring(start, end);
     }
 }
