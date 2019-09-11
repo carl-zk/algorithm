@@ -1,5 +1,6 @@
 package com.leetcode.onehundred;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -31,6 +32,14 @@ public class MinimumWindowSubstringTest {
                 arguments("ADOBECODEBACN", "ACN", "ACN"),
                 arguments("abc", "de", "")
         );
+    }
+
+    @Test
+    public void test2() {
+        int i = 'z';
+        System.out.println(i);
+        i = 'Z';
+        System.out.println(i);
     }
 }
 
