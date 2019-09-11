@@ -27,23 +27,10 @@ package com.leetcode.onehundred;
 public class RemoveDuplicatesFromSortedArrayII {
 
     public int removeDuplicates(int[] nums) {
-        if (nums.length == 0) return 0;
-
-        int i = 1, j = 1;
-        int count = 1;
-        while (j < nums.length) {
-            if (nums[j] == nums[i - 1]) {
-                count++;
-                if (count > 2) {
-                    j++;
-                } else {
-                    nums[i++] = nums[j];
-                    j++;
-                }
-            } else {
-                nums[i++] = nums[j];
-                count = 1;
-                j++;
+        int i = 0;
+        for (int n : nums) {
+            if (i < 2 || n > nums[i - 2]) {
+                nums[i++] = n;
             }
         }
         return i;
