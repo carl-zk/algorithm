@@ -1,8 +1,7 @@
 package com.leetcode.onehundred;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
  * https://leetcode.com/problems/minimum-window-substring/
@@ -25,7 +24,7 @@ public class MinimumWindowSubstring {
     public String minWindow(String s, String t) {
         int[] counter = new int[256];
         LinkedList<Integer>[] slider = new LinkedList[256];
-        LinkedList<Integer> que = new LinkedList<>();
+        PriorityQueue<Integer> que = new PriorityQueue<>();
         Integer first = null, last = null;
 
         for (int i = 0; i < t.length(); i++) {
@@ -41,23 +40,23 @@ public class MinimumWindowSubstring {
                 }
                 if (ids.size() == count) {
                     que.remove(ids.getFirst());
-                    que.addLast(i);
+                    que.add(i);
                     ids.removeFirst();
                     ids.addLast(i);
                     slider[s.charAt(i)] = ids;
                 } else {
-                    que.addLast(i);
+                    que.add(i);
                     ids.addLast(i);
                     slider[s.charAt(i)] = ids;
                     if (que.size() == t.length()) {
-                        if (first == null || last - first > que.getLast() - que.getFirst()) {
-                            first = que.getFirst();
-                            last = que.getLast();
+                        if (first == null || last - first > i - que.peek()) {
+                            first = que.peek();
+                            last = i;
                         }
-                        LinkedList<Integer> list = slider[s.charAt(que.getFirst())];
+                        LinkedList<Integer> list = slider[s.charAt(que.peek())];
                         list.removeFirst();
-                        slider[s.charAt(que.getFirst())] = list;
-                        que.removeFirst();
+                        slider[s.charAt(que.peek())] = list;
+                        que.poll();
                     }
                 }
             }

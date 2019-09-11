@@ -70,4 +70,11 @@ public class HeapSort implements Sort {
         a[i] = a[j];
         a[j] = t;
     }
+
+    public static void main(String[] args) {
+        HeapSort sort = new HeapSort();
+        int[] a = new int[]{3, 2, 4, 6, 5, 7};
+        sort.sort(a);
+        System.out.println();
+    }
 }
