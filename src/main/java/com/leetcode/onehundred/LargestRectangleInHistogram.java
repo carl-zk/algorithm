@@ -27,17 +27,59 @@ package com.leetcode.onehundred;
 public class LargestRectangleInHistogram {
 
     public int largestRectangleArea(int[] heights) {
-        int ans = 0;
-        for (int i = 0; i < heights.length; i++) {
-            int l = i;
-            while (l - 1 > -1 && heights[l - 1] >= heights[i]) l--;
-            int r = i;
-            while (r + 1 < heights.length && heights[r + 1] >= heights[i]) r++;
-            int area = (r - l + 1) * heights[i];
-            if (area > ans) {
-                ans = area;
+        return solve(heights, 0, heights.length - 1);
+    }
+
+    private int solve(int[] heights, int start, int end) {
+        if (start > end) {
+            return 0;
+        }
+        boolean asc = true;
+        boolean desc = true;
+        int indexMin = start;
+        for (int i = start; i <= end; i++) {
+            if (i != start && heights[i] > heights[i - 1]) {
+                desc = false;
+            }
+            if (i != start && heights[i] < heights[i - 1]) {
+                asc = false;
+            }
+            if (heights[i] < heights[indexMin]) {
+                indexMin = i;
             }
         }
-        return ans;
+        if (asc) {
+            int ans = 0;
+            for (int i = start, area; i <= end; i++) {
+                area = (end - i + 1) * heights[i];
+                if (area > ans) {
+                    ans = area;
+                }
+            }
+            return ans;
+        }
+        if (desc) {
+            int ans = 0;
+            for (int i = start, area; i <= end; i++) {
+                area = (i - start + 1) * heights[i];
+                if (area > ans) {
+                    ans = area;
+                }
+            }
+            return ans;
+        }
+        int leftMax = solve(heights, start, indexMin - 1);
+        int rightMax = solve(heights, indexMin + 1, end);
+        int l = indexMin;
+        while (l - 1 > -1 && heights[l - 1] >= heights[indexMin]) l--;
+        int r = indexMin;
+        while (r + 1 < heights.length && heights[r + 1] >= heights[indexMin]) r++;
+        int area = (r - l + 1) * heights[indexMin];
+        return Math.max(area, Math.max(leftMax, rightMax));
+    }
+
+    public static void main(String[] args) {
+        LargestRectangleInHistogram large = new LargestRectangleInHistogram();
+        System.out.println(large.largestRectangleArea(new int[]{2, 1, 4, 5, 1, 3, 3}));
     }
 }
