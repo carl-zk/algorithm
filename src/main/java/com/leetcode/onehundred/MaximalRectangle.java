@@ -2,17 +2,17 @@ package com.leetcode.onehundred;
 
 /**
  * https://leetcode.com/problems/maximal-rectangle/
- *
+ * <p>
  * Given a 2D binary matrix filled with 0's and 1's, find the largest rectangle containing only 1's and return its area.
- *
+ * <p>
  * Example:
- *
+ * <p>
  * Input:
  * [
- *   ["1","0","1","0","0"],
- *   ["1","0","1","1","1"],
- *   ["1","1","1","1","1"],
- *   ["1","0","0","1","0"]
+ * ["1","0","1","0","0"],
+ * ["1","0","1","1","1"],
+ * ["1","1","1","1","1"],
+ * ["1","0","0","1","0"]
  * ]
  * Output: 6
  *
@@ -87,11 +87,7 @@ public class MaximalRectangle {
         }
         int leftMax = solve(heights, start, indexMin - 1);
         int rightMax = solve(heights, indexMin + 1, end);
-        int l = indexMin;
-        while (l - 1 >= start && heights[l - 1] >= heights[indexMin]) l--;
-        int r = indexMin;
-        while (r + 1 <= end && heights[r + 1] >= heights[indexMin]) r++;
-        int area = (r - l + 1) * heights[indexMin];
+        int area = (end - start + 1) * heights[indexMin];
         return Math.max(area, Math.max(leftMax, rightMax));
     }
 

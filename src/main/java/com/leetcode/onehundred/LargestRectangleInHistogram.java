@@ -70,11 +70,7 @@ public class LargestRectangleInHistogram {
         }
         int leftMax = solve(heights, start, indexMin - 1);
         int rightMax = solve(heights, indexMin + 1, end);
-        int l = indexMin;
-        while (l - 1 > -1 && heights[l - 1] >= heights[indexMin]) l--;
-        int r = indexMin;
-        while (r + 1 < heights.length && heights[r + 1] >= heights[indexMin]) r++;
-        int area = (r - l + 1) * heights[indexMin];
+        int area = (end - start + 1) * heights[indexMin];
         return Math.max(area, Math.max(leftMax, rightMax));
     }
 
