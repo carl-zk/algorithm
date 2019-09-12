@@ -36,9 +36,11 @@ public class MaximalRectangle {
                     for (int k = i; k > -1 && dp[k][j] > 0; k--) {
                         heights[len++] = dp[k][j];
                     }
-                    int rec = solve(heights, 0, len - 1);
-                    if (rec > ans) {
-                        ans = rec;
+                    if (i == matrix.length - 1 || matrix[i + 1][j] == '0') {
+                        int rec = solve(heights, 0, len - 1);
+                        if (rec > ans) {
+                            ans = rec;
+                        }
                     }
                 }
             }
