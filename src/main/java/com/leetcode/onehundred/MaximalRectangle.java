@@ -32,11 +32,12 @@ public class MaximalRectangle {
             for (int j = 0; j < matrix[0].length; j++) {
                 if (matrix[i][j] == '1') {
                     dp[i][j] = j == 0 ? 1 : dp[i][j - 1] + 1;
-                    int len = 0;
+                    int len = 0, sum = 0;
                     for (int k = i; k > -1 && dp[k][j] > 0; k--) {
                         heights[len++] = dp[k][j];
+                        sum += dp[k][j];
                     }
-                    if (i == matrix.length - 1 || matrix[i + 1][j] == '0') {
+                    if ((i == matrix.length - 1 || matrix[i + 1][j] == '0') && sum > ans) {
                         int rec = solve(heights, 0, len - 1);
                         if (rec > ans) {
                             ans = rec;
