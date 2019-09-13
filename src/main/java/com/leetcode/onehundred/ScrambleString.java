@@ -78,6 +78,19 @@ public class ScrambleString {
             dp[i][j][k] = cs1[i] == cs2[j] ? Result.TRUE : Result.FALSE;
             return dp[i][j][k] == Result.TRUE;
         }
+
+        int[] counter = new int[256];
+        for (int l = 0; l < k; l++) {
+            counter[cs1[i + l]]++;
+        }
+        for (int l = 0; l < k; l++) {
+            counter[cs2[j + l]]--;
+            if (counter[cs2[j + l]] < 0) {
+                dp[i][j][k] = Result.FALSE;
+                return false;
+            }
+        }
+
         for (int p = 1; p < k && (dp[i][j][k] == null || dp[i][j][k] == Result.FALSE); p++) {
             dp[i][j][k] = solve(i, j, p) && solve(i + p, j + p, k - p)
                     || solve(i, j + k - p, p) && solve(i + p, j, k - p) ? Result.TRUE : Result.FALSE;
