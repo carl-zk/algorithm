@@ -26,72 +26,25 @@ public class MaximalRectangle {
         int ans = 0;
 
         int[][] dp = new int[matrix.length][matrix[0].length];
-        int[] heights = new int[matrix.length];
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
                 if (matrix[i][j] == '1') {
                     dp[i][j] = j == 0 ? 1 : dp[i][j - 1] + 1;
-                    int len = 0, sum = 0;
-                    for (int k = i; k > -1 && dp[k][j] > 0; k--) {
-                        heights[len++] = dp[k][j];
-                        sum += dp[k][j];
-                    }
-                    if ((i == matrix.length - 1 || matrix[i + 1][j] == '0') && sum > ans) {
-                        int rec = solve(heights, 0, len - 1);
-                        if (rec > ans) {
-                            ans = rec;
+                    int min = Integer.MAX_VALUE;
+                    for (int k = i, h = 1; k > -1 && dp[k][j] > 0; k--, h++) {
+                        min = Math.min(min, dp[k][j]);
+                        int area = min * h;
+                        if (area > ans) {
+                            ans = area;
                         }
                     }
+
                 }
             }
         }
 
         return ans;
-    }
-
-    private int solve(int[] heights, int start, int end) {
-        if (start > end) {
-            return 0;
-        }
-        boolean asc = true;
-        boolean desc = true;
-        int indexMin = start;
-        for (int i = start; i <= end; i++) {
-            if (i != start && heights[i] > heights[i - 1]) {
-                desc = false;
-            }
-            if (i != start && heights[i] < heights[i - 1]) {
-                asc = false;
-            }
-            if (heights[i] < heights[indexMin]) {
-                indexMin = i;
-            }
-        }
-        if (asc) {
-            int ans = 0;
-            for (int i = start, area; i <= end; i++) {
-                area = (end - i + 1) * heights[i];
-                if (area > ans) {
-                    ans = area;
-                }
-            }
-            return ans;
-        }
-        if (desc) {
-            int ans = 0;
-            for (int i = start, area; i <= end; i++) {
-                area = (i - start + 1) * heights[i];
-                if (area > ans) {
-                    ans = area;
-                }
-            }
-            return ans;
-        }
-        int leftMax = solve(heights, start, indexMin - 1);
-        int rightMax = solve(heights, indexMin + 1, end);
-        int area = (end - start + 1) * heights[indexMin];
-        return Math.max(area, Math.max(leftMax, rightMax));
     }
 
     public static void main(String[] args) {
