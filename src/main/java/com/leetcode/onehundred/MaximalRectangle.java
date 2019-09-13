@@ -15,6 +15,8 @@ package com.leetcode.onehundred;
  * ["1","0","0","1","0"]
  * ]
  * Output: 6
+ * <p>
+ * {@link LargestRectangleInHistogram2}
  *
  * @auther carl
  */
@@ -23,27 +25,46 @@ public class MaximalRectangle {
     public int maximalRectangle(char[][] matrix) {
         if (matrix.length == 0 || matrix[0].length == 0) return 0;
 
-        int ans = 0;
-
-        int[][] dp = new int[matrix.length][matrix[0].length];
-
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                if (matrix[i][j] == '1') {
-                    dp[i][j] = j == 0 ? 1 : dp[i][j - 1] + 1;
-                    int min = Integer.MAX_VALUE;
-                    for (int k = i, h = 1; k > -1 && dp[k][j] > 0; k--, h++) {
-                        min = Math.min(min, dp[k][j]);
-                        int area = min * h;
-                        if (area > ans) {
-                            ans = area;
-                        }
-                    }
-
-                }
+        int[] heights = new int[matrix[0].length];
+        for (int i = 0; i < matrix[0].length; i++) {
+            if (matrix[0][i] == '1') {
+                heights[i] = 1;
             }
         }
 
+        int ans = largestRectangleArea(heights);
+
+        for (int i = 1; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] == '1') {
+                    heights[j]++;
+                } else {
+                    heights[j] = 0;
+                }
+            }
+            int area = largestRectangleArea(heights);
+            if (area > ans) {
+                ans = area;
+            }
+        }
+        return ans;
+    }
+
+    public int largestRectangleArea(int[] heights) {
+        int[] stack = new int[heights.length + 1];
+        int len = 0;
+        int ans = 0;
+
+        for (int i = 0; i <= heights.length; i++) {
+            while (len != 0 && (i == heights.length || heights[stack[len - 1]] > heights[i])) {
+                int area = len == 1 ? heights[stack[len - 1]] * i : (i - stack[len - 2] - 1) * heights[stack[len - 1]];
+                if (area > ans) {
+                    ans = area;
+                }
+                len--;
+            }
+            stack[len++] = i;
+        }
         return ans;
     }
 
