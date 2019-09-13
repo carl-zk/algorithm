@@ -52,12 +52,6 @@ package com.leetcode.onehundred;
  * @author carl
  */
 public class ScrambleString {
-    enum Result {
-        TRUE,
-        FALSE
-    }
-
-    Result[][][] dp;
     char[] cs1;
     char[] cs2;
 
@@ -66,17 +60,12 @@ public class ScrambleString {
 
         cs1 = s1.toCharArray();
         cs2 = s2.toCharArray();
-        dp = new Result[cs1.length][cs2.length][cs1.length + 1];
         return solve(0, 0, cs1.length);
     }
 
     private boolean solve(int i, int j, int k) {
-        if (dp[i][j][k] != null) {
-            return dp[i][j][k] == Result.TRUE;
-        }
         if (k == 1) {
-            dp[i][j][k] = cs1[i] == cs2[j] ? Result.TRUE : Result.FALSE;
-            return dp[i][j][k] == Result.TRUE;
+            return cs1[i] == cs2[j];
         }
 
         int[] counter = new int[256];
@@ -84,17 +73,19 @@ public class ScrambleString {
             counter[cs1[i + l]]++;
         }
         for (int l = 0; l < k; l++) {
-            counter[cs2[j + l]]--;
-            if (counter[cs2[j + l]] < 0) {
-                dp[i][j][k] = Result.FALSE;
+            if (counter[cs2[j + l]] == 0) {
                 return false;
             }
+            counter[cs2[j + l]]--;
         }
 
-        for (int p = 1; p < k && (dp[i][j][k] == null || dp[i][j][k] == Result.FALSE); p++) {
-            dp[i][j][k] = solve(i, j, p) && solve(i + p, j + p, k - p)
-                    || solve(i, j + k - p, p) && solve(i + p, j, k - p) ? Result.TRUE : Result.FALSE;
+        for (int p = 1; p < k; p++) {
+            if (solve(i, j, p) && solve(i + p, j + p, k - p))
+                return true;
+            if (solve(i, j + k - p, p) && solve(i + p, j, k - p)) {
+                return true;
+            }
         }
-        return dp[i][j][k] == Result.TRUE;
+        return false;
     }
 }
