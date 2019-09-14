@@ -42,12 +42,11 @@ public class SubsetsII {
     private void solve(int[] nums, int start, ArrayList<Integer> temp) {
         ans.add(new ArrayList(temp));
 
-        int sz = temp.size();
         for (int i = start; i < nums.length; i++) {
             if (i == start || nums[i] > nums[i - 1]) {
-                temp.add(sz, nums[i]);
+                temp.add(nums[i]);
                 solve(nums, i + 1, temp);
-                temp.remove(sz);
+                temp.remove(temp.size() - 1);
             }
         }
     }
