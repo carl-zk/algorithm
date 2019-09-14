@@ -41,14 +41,13 @@ public class GrayCode {
 
     public List<Integer> grayCode(int n) {
         List<Integer> ans = new ArrayList<>();
-        if (n == 0) {
-            ans.add(0);
-            return ans;
-        }
-        ArrayList<Integer> pre = (ArrayList<Integer>) grayCode(n - 1);
-        ans.addAll(pre);
-        for (int i = pre.size() - 1, t = (int) Math.pow(2, n - 1); i > -1; i--) {
-            ans.add(pre.get(i) + t);
+        ans.add(0);
+        for (int i = 1; i <= n; i++) {
+            int off = 1 << (i - 1);
+            int sz = ans.size();
+            for (int j = sz - 1; j > -1; j--) {
+                ans.add(off + ans.get(j));
+            }
         }
         return ans;
     }
