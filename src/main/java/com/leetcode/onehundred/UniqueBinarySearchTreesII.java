@@ -1,10 +1,8 @@
 package com.leetcode.onehundred;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * https://leetcode.com/problems/unique-binary-search-trees-ii/
@@ -34,78 +32,33 @@ import java.util.Set;
  * @author carl
  */
 public class UniqueBinarySearchTreesII {
-    List<TreeNode> ans;
-    int N;
-    boolean[] visit;
-    int[] temp;
-    Set<String> set;
 
     public List<TreeNode> generateTrees(int n) {
         if (n == 0) return Collections.emptyList();
 
-        ans = new LinkedList<>();
-        N = n;
-        visit = new boolean[n + 1];
-        temp = new int[n];
-        set = new HashSet<>();
-        perm(1, 0);
-        return ans;
+        return genTrees(1, n);
     }
 
-    private void perm(int index, int len) {
-        if (len == N) {
-            TreeNode root = null;
-            for (int i = 0; i < N; i++) {
-                root = build(root, temp[i]);
-            }
-            StringBuilder sb = new StringBuilder();
-            treeToString(root, sb);
-            String key = sb.toString();
-            if (!set.contains(key)) {
-                set.add(key);
-                ans.add(root);
-            }
-            return;
+    private List<TreeNode> genTrees(int start, int end) {
+        List<TreeNode> roots = new LinkedList<>();
+        if (start > end) {
+            roots.add(null);
+            return roots;
         }
-        for (int i = 1; i <= N; i++) {
-            if (!visit[i]) {
-                visit[i] = true;
-                temp[len] = i;
-                perm(i + 1, len + 1);
-                visit[i] = false;
-            }
-        }
-    }
 
-    private TreeNode build(TreeNode root, int v) {
-        TreeNode node = new TreeNode(v);
-        if (root == null) {
-            return node;
-        }
-        TreeNode p = root;
-        while (p != null) {
-            if (v < p.val) {
-                if (p.left == null) {
-                    p.left = node;
-                    break;
-                } else {
-                    p = p.left;
+        for (int i = start; i <= end; i++) {
+            List<TreeNode> left = genTrees(start, i - 1);
+            List<TreeNode> right = genTrees(i + 1, end);
+            for (TreeNode l : left) {
+                for (TreeNode r : right) {
+                    TreeNode root = new TreeNode(i);
+                    root.left = l;
+                    root.right = r;
+                    roots.add(root);
                 }
-            } else if (p.right == null) {
-                p.right = node;
-                break;
-            } else {
-                p = p.right;
             }
         }
-        return root;
-    }
-
-    private void treeToString(TreeNode root, StringBuilder sb) {
-        if (root == null) return;
-        sb.append(root.val).append("#");
-        treeToString(root.left, sb);
-        treeToString(root.right, sb);
+        return roots;
     }
 
     public class TreeNode {
