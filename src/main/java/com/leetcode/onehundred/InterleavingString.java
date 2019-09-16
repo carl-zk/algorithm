@@ -17,48 +17,27 @@ package com.leetcode.onehundred;
  * @auther carl
  */
 public class InterleavingString {
-    enum Result {
-        TRUE,
-        FALSE
-    }
-
-    Result[][] dp;
+    boolean[][] dp;
 
     public boolean isInterleave(String s1, String s2, String s3) {
-        if (s1.length() == 0) return s2.equals(s3);
-        if (s2.length() == 0) return s1.equals(s3);
+        if (s3.length() != s1.length() + s2.length()) return false;
 
-        dp = new Result[s1.length() + 1][s2.length() + 1];
-        return isTrue(s1.toCharArray(), 0, s2.toCharArray(), 0, s3.toCharArray(), 0);
-    }
-
-    private boolean isTrue(char[] s1, int i1, char[] s2, int i2, char[] s3, int i3) {
-        if (i1 == s1.length && i2 == s2.length && i3 == s3.length) return true;
-        if (dp[i1][i2] != null) return dp[i1][i2] == Result.TRUE;
-        if (i3 < s3.length && i1 < s1.length && i2 < s2.length
-                && s3[i3] != s1[i1] && s3[i3] != s2[i2]) {
-            dp[i1][i2] = Result.FALSE;
-            return false;
+        dp = new boolean[s1.length() + 1][s2.length() + 1];
+        for (int i = 0; i <= s1.length(); i++) {
+            for (int j = 0; j <= s2.length(); j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = true;
+                } else if (i == 0) {
+                    dp[i][j] = dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1);
+                } else if (j == 0) {
+                    dp[i][j] = dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(i + j - 1);
+                } else {
+                    dp[i][j] = s1.charAt(i - 1) == s3.charAt(i + j - 1) && dp[i - 1][j]
+                            || s2.charAt(j - 1) == s3.charAt(i + j - 1) && dp[i][j - 1];
+                }
+            }
         }
-        if (i3 < s3.length && i1 < s1.length && i2 < s2.length
-                && s3[i3] == s1[i1] && s3[i3] == s2[i2]) {
-            boolean result = isTrue(s1, i1 + 1, s2, i2, s3, i3 + 1)
-                    || isTrue(s1, i1, s2, i2 + 1, s3, i3 + 1);
-            dp[i1][i2] = result ? Result.TRUE : Result.FALSE;
-            return result;
-        }
-        if (i3 < s3.length && i1 < s1.length && s3[i3] == s1[i1]) {
-            boolean result = isTrue(s1, i1 + 1, s2, i2, s3, i3 + 1);
-            dp[i1][i2] = result ? Result.TRUE : Result.FALSE;
-            return result;
-        }
-        if (i3 < s3.length && i2 < s2.length && s3[i3] == s2[i2]) {
-            boolean result = isTrue(s1, i1, s2, i2 + 1, s3, i3 + 1);
-            dp[i1][i2] = result ? Result.TRUE : Result.FALSE;
-            return result;
-        }
-        dp[i1][i2] = Result.FALSE;
-        return false;
+        return dp[s1.length()][s2.length()];
     }
 
     public static void main(String[] args) {
