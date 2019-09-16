@@ -41,12 +41,12 @@ public class ValidateBinarySearchTree {
         return isValid(root, null, null);
     }
 
-    private boolean isValid(TreeNode root, Integer lower, Integer larger) {
+    private boolean isValid(TreeNode root, Integer large_limit, Integer low_limit) {
         if (root == null) return true;
-        if (lower != null && root.val <= lower) return false;
-        if (larger != null && root.val >= larger) return false;
-        if (!isValid(root.left, lower, root.val)) return false;
-        if (!isValid(root.right, root.val, larger)) return false;
+        if (large_limit != null && root.val >= large_limit) return false;
+        if (low_limit != null && root.val <= low_limit) return false;
+        if (!isValid(root.left, root.val, low_limit)) return false;
+        if (!isValid(root.right, large_limit, root.val)) return false;
         return true;
     }
 
