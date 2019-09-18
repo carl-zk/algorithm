@@ -1,29 +1,86 @@
 package com.leetcode.onehundredfifty;
 
+import java.util.ArrayList;
+
 /**
+ * https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
+ *
+ * You are given a perfect binary tree where all leaves are on the same level, and every parent has two children. The binary tree has the following definition:
+ *
+ * struct Node {
+ *   int val;
+ *   Node *left;
+ *   Node *right;
+ *   Node *next;
+ * }
+ * Populate each next pointer to point to its next right node. If there is no next right node, the next pointer should be set to NULL.
+ *
+ * Initially, all next pointers are set to NULL.
+ *
+ *
+ *
+ * Example:
+ *
+ *
+ *
+ * Input: {"$id":"1","left":{"$id":"2","left":{"$id":"3","left":null,"next":null,"right":null,"val":4},"next":null,"right":{"$id":"4","left":null,"next":null,"right":null,"val":5},"val":2},"next":null,"right":{"$id":"5","left":{"$id":"6","left":null,"next":null,"right":null,"val":6},"next":null,"right":{"$id":"7","left":null,"next":null,"right":null,"val":7},"val":3},"val":1}
+ *
+ * Output: {"$id":"1","left":{"$id":"2","left":{"$id":"3","left":null,"next":{"$id":"4","left":null,"next":{"$id":"5","left":null,"next":{"$id":"6","left":null,"next":null,"right":null,"val":7},"right":null,"val":6},"right":null,"val":5},"right":null,"val":4},"next":{"$id":"7","left":{"$ref":"5"},"next":null,"right":{"$ref":"6"},"val":3},"right":{"$ref":"4"},"val":2},"next":null,"right":{"$ref":"7"},"val":1}
+ *
+ * Explanation: Given the above perfect binary tree (Figure A), your function should populate each next pointer to point to its next right node, just like in Figure B.
+ *
+ *
+ * Note:
+ *
+ * You may only use constant extra space.
+ * Recursive approach is fine, implicit stack space does not count as extra space for this problem.
+ *
  * @auther carl
  */
 public class PopulatingNextRightPointersInEachNode {
+    ArrayList<Node> arr;
 
     public Node connect(Node root) {
-        solve(root);
+        arr = new ArrayList<>();
+
+        solve(root, 1);
         return root;
     }
 
-    private Node solve(Node root) {
-        if (root == null) return null;
-        if (root.left != null) {
-            root.left = root.right;
+    private void solve(Node root, int level) {
+        if (root == null) return;
+        if (arr.size() < level) {
+            arr.add(root);
+        } else {
+            arr.get(level - 1).next = root;
+            arr.set(level - 1, root);
         }
-        Node left = solve(root.left);
-        Node right = solve(root.right);
-        while (left != null) {
-            if (left.next == null) {
-                left.next = right;
-                break;
-            }
-            left = left.next;
-        }
-        return root.left != null ? root.left : root.right;
+        solve(root.left, level + 1);
+        solve(root.right, level + 1);
+    }
+
+    public static void main(String[] args) {
+        PopulatingNextRightPointersInEachNode p = new PopulatingNextRightPointersInEachNode();
+        Node root = new Node();
+        root.val = 1;
+        Node left = new Node();
+        left.val = 2;
+        Node right = new Node();
+        right.val = 3;
+        root.left = left;
+        root.right = right;
+        Node ll = new Node();
+        ll.val = 4;
+        Node lr = new Node();
+        lr.val = 5;
+        left.left = ll;
+        left.right = lr;
+        Node rl = new Node();
+        rl.val = 6;
+        Node rr = new Node();
+        rr.val = 7;
+        right.left = rl;
+        right.right = rr;
+        p.connect(root);
     }
 }
