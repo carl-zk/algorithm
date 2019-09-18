@@ -36,24 +36,21 @@ package com.leetcode.onehundredfifty;
  * @author carl
  */
 public class BalancedBinaryTree {
-    boolean balanced;
 
     public boolean isBalanced(TreeNode root) {
         if (root == null) return true;
 
-        balanced = true;
-        int l = solve(root.left);
-        int r = solve(root.right);
-        return balanced && Math.abs(l - r) < 2;
+        return solve(root) != -1;
     }
 
     private int solve(TreeNode root) {
-        if (root == null || !balanced) {
+        if (root == null) {
             return 0;
         }
         int left = solve(root.left);
         int right = solve(root.right);
-        balanced = balanced && Math.abs(left - right) < 2;
+        if (left == -1 || right == -1) return -1;
+        if (Math.abs(left - right) > 1) return -1;
         return Math.max(left, right) + 1;
     }
 }
