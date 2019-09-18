@@ -39,17 +39,23 @@ public class PopulatingNextRightPointersInEachNode {
 
 
     public Node connect(Node root) {
-        if (root == null) return root;
-        if (root.left != null) {
-            root.left.next = root.right;
-        }
-        if (root.right != null) {
-            if (root.next != null) {
-                root.right.next = root.next.left;
+        Node p = root, q = null;
+        while (p != null) {
+            if (p.left != null) {
+                p.left.next = p.right;
+            }
+            if (q == null) {
+                q = p.left;
+            }
+            if (p.right != null && p.next != null) {
+                p.right.next = p.next.left;
+            }
+            p = p.next;
+            if (p == null) {
+                p = q;
+                q = null;
             }
         }
-        connect(root.left);
-        connect(root.right);
         return root;
     }
 
