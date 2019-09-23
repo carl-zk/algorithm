@@ -86,12 +86,13 @@ public class WordLadderII {
     }
 
     private void solve(int start, ArrayList<String> temp) {
-        if (start < 0) return;
+        if (start < 0 || temp.size() > minLen) return;
         if (dest.contains(start)) {
             if (minLen < temp.size()) return;
             if (minLen > temp.size()) {
                 ans.clear();
             }
+            minLen = temp.size();
             ArrayList<String> one = new ArrayList<>(temp);
             one.add(0, bw);
             ans.add(one);
