@@ -14,26 +14,27 @@ import java.util.Set;
 public class WordLadderII {
     List<List<String>> ans;
     int[] distb;
-    int[][] distwl;
+    ArrayList<Integer>[] distwl;
     Set<Integer> dest;
     boolean[] visited;
     String bw;
     List<String> wl;
     int minLen;
-    int[] sofar;
-    int[] suffix;
+
+    ArrayList<ArrayList<String>>[] suffix;
+    int[] minSz;
 
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
         distb = new int[wordList.size()];
-        distwl = new int[wordList.size()][wordList.size()];
+        distwl = new ArrayList[wordList.size()];
         dest = new HashSet<>();
         visited = new boolean[wordList.size()];
         bw = beginWord;
         wl = wordList;
         minLen = Integer.MAX_VALUE;
-        sofar = new int[wordList.size()];
-        Arrays.fill(sofar, Integer.MAX_VALUE);
-        suffix = new int[wordList.size()];
+        suffix = new ArrayList[wordList.size()];
+        minSz = new int[wordList.size()];
+        Arrays.fill(minSz, wordList.size() << 1);
 
         for (int i = 0; i < wordList.size(); i++) {
             String w1 = wordList.get(i);
@@ -45,9 +46,26 @@ public class WordLadderII {
                         d++;
                     }
                 }
-                distwl[i][j] = distwl[j][i] = d;
+                if (d == 1) {
+                    if (distwl[i] == null) {
+                        distwl[i] = new ArrayList<>();
+                    }
+                    if (distwl[j] == null) {
+                        distwl[j] = new ArrayList<>();
+                    }
+                    distwl[i].add(j);
+                    distwl[j].add(i);
+                }
+            }
+            if (endWord.equals(w1)) {
+                dest.add(i);
             }
         }
+
+        if (dest.isEmpty()) return Collections.emptyList();
+
+        ans = new LinkedList<>();
+        ArrayList<String> temp = new ArrayList<>();
 
         for (int i = 0; i < wordList.size(); i++) {
             String w = wordList.get(i);
@@ -56,76 +74,38 @@ public class WordLadderII {
                     distb[i]++;
                 }
             }
-            if (endWord.equals(w)) {
-                dest.add(i);
-            }
-        }
-
-        if (dest.isEmpty()) return Collections.emptyList();
-
-        ans = new LinkedList<>();
-
-        dest.forEach(index -> {
-            visited[index] = true;
-            suffix[index] = 0;
-            suf(index, 0);
-            visited[index] = false;
-        });
-
-        int[] temp = new int[wordList.size()];
-
-        for (int i = 0; i < distb.length; i++) {
             if (distb[i] == 1) {
                 visited[i] = true;
-                temp[0] = i;
-                sofar[i] = 1;
-                solve(i, temp, 1);
+                temp.add(wl.get(i));
+                solve(i, temp);
+                temp.remove(0);
                 visited[i] = false;
             }
         }
         return ans;
     }
 
-    private void suf(int start, int count) {
-        for (int i = 0; i < wl.size(); i++) {
-            if (distwl[start][i] == 1 && !visited[i] && (suffix[i] == 0 || suffix[i] > count + 1)) {
-                suffix[i] = count + 1;
-                visited[i] = true;
-                suf(i, count + 1);
-                visited[i] = false;
-            }
-        }
-    }
-
-    private void solve(int start, int[] temp, int len) {
-
+    private void solve(int start, ArrayList<String> temp) {
+        if (start < 0) return;
         if (dest.contains(start)) {
-            List<String> list = new ArrayList<>();
-            list.add(bw);
-            for (int i = 0; i < len; i++) {
-                list.add(wl.get(temp[i]));
-            }
-            if (minLen > list.size()) {
+            if (minLen < temp.size()) return;
+            if (minLen > temp.size()) {
                 ans.clear();
             }
-            minLen = list.size();
-            ans.add(list);
+            ArrayList<String> one = new ArrayList<>(temp);
+            one.add(0, bw);
+            ans.add(one);
             return;
         }
-
-        if (suffix[start] == 0) return;
-
-        if (suffix[start] + len + 1 > minLen) {
-            return;
-        }
-
-        for (int i = 0; i < distwl.length; i++) {
-            if (distwl[start][i] == 1 && !visited[i] && sofar[i] >= len + 1 && len + 1 <= minLen) {
-                visited[i] = true;
-                temp[len] = i;
-                sofar[i] = len + 1;
-                solve(i, temp, len + 1);
-                visited[i] = false;
+        if (distwl[start] == null) return;
+        for (int i = 0; i < distwl[start].size(); i++) {
+            int j = distwl[start].get(i);
+            if (!visited[j]) {
+                visited[j] = true;
+                temp.add(0, wl.get(j));
+                solve(j, temp);
+                temp.remove(0);
+                visited[j] = false;
             }
         }
     }
