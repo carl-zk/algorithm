@@ -67,6 +67,7 @@ public class WordLadderII {
             if (d == 1) {
                 ArrayList<Integer> a = new ArrayList<>();
                 a.add(i);
+                soFar[i] = 1;
                 que.add(a);
             }
         }
@@ -132,6 +133,7 @@ public class WordLadderII {
                 used.add(a.get(i));
             }
             int j = a.get(a.size() - 1);
+            if (soFar[j] > a.size()) continue;
             for (int i = 0; i < distwl[j].size(); i++) {
                 if (!used.contains(distwl[j].get(i)) && soFar[distwl[j].get(i)] >= a.size()) {
                     soFar[distwl[j].get(i)] = a.size();
