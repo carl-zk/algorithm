@@ -43,105 +43,68 @@ import java.util.*;
  */
 public class WordLadderII {
     List<List<String>> ans;
-    ArrayList<Integer>[] distwl;
-    Set<Integer> dest;
-    Queue<ArrayList<Integer>> que;
-    int[] soFar;
+    Map<String, List<String>> map;
     int minLen;
 
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        ans = new ArrayList<>();
+        map = new HashMap<>();
+        minLen = wordList.size() << 1;
+        Set<String> dict = new HashSet<>(wordList);
+        Set<String> start = new HashSet<>();
+        Set<String> end = new HashSet<>();
+        if (!dict.contains(endWord)) return ans;
 
-        init(wordList);
-        calEachDistance(endWord, wordList);
+        start.add(beginWord);
+        end.add(endWord);
+        buildMap(start, end, dict);
 
-        if (dest.isEmpty()) return Collections.emptyList();
-
-        for (int i = 0; i < wordList.size(); i++) {
-            String w = wordList.get(i);
-            int d = 0;
-            for (int j = 0; j < beginWord.length(); j++) {
-                if (beginWord.charAt(j) != w.charAt(j)) {
-                    d++;
-                }
-            }
-            if (d == 1) {
-                ArrayList<Integer> a = new ArrayList<>();
-                a.add(i);
-                soFar[i] = 1;
-                que.add(a);
-            }
-        }
-
-        bfs(beginWord, wordList);
+        List<String> path = new ArrayList<>();
+        path.add(beginWord);
+        buildResult(path, beginWord, endWord);
         return ans;
     }
 
-    private void init(List<String> wordList) {
-        ans = new LinkedList<>();
-        distwl = new ArrayList[wordList.size()];
-        dest = new HashSet<>();
-        minLen = wordList.size() << 1;
-        que = new LinkedList<>();
-        soFar = new int[wordList.size()];
-        Arrays.fill(soFar, wordList.size() << 1);
-    }
-
-    private void calEachDistance(String endWord, List<String> wordList) {
-        for (int i = 0; i < wordList.size(); i++) {
-            String w1 = wordList.get(i);
-            for (int j = i + 1; j < wordList.size(); j++) {
-                int d = 0;
-                String w2 = wordList.get(j);
-                for (int k = 0; k < w1.length(); k++) {
-                    if (w1.charAt(k) != w2.charAt(k)) {
-                        d++;
+    private void buildMap(Set<String> start, Set<String> end, Set<String> dict) {
+        dict.removeAll(start);
+        Set<String> next = new HashSet<>();
+        boolean finish = false;
+        for (String word : start) {
+            char[] charArray = word.toCharArray();
+            for (int i = 0; i < charArray.length; i++) {
+                char oldLetter = charArray[i];
+                for (char letter = 'a'; letter <= 'z'; letter++) {
+                    charArray[i] = letter;
+                    String newWord = String.valueOf(charArray);
+                    if (dict.contains(newWord)) {
+                        if (end.contains(newWord)) {
+                            finish = true;
+                        } else {
+                            next.add(newWord);
+                        }
+                        if (map.get(word) == null) {
+                            map.put(word, new ArrayList<>());
+                        }
+                        map.get(word).add(newWord);
                     }
                 }
-                if (d == 1) {
-                    if (distwl[i] == null) {
-                        distwl[i] = new ArrayList<>();
-                    }
-                    if (distwl[j] == null) {
-                        distwl[j] = new ArrayList<>();
-                    }
-                    distwl[i].add(j);
-                    distwl[j].add(i);
-                }
-            }
-            if (endWord.equals(w1)) {
-                dest.add(i);
+                charArray[i] = oldLetter;
             }
         }
+        if (finish || next.isEmpty()) return;
+        buildMap(next, end, dict);
     }
 
-    private void bfs(String beginWord, List<String> wordList) {
-        while (!que.isEmpty()) {
-            ArrayList<Integer> a = que.poll();
-            if (a.size() > minLen) return;
-            if (dest.contains(a.get(a.size() - 1))) {
-                minLen = a.size();
-                List<String> list = new LinkedList<>();
-                list.add(beginWord);
-                for (int i = 0; i < a.size(); i++) {
-                    list.add(wordList.get(a.get(i)));
-                }
-                ans.add(list);
-                continue;
-            }
-            Set<Integer> used = new HashSet<>();
-            for (int i = 0; i < a.size(); i++) {
-                used.add(a.get(i));
-            }
-            int j = a.get(a.size() - 1);
-            if (soFar[j] > a.size()) continue;
-            for (int i = 0; i < distwl[j].size(); i++) {
-                if (!used.contains(distwl[j].get(i)) && soFar[distwl[j].get(i)] >= a.size()) {
-                    soFar[distwl[j].get(i)] = a.size();
-                    ArrayList<Integer> next = new ArrayList<>(a);
-                    next.add(distwl[j].get(i));
-                    que.add(next);
-                }
-            }
+    private void buildResult(List<String> path, String word, String endWord) {
+        if (endWord.equals(word)) {
+            ans.add(new ArrayList<>(path));
+            return;
+        }
+        if (map.get(word) == null) return;
+        for (String next : map.get(word)) {
+            path.add(next);
+            buildResult(path, next, endWord);
+            path.remove(path.size() - 1);
         }
     }
 
