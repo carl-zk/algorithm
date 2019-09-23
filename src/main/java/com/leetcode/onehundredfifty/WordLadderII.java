@@ -1,6 +1,12 @@
 package com.leetcode.onehundredfifty;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * https://leetcode.com/problems/word-ladder-ii/
@@ -57,7 +63,7 @@ public class WordLadderII {
 
         start.add(beginWord);
         end.add(endWord);
-        buildMap(start, end, dict);
+        buildMap(start, end, dict, false);
 
         List<String> path = new ArrayList<>();
         path.add(beginWord);
@@ -65,7 +71,7 @@ public class WordLadderII {
         return ans;
     }
 
-    private void buildMap(Set<String> start, Set<String> end, Set<String> dict) {
+    private void buildMap(Set<String> start, Set<String> end, Set<String> dict, boolean reverse) {
         dict.removeAll(start);
         Set<String> next = new HashSet<>();
         boolean finish = false;
@@ -82,17 +88,19 @@ public class WordLadderII {
                         } else {
                             next.add(newWord);
                         }
-                        if (map.get(word) == null) {
-                            map.put(word, new ArrayList<>());
+                        String key = reverse ? newWord : word;
+                        String value = reverse ? word : newWord;
+                        if (map.get(key) == null) {
+                            map.put(key, new ArrayList<>());
                         }
-                        map.get(word).add(newWord);
+                        map.get(key).add(value);
                     }
                 }
                 charArray[i] = oldLetter;
             }
         }
         if (finish || next.isEmpty()) return;
-        buildMap(next, end, dict);
+        buildMap(end, next, dict, !reverse);
     }
 
     private void buildResult(List<String> path, String word, String endWord) {
