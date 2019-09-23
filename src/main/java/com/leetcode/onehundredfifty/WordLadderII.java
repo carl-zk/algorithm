@@ -50,12 +50,10 @@ import java.util.Set;
 public class WordLadderII {
     List<List<String>> ans;
     Map<String, List<String>> map;
-    int minLen;
 
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
         ans = new ArrayList<>();
         map = new HashMap<>();
-        minLen = wordList.size() << 1;
         Set<String> dict = new HashSet<>(wordList);
         Set<String> start = new HashSet<>();
         Set<String> end = new HashSet<>();
@@ -72,6 +70,10 @@ public class WordLadderII {
     }
 
     private void buildMap(Set<String> start, Set<String> end, Set<String> dict, boolean reverse) {
+        if (start.size() > end.size()) {
+            buildMap(end, start, dict, !reverse);
+            return;
+        }
         dict.removeAll(start);
         Set<String> next = new HashSet<>();
         boolean finish = false;
@@ -100,7 +102,7 @@ public class WordLadderII {
             }
         }
         if (finish || next.isEmpty()) return;
-        buildMap(end, next, dict, !reverse);
+        buildMap(next, end, dict, reverse);
     }
 
     private void buildResult(List<String> path, String word, String endWord) {
