@@ -20,6 +20,7 @@ public class WordLadderII {
     String bw;
     List<String> wl;
     int minLen;
+    int[] sofar;
 
     ArrayList<ArrayList<String>>[] suffix;
     int[] minSz;
@@ -35,6 +36,8 @@ public class WordLadderII {
         suffix = new ArrayList[wordList.size()];
         minSz = new int[wordList.size()];
         Arrays.fill(minSz, wordList.size() << 1);
+        sofar = new int[wordList.size()];
+        Arrays.fill(sofar, Integer.MAX_VALUE);
 
         for (int i = 0; i < wordList.size(); i++) {
             String w1 = wordList.get(i);
@@ -77,6 +80,7 @@ public class WordLadderII {
             if (distb[i] == 1) {
                 visited[i] = true;
                 temp.add(wl.get(i));
+                sofar[i] = 1;
                 solve(i, temp);
                 temp.remove(0);
                 visited[i] = false;
@@ -86,7 +90,7 @@ public class WordLadderII {
     }
 
     private void solve(int start, ArrayList<String> temp) {
-        if (start < 0 || temp.size() > minLen) return;
+        if (start < 0 || temp.size() > minLen || sofar[start] < temp.size()) return;
         if (dest.contains(start)) {
             if (minLen < temp.size()) return;
             if (minLen > temp.size()) {
@@ -98,14 +102,15 @@ public class WordLadderII {
             ans.add(one);
             return;
         }
+        sofar[start] = temp.size();
         if (distwl[start] == null) return;
         for (int i = 0; i < distwl[start].size(); i++) {
             int j = distwl[start].get(i);
-            if (!visited[j]) {
+            if (!visited[j] && sofar[j] >= temp.size() + 1) {
                 visited[j] = true;
-                temp.add(0, wl.get(j));
+                temp.add(wl.get(j));
                 solve(j, temp);
-                temp.remove(0);
+                temp.remove(temp.size() - 1);
                 visited[j] = false;
             }
         }
