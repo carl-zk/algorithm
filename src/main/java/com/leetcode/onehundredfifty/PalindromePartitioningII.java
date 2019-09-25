@@ -21,24 +21,23 @@ public class PalindromePartitioningII {
     public int minCut(String s) {
         if (s.length() == 0) return 0;
 
-        cut = new int[s.length()];
+        cut = new int[s.length() + 1];
         for (int i = 0; i < cut.length; i++) {
-            cut[i] = i;
+            cut[i] = i - 1;
         }
         for (int i = 0; i < s.length(); i++) {
-            if (i - 1 > -1) cut[i] = Math.min(cut[i - 1] + 1, cut[i]);
-            for (int j = i + 1, k = 0; i - k > -1 && j + k < s.length() && s.charAt(i - k) == s.charAt(j + k); k++) {
-                cut[j + k] = Math.min(cut[j + k], i - k - 1 > -1 ? cut[i - k - 1] + 1 : 0);
+            for (int k = 0; i - k > -1 && i + k < s.length() && s.charAt(i - k) == s.charAt(i + k); k++) {
+                cut[i + k + 1] = Math.min(cut[i + k + 1], cut[i - k] + 1);
             }
-            for (int j = i + 2, k = 0; i - k > -1 && j + k < s.length() && s.charAt(i - k) == s.charAt(j + k); k++) {
-                cut[j + k] = Math.min(cut[j + k], i - k - 1 > -1 ? cut[i - k - 1] + 1 : 0);
+            for (int k = 1; i - k + 1 > -1 && i + k < s.length() && s.charAt(i - k + 1) == s.charAt(i + k); k++) {
+                cut[i + k + 1] = Math.min(cut[i + k + 1], cut[i - k + 1] + 1);
             }
         }
-        return cut[s.length() - 1];
+        return cut[s.length()];
     }
 
     public static void main(String[] args) {
         PalindromePartitioningII p = new PalindromePartitioningII();
-        System.out.println(p.minCut("aab"));
+        System.out.println(p.minCut("apjesgpsxoeiokmqmfgvjslcjukbqxpsobyhjpbgdfruqdkeiszrlmtwgfxyfostpqczidfljwfbbrflkgdvtytbgqalguewnhvvmcgxboycffopmtmhtfizxkmeftcucxpobxmelmjtuzigsxnncxpaibgpuijwhankxbplpyejxmrrjgeoevqozwdtgospohznkoyzocjlracchjqnggbfeebmuvbicbvmpuleywrpzwsihivnrwtxcukwplgtobhgxukwrdlszfaiqxwjvrgxnsveedxseeyeykarqnjrtlaliyudpacctzizcftjlunlgnfwcqqxcqikocqffsjyurzwysfjmswvhbrmshjuzsgpwyubtfbnwajuvrfhlccvfwhxfqthkcwhatktymgxostjlztwdxritygbrbibdgkezvzajizxasjnrcjwzdfvdnwwqeyumkamhzoqhnqjfzwzbixclcxqrtniznemxeahfozp"));
     }
 }
