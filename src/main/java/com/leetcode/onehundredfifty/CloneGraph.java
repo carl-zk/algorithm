@@ -33,43 +33,23 @@ import java.util.*;
  * @auther carl
  */
 public class CloneGraph {
-    Set<Node> visited = new HashSet<>();
     Map<Node, Node> map = new HashMap<>();
 
     public Node cloneGraph(Node node) {
         if (node == null) return null;
-        buildMap(node);
-        doClone(node);
-        return map.get(node);
-    }
-
-    private void buildMap(Node node) {
-        if (node == null || map.get(node) != null) {
-            return;
+        if (map.get(node) != null) {
+            return map.get(node);
         }
         Node copy = new Node();
         copy.val = node.val;
         map.put(node, copy);
-
         if (node.neighbors != null) {
+            copy.neighbors = new ArrayList<>();
             for (Node o : node.neighbors) {
-                buildMap(o);
+                copy.neighbors.add(cloneGraph(o));
             }
         }
-    }
-
-    private void doClone(Node node) {
-        if (node == null || visited.contains(node)) return;
-        visited.add(node);
-        Node copy = map.get(node);
-        if (node.neighbors != null) {
-            List<Node> nodes = new ArrayList<>();
-            for (Node o : node.neighbors) {
-                doClone(o);
-                nodes.add(map.get(o));
-            }
-            copy.neighbors = nodes;
-        }
+        return copy;
     }
 
     class Node {
