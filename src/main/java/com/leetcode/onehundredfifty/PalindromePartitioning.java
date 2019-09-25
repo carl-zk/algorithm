@@ -4,61 +4,76 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * https://leetcode.com/problems/palindrome-partitioning/
+ *
+ * Given a string s, partition s such that every substring of the partition is a palindrome.
+ *
+ * Return all possible palindrome partitioning of s.
+ *
+ * Example:
+ *
+ * Input: "aab"
+ * Output:
+ * [
+ *   ["aa","b"],
+ *   ["a","a","b"]
+ * ]
+ *
  * @auther carl
  */
 public class PalindromePartitioning {
     List<List<String>> ans;
+    List<String>[] palins;
 
     public List<List<String>> partition(String s) {
         ans = new ArrayList<>();
-        List<String> path = new ArrayList<>();
+        palins = new ArrayList[s.length()];
         for (int i = 0; i < s.length(); i++) {
-            path.add(String.valueOf(s.charAt(i)));
+            palins[i] = new ArrayList<>();
+            palins[i].add(String.valueOf(s.charAt(i)));
         }
-        ans.add(new ArrayList<>(path));
-        for (int i = 0; i < path.size() - 1; i++) {
-            if (path.get(i).equals(path.get(i + 1))) {
-                int k = 0;
-                while (i - k > -1 && i + k + 1 < path.size() && path.get(i - k).equals(path.get(i + k + 1))) {
-                    solve(new ArrayList<>(path), i - k, i + k + 1);
-                    k++;
-                }
+        for (int i = 0; i < s.length() - 1; i++) {
+            if (s.charAt(i) == s.charAt(i + 1)) {
+                expand(s, i, i + 1);
             }
-            if (i + 2 < path.size() && path.get(i).equals(path.get(i + 2))) {
-                int k = 0;
-                while (i - k > -1 && i + k + 2 < path.size() && path.get(i).equals(path.get(i + k + 2))) {
-                    solve(new ArrayList<>(path), i - k, i + k + 2);
-                    k++;
-                }
+            if (i + 2 < s.length() && s.charAt(i) == s.charAt(i + 2)) {
+                expand(s, i, i + 2);
             }
+        }
+
+        for (int i = 0; i < palins[0].size(); i++) {
+            List<String> path = new ArrayList<>();
+            path.add(palins[0].get(i));
+            solve(path, palins[0].get(i).length());
         }
         return ans;
     }
 
-    private void solve(List<String> path, int h, int t) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = h; i <= t; i++) {
-            sb.append(path.get(h));
-            path.remove(h);
+    private void expand(String s, int h, int t) {
+        int k = 0;
+        while (h - k > -1 && t + k < s.length() && s.charAt(h - k) == s.charAt(t + k)) {
+            palins[h - k].add(s.substring(h - k, t + k + 1));
+            k++;
         }
-        path.add(h, sb.toString());
-        ans.add(path);
+    }
 
-        for (int i = h + 1; i < path.size() - 1; i++) {
-            if (path.get(i).equals(path.get(i + 1))) {
-                int k = 0;
-                while (i - k > -1 && i + k + 1 < path.size()&& path.get(i - k).equals(path.get(i + k + 1))) {
-                    solve(new ArrayList<>(path), i - k, i + k + 1);
-                    k++;
-                }
-            }
-            if (i + 2 < path.size() && path.get(i).equals(path.get(i + 2))) {
-                int k = 0;
-                while (i - k > -1 && i + k + 2 < path.size()&& path.get(i - k).equals(path.get(i + k + 2))) {
-                    solve(new ArrayList<>(path), i - k, i + k + 2);
-                    k++;
-                }
-            }
+    private void solve(List<String> path, int index) {
+        if (index == palins.length) {
+            ans.add(path);
+            return;
         }
+        List<String> newp = new ArrayList<>(path);
+        newp.add(palins[index].get(0));
+        solve(newp, index + palins[index].get(0).length());
+        for (int i = 1; i < palins[index].size(); i++) {
+            newp = new ArrayList<>(path);
+            newp.add(palins[index].get(i));
+            solve(newp, palins[index].get(i).length() + index);
+        }
+    }
+
+    public static void main(String[] args) {
+        PalindromePartitioning p = new PalindromePartitioning();
+        p.partition("cdd");
     }
 }
