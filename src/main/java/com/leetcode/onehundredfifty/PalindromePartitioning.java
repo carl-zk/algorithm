@@ -5,18 +5,18 @@ import java.util.List;
 
 /**
  * https://leetcode.com/problems/palindrome-partitioning/
- *
+ * <p>
  * Given a string s, partition s such that every substring of the partition is a palindrome.
- *
+ * <p>
  * Return all possible palindrome partitioning of s.
- *
+ * <p>
  * Example:
- *
+ * <p>
  * Input: "aab"
  * Output:
  * [
- *   ["aa","b"],
- *   ["a","a","b"]
+ * ["aa","b"],
+ * ["a","a","b"]
  * ]
  *
  * @auther carl
@@ -40,12 +40,7 @@ public class PalindromePartitioning {
                 expand(s, i, i + 2);
             }
         }
-
-        for (int i = 0; i < palins[0].size(); i++) {
-            List<String> path = new ArrayList<>();
-            path.add(palins[0].get(i));
-            solve(path, palins[0].get(i).length());
-        }
+        solve(new ArrayList<>(), 0);
         return ans;
     }
 
@@ -59,16 +54,13 @@ public class PalindromePartitioning {
 
     private void solve(List<String> path, int index) {
         if (index == palins.length) {
-            ans.add(path);
+            ans.add(new ArrayList<>(path));
             return;
         }
-        List<String> newp = new ArrayList<>(path);
-        newp.add(palins[index].get(0));
-        solve(newp, index + palins[index].get(0).length());
-        for (int i = 1; i < palins[index].size(); i++) {
-            newp = new ArrayList<>(path);
-            newp.add(palins[index].get(i));
-            solve(newp, palins[index].get(i).length() + index);
+        for (int i = 0; i < palins[index].size(); i++) {
+            path.add(palins[index].get(i));
+            solve(path, index + palins[index].get(i).length());
+            path.remove(path.size() - 1);
         }
     }
 
