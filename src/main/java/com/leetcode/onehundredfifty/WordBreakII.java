@@ -6,40 +6,29 @@ import java.util.*;
  * @auther carl
  */
 public class WordBreakII {
-    List<String> ans;
     Set<String> dict;
-    int minLen = Integer.MAX_VALUE;
-    int maxLen = Integer.MIN_VALUE;
+    Map<Integer, List<String>> map;
 
     public List<String> wordBreak(String s, List<String> wordDict) {
-        ans = new LinkedList<>();
         dict = new HashSet<>(wordDict);
-        for (String word : wordDict) {
-            minLen = Math.min(word.length(), minLen);
-            maxLen = Math.max(word.length(), maxLen);
-        }
-        solve(s, new StringBuilder());
-        return ans;
+        map = new HashMap<>();
+
+        return map.get(s);
     }
 
-    private void solve(String s, StringBuilder sb) {
-        if (s.length() == 0) {
-            ans.add(sb.substring(1));
-            return;
+    private List<String> solve(String s) {
+        if (map.containsKey(s)) {
+            return map.get(s);
         }
-        for (int i = minLen; i <= maxLen && i <= s.length(); i++) {
-            String word = s.substring(0, i);
-            if (dict.contains(word)) {
-                sb.append(' ').append(word);
-                solve(s.substring(word.length()), sb);
-                sb.delete(sb.length() - 1 - word.length(), sb.length());
-            }
-        }
+
     }
 
     public static void main(String[] args) {
         WordBreakII wordBreakII = new WordBreakII();
-        wordBreakII.wordBreak("aaaaaaaa",
-                Arrays.asList("a", "aa", "aaa", "aaaa", "aaaaa"));
+        /*wordBreakII.wordBreak("catsanddog",
+                Arrays.asList("cat", "cats", "and", "sand", "dog"));*/
+
+        wordBreakII.wordBreak("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                Arrays.asList("a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa", "aaaaaaaaaa"));
     }
 }
