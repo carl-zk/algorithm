@@ -30,28 +30,22 @@ import java.util.*;
  * @auther carl
  */
 public class WordBreak {
-    Map<String, Set<Integer>> visited = new HashMap<>();
+    boolean[] reach;
 
     public boolean wordBreak(String s, List<String> wordDict) {
-        return solve(s, 0, wordDict);
+        if (s.length() == 0) return true;
+        reach = new boolean[s.length() + 1];
+        solve(s, 0, wordDict);
+        return reach[s.length()];
     }
 
-    private boolean solve(String s, int start, List<String> wordDict) {
-        if (s.length() == start) return true;
-
+    private void solve(String s, int start, List<String> wordDict) {
         for (String word : wordDict) {
-            if (s.substring(start).startsWith(word)) {
-                if (visited.get(word) == null) {
-                    visited.put(word, new HashSet<>());
-                }
-                if (visited.get(word).contains(start)) {
-                    continue;
-                }
-                visited.get(word).add(start);
-                if (solve(s, start + word.length(), wordDict)) return true;
+            if (s.substring(start).startsWith(word) && !reach[start + word.length()]) {
+                reach[start + word.length()] = true;
+                solve(s, start + word.length(), wordDict);
             }
         }
-        return false;
     }
 
     public static void main(String[] args) {
