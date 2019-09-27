@@ -30,29 +30,31 @@ package com.leetcode.onehundredfifty;
 public class InsertionSortList {
 
     public ListNode insertionSortList(ListNode head) {
-        ListNode p = head, q, r;
-        head = null;
-
-        while (p != null) {
-            q = p;
-            p = p.next;
-            q.next = null;
-            if (head == null) {
-                head = q;
-            } else {
-                r = head;
-                while (r.next != null && r.next.val < q.val) {
-                    r = r.next;
-                }
-                if (r.val < q.val) {
-                    q.next = r.next;
-                    r.next = q;
-                } else {
-                    q.next = r;
-                    head = q;
-                }
-            }
+        if (head == null || head.next == null) return head;
+        ListNode slow = head, fast = head.next.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
         }
-        return head;
+        fast = slow.next;
+        slow.next = null;
+        ListNode left = insertionSortList(head);
+        ListNode right = insertionSortList(fast);
+        head = new ListNode(0);
+        ListNode q = head;
+        while (left != null && right != null) {
+            if (left.val < right.val) {
+                q.next = left;
+                left = left.next;
+            } else {
+                q.next = right;
+                right = right.next;
+            }
+            q = q.next;
+        }
+        if (left != null) {
+            q.next = left;
+        } else q.next = right;
+        return head.next;
     }
 }
