@@ -1,8 +1,5 @@
 package com.leetcode.onehundredfifty;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * https://leetcode.com/problems/max-points-on-a-line/
  * <p>
@@ -38,54 +35,32 @@ import java.util.Map;
  * @author carl
  */
 public class MaxPointsOnALine {
+    int ans;
 
     public int maxPoints(int[][] points) {
-        if (points.length == 0) return 0;
-        Map<Long, Map<Long, Integer>> counter = new HashMap<>();
-        int ans = 0;
-        int max, overlap, column;
-        for (int i = 0; i < points.length; i++) {
-            counter.clear();
-            max = 1;
-            overlap = 0;
-            column = 1;
-            for (int j = i + 1; j < points.length; j++) {
-                if (points[i][0] == points[j][0] && points[i][1] == points[j][1]) {
-                    overlap++;
-                } else if (points[i][0] == points[j][0]) {
-                    column++;
-                } else {
-                    long dy = points[j][1] - points[i][1];
-                    long dx = points[j][0] - points[i][0];
-                    long gc = gcd(dy, dx);
-                    dy /= gc;
-                    dx /= gc;
-                    long a = (dy << 32) + dx;
-                    dy = points[i][1] * dx - points[i][0] * dy;
-                    gc = gcd(dy, dx);
-                    dy /= gc;
-                    dx /= gc;
-                    long b = (dy << 32) + dx;
-                    if (counter.get(a) == null) {
-                        Map<Long, Integer> map = new HashMap<>();
-                        map.put(b, 2);
-                        counter.put(a, map);
-                        max = Math.max(max, 2);
-                    } else {
-                        int cnt = 1 + counter.get(a).get(b);
-                        counter.get(a).put(b, cnt);
-                        max = Math.max(max, cnt);
-                    }
-                }
-                max = Math.max(max, column);
+        if (points.length <= 2) return points.length;
+        ans = 0;
+        for (int i = 0; i < points.length - 1; i++) {
+            int x = points[i + 1][0] - points[i][0];
+            int y = points[i + 1][1] - points[i][1];
+            if (x != 0 || y != 0) {
+                solve(points, x, y, i);
             }
-            ans = Math.max(ans, max + overlap);
         }
-        return ans;
+        return ans == 0 ? points.length : ans;
     }
 
-    private long gcd(long a, long b) {
-        return b == 0 ? a : gcd(b, a % b);
+    private int solve(int[][] points, long x, long y, int base) {
+        int counter = 2;
+        for (int i = 0; i < points.length; i++) {
+            if (i != base && i != base + 1) {
+                if ((points[i][1] - points[base][1]) * x == (points[i][0] - points[base][0]) * y) {
+                    counter++;
+                }
+            }
+        }
+        ans = Math.max(ans, counter);
+        return counter;
     }
 
     public static void main(String[] args) {
