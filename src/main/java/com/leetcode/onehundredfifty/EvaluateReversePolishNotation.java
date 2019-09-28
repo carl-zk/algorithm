@@ -1,7 +1,5 @@
 package com.leetcode.onehundredfifty;
 
-import java.util.Stack;
-
 /**
  * https://leetcode.com/problems/evaluate-reverse-polish-notation/
  * <p>
@@ -41,29 +39,33 @@ import java.util.Stack;
 public class EvaluateReversePolishNotation {
 
     public int evalRPN(String[] tokens) {
-        Stack<Integer> stack = new Stack<>();
-        for (String token : tokens) {
-            char c = token.charAt(0);
-            if (c >= '0' && c <= '9' || (c == '-' && token.length() > 1)) {
-                stack.push(Integer.valueOf(token));
-            } else {
-                int b = stack.pop();
-                int a = stack.pop();
-                switch (c) {
-                    case '+':
-                        stack.push(a + b);
-                        break;
-                    case '-':
-                        stack.push(a - b);
-                        break;
-                    case '*':
-                        stack.push(a * b);
-                        break;
-                    default:
-                        stack.push(a / b);
-                }
-            }
+        return solve(tokens, new int[]{tokens.length - 1});
+    }
+
+    private int solve(String[] tokens, int[] index) {
+        String token = tokens[index[0]];
+        index[0]--;
+        int operator1;
+        int operator2;
+        switch (token) {
+            case "+":
+                operator2 = solve(tokens, index);
+                operator1 = solve(tokens, index);
+                return operator1 + operator2;
+            case "-":
+                operator2 = solve(tokens, index);
+                operator1 = solve(tokens, index);
+                return operator1 - operator2;
+            case "*":
+                operator2 = solve(tokens, index);
+                operator1 = solve(tokens, index);
+                return operator1 * operator2;
+            case "/":
+                operator2 = solve(tokens, index);
+                operator1 = solve(tokens, index);
+                return operator1 / operator2;
+            default:
+                return Integer.parseInt(token);
         }
-        return stack.peek();
     }
 }
