@@ -39,15 +39,22 @@ package com.leetcode.twohundred;
 public class ReverseWordsInaString {
 
     public String reverseWords(String s) {
-        return solve(s.toCharArray(), 0);
+        StringBuilder sb = new StringBuilder();
+        solve(s.toCharArray(), 0, sb);
+        return sb.toString();
     }
 
-    private String solve(char[] chars, int start) {
+    private void solve(char[] chars, int start, StringBuilder sb) {
         while (start < chars.length && chars[start] == ' ') start++;
-        if (start == chars.length) return "";
+        if (start == chars.length) return;
         int end = start;
         while (end < chars.length && chars[end] != ' ') end++;
-        String pre = solve(chars, end);
-        return pre + (pre.length() == 0 ? "" : " ") + String.valueOf(chars, start, end - start);
+        solve(chars, end, sb);
+        if (sb.length() > 0) {
+            sb.append(' ');
+        }
+        for (int i = start; i < end; i++) {
+            sb.append(chars[i]);
+        }
     }
 }
