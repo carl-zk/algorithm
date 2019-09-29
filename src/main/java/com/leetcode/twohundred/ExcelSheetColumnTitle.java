@@ -35,7 +35,12 @@ public class ExcelSheetColumnTitle {
 
     public String convertToTitle(int n) {
         sb = new StringBuilder();
-        solve(n);
+
+        while (n > 0) {
+            n--;
+            sb.append((char) ('A' + n % 26));
+            n /= 26;
+        }
         return sb.reverse().toString();
     }
 
