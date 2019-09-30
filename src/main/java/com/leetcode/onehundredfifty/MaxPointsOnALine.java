@@ -65,6 +65,7 @@ public class MaxPointsOnALine {
 
     public static void main(String[] args) {
         MaxPointsOnALine mp = new MaxPointsOnALine();
-        System.out.println(mp.maxPoints(new int[][]{{0, 0}, {0, 1}}));
+        // THIS case got 2 not 3, so the code is wrong.
+        System.out.println(mp.maxPoints(new int[][]{{1, 1}, {2, 5}, {4, 4}, {7, 5}, {7, 7}}));
     }
 }
