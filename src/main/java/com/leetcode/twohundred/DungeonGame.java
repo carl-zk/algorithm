@@ -1,60 +1,55 @@
 package com.leetcode.twohundred;
 
-/**
+/**https://leetcode.com/problems/dungeon-game/
+ *
+ * The demons had captured the princess (P) and imprisoned her in the bottom-right corner of a dungeon. The dungeon consists of M x N rooms laid out in a 2D grid. Our valiant knight (K) was initially positioned in the top-left room and must fight his way through the dungeon to rescue the princess.
+ *
+ * The knight has an initial health point represented by a positive integer. If at any point his health point drops to 0 or below, he dies immediately.
+ *
+ * Some of the rooms are guarded by demons, so the knight loses health (negative integers) upon entering these rooms; other rooms are either empty (0's) or contain magic orbs that increase the knight's health (positive integers).
+ *
+ * In order to reach the princess as quickly as possible, the knight decides to move only rightward or downward in each step.
+ *
+ *
+ *
+ * Write a function to determine the knight's minimum initial health so that he is able to rescue the princess.
+ *
+ * For example, given the dungeon below, the initial health of the knight must be at least 7 if he follows the optimal path RIGHT-> RIGHT -> DOWN -> DOWN.
+ *
+ * -2 (K)	-3	3
+ * -5	-10	1
+ * 10	30	-5 (P)
+ *
+ *
+ * Note:
+ *
+ * The knight's health has no upper bound.
+ * Any room can contain threats or power-ups, even the first room the knight enters and the bottom-right room where the princess is imprisoned.
+ *
  * @auther carl
  */
 public class DungeonGame {
-    int[][] least;
-    int[][] remain;
+    int[][] dp;
 
     public int calculateMinimumHP(int[][] dungeon) {
-        least = new int[dungeon.length][dungeon[0].length];
-        remain = new int[dungeon.length][dungeon[0].length];
-        least[0][0] = 1;
-        remain[0][0] = 1;
-        if (dungeon[0][0] < 0) {
-            least[0][0] = 1 - dungeon[0][0];
+        int m = dungeon.length;
+        int n = dungeon[0].length;
+        dp = new int[m][n];
+        dp[m - 1][n - 1] = Math.max(1, 1 - dungeon[m - 1][n - 1]);
+        for (int i = m - 2; i >= 0; i--) {
+            dp[i][n - 1] = Math.max(dp[i + 1][n - 1] - dungeon[i][n - 1], 1);
         }
-        for (int j = 1; j < dungeon[0].length; j++) {
-            remain[0][j] = remain[0][j - 1] + dungeon[0][j];
-            least[0][j] = least[0][j - 1];
-            if (remain[0][j] <= 0) {
-                least[0][j] = least[0][j - 1] - remain[0][j] + 1;
-                remain[0][j] = 1;
+        for (int j = n - 2; j >= 0; j--) {
+            dp[m - 1][j] = Math.max(dp[m - 1][j + 1] - dungeon[m - 1][j], 1);
+        }
+        for (int i = m - 2; i >= 0; i--) {
+            for (int j = n - 2; j >= 0; j--) {
+                int d = Math.max(dp[i][j + 1] - dungeon[i][j], 1);
+                int l = Math.max(dp[i + 1][j] - dungeon[i][j], 1);
+                dp[i][j] = Math.min(d, l);
             }
         }
-        for (int i = 1; i < dungeon.length; i++) {
-            remain[i][0] = remain[i - 1][0] + dungeon[i][0];
-            least[i][0] = least[i - 1][0];
-            if (remain[i][0] <= 0) {
-                least[i][0] = least[i - 1][0] - remain[i][0] + 1;
-                remain[i][0] = 1;
-            }
-        }
-        for (int i = 1; i < dungeon.length; i++) {
-            for (int j = 1; j < dungeon[0].length; j++) {
-                int remain1 = remain[i - 1][j] + dungeon[i][j];
-                int least1 = least[i - 1][j];
-                if (remain1 <= 0) {
-                    least1 = least[i - 1][j] - remain1 + 1;
-                    remain1 = 1;
-                }
-                int remain2 = remain[i][j - 1] + dungeon[i][j];
-                int least2 = least[i][j - 1];
-                if (remain2 <= 0) {
-                    least2 = least[i][j - 1] - remain2 + 1;
-                    remain2 = 1;
-                }
-                if (least1 < least2) {
-                    least[i][j] = least1;
-                    remain[i][j] = remain1;
-                } else {
-                    least[i][j] = least2;
-                    remain[i][j] = remain2;
-                }
-            }
-        }
-        return least[dungeon.length - 1][dungeon[0].length - 1];
+        return dp[0][0];
     }
 
     public static void main(String[] args) {
