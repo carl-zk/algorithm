@@ -1,86 +1,51 @@
 package com.leetcode.twohundred;
 
 /**
+ * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/
+ * <p>
+ * Say you have an array for which the i-th element is the price of a given stock on day i.
+ * <p>
+ * Design an algorithm to find the maximum profit. You may complete at most k transactions.
+ * <p>
+ * Note:
+ * You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
+ * <p>
+ * Example 1:
+ * <p>
+ * Input: [2,4,1], k = 2
+ * Output: 2
+ * Explanation: Buy on day 1 (price = 2) and sell on day 2 (price = 4), profit = 4-2 = 2.
+ * Example 2:
+ * <p>
+ * Input: [3,2,6,5,0,3], k = 2
+ * Output: 7
+ * Explanation: Buy on day 2 (price = 2) and sell on day 3 (price = 6), profit = 6-2 = 4.
+ * Then buy on day 5 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
+ *
  * @author carl
  */
 public class BestTimeToBuyAndSellStockIV {
 
     public int maxProfit(int k, int[] prices) {
-        MinHeap minHeap = new MinHeap(k);
-        int lastBuy = -1;
-        for (int i = 1; i < prices.length; i++) {
-            if (prices[i - 1] < prices[i]) {
-                if (lastBuy == -1) {
-                    lastBuy = prices[i - 1];
-                }
-            } else if (prices[i - 1] > prices[i]) {
-                if (lastBuy != -1 && prices[i - 1] > lastBuy) {
-                    minHeap.add(prices[i - 1] - lastBuy);
-                    lastBuy = -1;
-                }
+        if (prices.length < 2) return 0;
+
+        if (k >= prices.length / 2) {
+            int maxPro = 0;
+            for (int i = 1; i < prices.length; i++) {
+                if (prices[i] > prices[i - 1])
+                    maxPro += prices[i] - prices[i - 1];
+            }
+            return maxPro;
+        }
+
+        int[][] dp = new int[k + 1][prices.length];
+        for (int i = 1; i <= k; i++) {
+            int localMax = dp[i - 1][0] - prices[0];
+            for (int j = 1; j < prices.length; j++) {
+                dp[i][j] = Math.max(dp[i][j - 1], prices[j] + localMax);
+                localMax = Math.max(localMax, dp[i - 1][j - 1] - prices[j]);
             }
         }
-        if (lastBuy != -1 && prices[prices.length - 1] > lastBuy) {
-            minHeap.add(prices[prices.length - 1] - lastBuy);
-        }
-        int ans = 0;
-        for (int i = 0; i < minHeap.size; i++) {
-            ans += minHeap.values[i];
-        }
-        return ans;
-    }
-
-    static class MinHeap {
-        int[] values;
-        int size;
-        int capacity;
-
-        public MinHeap(int capacity) {
-            this.values = new int[capacity];
-            this.capacity = capacity;
-            this.size = 0;
-        }
-
-        public void add(int value) {
-            if (size == capacity) {
-                swap(0, size - 1);
-                size--;
-            }
-            values[size++] = value;
-            shiftUp(p(size - 1));
-        }
-
-        private void shiftUp(int i) {
-            boolean changed = false;
-            if (lc(i) < size && values[lc(i)] < values[i]) {
-                swap(lc(i), i);
-                changed = true;
-            }
-            if (rc(i) < size && values[rc(i)] < values[i]) {
-                swap(rc(i), i);
-                changed = true;
-            }
-            if (changed) {
-                shiftUp(p(i));
-            }
-        }
-
-        private int lc(int i) {
-            return i * 2 + 1;
-        }
-
-        private int rc(int i) {
-            return i * 2 + 2;
-        }
-
-        private int p(int i) {
-            return (i - 1) / 2;
-        }
-
-        private void swap(int i, int j) {
-            int t = values[i];
-            values[i] = values[j];
-            values[j] = t;
-        }
+        return dp[k][prices.length - 1];
     }
 }
