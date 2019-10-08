@@ -1,9 +1,9 @@
 package com.leetcode.twohundred;
 
-import java.util.HashMap;
+import java.util.BitSet;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * https://leetcode.com/problems/repeated-dna-sequences/
@@ -24,13 +24,33 @@ public class RepeatedDNASequences {
     List<String> ans;
 
     public List<String> findRepeatedDnaSequences(String s) {
+        if (s.length() < 10) return Collections.emptyList();
         ans = new LinkedList<>();
-        Map<String, Integer> map = new HashMap<>();
-        for (int i = 0, end = s.length() - 10; i <= end; i++) {
-            String str = s.substring(i, i + 10);
-            map.put(str, map.getOrDefault(str, 0) + 1);
-            if (map.get(str) == 2) {
-                ans.add(str);
+
+        int[] map = new int[85];
+        map['A'] = 0;
+        map['C'] = 1;
+        map['G'] = 2;
+        map['T'] = 3;
+        BitSet seen = new BitSet(1 << 20);
+        BitSet used = new BitSet(1 << 20);
+
+        char[] cs = s.toCharArray();
+
+        int index = 0;
+        for (int i = 0; i < 10; i++) {
+            index |= map[cs[i]] << (i * 2);
+        }
+        seen.set(index);
+
+        for (int i = 1; i <= cs.length - 10; i++) {
+            index >>= 2;
+            index |= map[cs[i + 9]] << 18;
+            if (!seen.get(index)) {
+                seen.set(index);
+            } else if (!used.get(index)) {
+                ans.add(s.substring(i, i + 10));
+                used.set(index);
             }
         }
         return ans;
