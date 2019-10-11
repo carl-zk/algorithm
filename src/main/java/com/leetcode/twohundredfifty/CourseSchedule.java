@@ -1,7 +1,5 @@
 package com.leetcode.twohundredfifty;
 
-import java.util.*;
-
 /**
  * https://leetcode.com/problems/course-schedule/
  * <p>
@@ -34,33 +32,24 @@ import java.util.*;
 public class CourseSchedule {
 
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        Map<Integer, Set<Integer>> pre = new HashMap<>();
+        int[] count = new int[numCourses + 1];
         for (int[] p : prerequisites) {
-            if (pre.get(p[0]) == null) {
-                pre.put(p[0], new HashSet<>());
-            }
-            pre.get(p[0]).add(p[1]);
-            Set<Integer> after = new HashSet<>();
-            after.add(p[0]);
-            if (!fill(pre.get(p[0]), p[1], pre, after)) return false;
+            count[p[0]]++;
         }
-        for (int[] p : prerequisites) {
-            if (pre.getOrDefault(p[1], new HashSet<>()).contains(p[0])) return false;
-        }
-        return true;
-    }
-
-    private boolean fill(Set<Integer> set, int i, Map<Integer, Set<Integer>> pre, Set<Integer> after) {
-        after.add(i);
-        if (pre.containsKey(i)) {
-            for (Integer j : pre.get(i)) {
-                if (!set.contains(j)) {
-                    if (after.contains(j)) return false;
-                    after.add(j);
-                    set.add(j);
-                    fill(set, j, pre, after);
+        boolean[] visited = new boolean[prerequisites.length];
+        boolean changed = true;
+        while (changed) {
+            changed = false;
+            for (int i = 0; i < prerequisites.length; i++) {
+                if (!visited[i] && count[prerequisites[i][1]] == 0) {
+                    visited[i] = true;
+                    changed = true;
+                    count[prerequisites[i][0]]--;
                 }
             }
+        }
+        for (int i = 0; i < count.length; i++) {
+            if (count[i] > 0) return false;
         }
         return true;
     }
