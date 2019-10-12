@@ -1,6 +1,6 @@
 package com.leetcode.twohundredfifty;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * https://leetcode.com/problems/course-schedule-ii/
@@ -36,43 +36,38 @@ import java.util.ArrayList;
 public class CourseScheduleII {
 
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        if (numCourses == 0) return new int[]{};
+        int[] indegree = new int[numCourses];
+        int[] topologicalOrder = new int[numCourses];
+        int sz = 0;
+        Map<Integer, ArrayList<Integer>> adjList = new HashMap<>();
+        Queue<Integer> que = new LinkedList<>();
 
-        ArrayList<Integer> ans = new ArrayList<>();
-
-        int[] count = new int[numCourses];
         for (int[] p : prerequisites) {
-            count[p[0]]++;
+            indegree[p[0]]++;
+            ArrayList<Integer> list = adjList.getOrDefault(p[1], new ArrayList<>());
+            list.add(p[0]);
+            adjList.put(p[1], list);
         }
-        boolean[] visit = new boolean[prerequisites.length];
-        boolean[] taken = new boolean[numCourses];
-        boolean changed = true;
-        while (changed) {
-            changed = false;
-            for (int i = 0; i < prerequisites.length; i++) {
-                int from = prerequisites[i][1];
-                int to = prerequisites[i][0];
-                if (!visit[i] && count[from] == 0) {
-                    visit[i] = true;
-                    count[to]--;
-                    if (!taken[from]) {
-                        taken[from] = true;
-                        ans.add(from);
-                    }
-                    if (!taken[to] && count[to] == 0) {
-                        taken[to] = true;
-                        ans.add(to);
-                    }
-                    changed = true;
+
+        for (int i = 0; i < numCourses; i++) {
+            if (indegree[i] == 0) {
+                que.add(i);
+            }
+        }
+
+        while (!que.isEmpty()) {
+            int from = que.poll();
+            topologicalOrder[sz++] = from;
+            for (int to : adjList.getOrDefault(from, new ArrayList<>())) {
+                indegree[to]--;
+                if (indegree[to] == 0) {
+                    que.add(to);
                 }
             }
         }
-        for (int i = 0; i < numCourses; i++) {
-            if (count[i] > 0) return new int[]{};
-            if (!taken[i]) {
-                ans.add(i);
-            }
-        }
-        return ans.stream().mapToInt(i -> i).toArray();
+
+        if (sz == numCourses) return topologicalOrder;
+
+        return new int[0];
     }
 }
