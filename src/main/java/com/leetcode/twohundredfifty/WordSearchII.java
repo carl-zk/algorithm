@@ -33,57 +33,55 @@ import java.util.*;
  * @auther carl
  */
 public class WordSearchII {
-    Set<String> ans = new HashSet<>();
+    List<String> ans = new LinkedList<>();
     int[] dx = {0, 0, -1, 1};
     int[] dy = {1, -1, 0, 0};
-    boolean[][] visited;
 
     public List<String> findWords(char[][] board, String[] words) {
         if (words.length == 0 || board.length == 0) return Collections.emptyList();
 
-        visited = new boolean[board.length][board[0].length];
-        ArrayList<String>[] ws = new ArrayList[26];
-        for (int i = 0; i < words.length; i++) {
-            int j = words[i].charAt(0) - 'a';
-            if (ws[j] == null) {
-                ws[j] = new ArrayList<>();
+        TrieNode root = new TrieNode();
+        for (String wd : words) {
+            TrieNode p = root;
+            for (int i = 0; i < wd.length(); i++) {
+                int j = wd.charAt(i) - 'a';
+                if (p.next[j] == null) {
+                    p.next[j] = new TrieNode();
+                }
+                p = p.next[j];
             }
-            ws[j].add(words[i]);
+            p.word = wd;
         }
 
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
-                int k = board[i][j] - 'a';
-                if (ws[k] != null) {
-                    visited[i][j] = true;
-                    for (String w : ws[k]) {
-                        if (!ans.contains(w) && search(board, i, j, w.toCharArray(), 1)) {
-                            ans.add(w);
-                        }
-                    }
-                    visited[i][j] = false;
-                }
+                search(board, i, j, root);
             }
         }
-        return new ArrayList<>(ans);
+        return ans;
     }
 
-    private boolean search(char[][] board, int i, int j, char[] chars, int k) {
-        if (k == chars.length) return true;
+    private void search(char[][] board, int i, int j, TrieNode node) {
+        char c = board[i][j];
+        if (node.next[c - 'a'] == null) return;
+        node = node.next[c - 'a'];
+        if (node.word != null) {
+            ans.add(node.word);
+            node.word = null;
+        }
+        board[i][j] = '.';
         for (int l = 0; l < dx.length; l++) {
             int x = i + dx[l];
             int y = j + dy[l];
-            if (0 <= x && x < board.length && 0 <= y && y < board[0].length
-                    && !visited[x][y] && board[x][y] == chars[k]) {
-                visited[x][y] = true;
-                if (search(board, x, y, chars, k + 1)) {
-                    visited[x][y] = false;
-                    return true;
-                } else {
-                    visited[x][y] = false;
-                }
+            if (0 <= x && x < board.length && 0 <= y && y < board[0].length && board[x][y] != '.') {
+                search(board, x, y, node);
             }
         }
-        return false;
+        board[i][j] = c;
+    }
+
+    class TrieNode {
+        String word;
+        TrieNode[] next = new TrieNode[26];
     }
 }
