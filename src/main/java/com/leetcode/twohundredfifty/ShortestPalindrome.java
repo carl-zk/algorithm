@@ -20,12 +20,20 @@ public class ShortestPalindrome {
 
     public String shortestPalindrome(String s) {
         String rev = reverse(s);
-        for (int i = 0; i < s.length(); i++) {
-            if (s.substring(0, s.length() - i).equals(rev.substring(i))) {
-                return rev.substring(0, i) + s;
+        if (s.equals(rev)) return s;
+
+        int n = rev.length();
+        int[] lps = computelps(s);
+        int q = 0;
+        for (int i = 0; i < n; i++) {
+            while (q > 0 && s.charAt(q) != rev.charAt(i)) {
+                q = lps[q - 1];
+            }
+            if (s.charAt(q) == rev.charAt(i)) {
+                q++;
             }
         }
-        return "";
+        return rev + s.substring(q);
     }
 
     private String reverse(String s) {
@@ -37,9 +45,26 @@ public class ShortestPalindrome {
         return String.valueOf(rev);
     }
 
+    private int[] computelps(String s) {
+        int m = s.length();
+        int[] lps = new int[m];
+        lps[0] = 0;
+        int k = 0;
+        for (int i = 1; i < m; i++) {
+            while (k > 0 && s.charAt(k) != s.charAt(i)) {
+                k = lps[k - 1];
+            }
+            if (s.charAt(k) == s.charAt(i)) {
+                k++;
+            }
+            lps[i] = k;
+        }
+        return lps;
+    }
+
     public static void main(String[] args) {
         ShortestPalindrome sp = new ShortestPalindrome();
-        System.out.println(sp.shortestPalindrome("abcd"));
-        System.out.println("ab".substring(0, 0));
+        System.out.println(sp.shortestPalindrome("aacecaaa"));
+        //System.out.println("ab".substring(0, 0));
     }
 }
