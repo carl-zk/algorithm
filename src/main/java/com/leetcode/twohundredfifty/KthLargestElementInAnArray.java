@@ -37,6 +37,8 @@ public class KthLargestElementInAnArray {
     }
 
     private int partition(int[] nums, int s, int e) {
+        int mid = (s + e) >> 1;
+        swap(nums, s, mid);
         int x = nums[s];
         int i = e + 1;
         for (int j = e; j >= s; j--) {
