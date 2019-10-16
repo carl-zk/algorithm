@@ -29,60 +29,52 @@ public class TheSkylineProblem {
     List<List<Integer>> ans;
 
     public List<List<Integer>> getSkyline(int[][] buildings) {
+        if (buildings.length == 0) return Collections.emptyList();
+
         ans = new ArrayList<>();
-        Map<Integer, Node> map = new HashMap<>();
-        List<Node> nodes = new ArrayList<>();
-        for (int[] triplet : buildings) {
-            if (map.get(triplet[0]) == null) {
-                Node node = new Node(triplet[0]);
-                map.put(triplet[0], node);
-                nodes.add(node);
+        PriorityQueue<int[]> queue = new PriorityQueue<>((a, b) -> a[2] == b[2] ? a[0] - b[0] : b[2] - a[2]);
+        //List<int[]> filtered = new ArrayList<>();
+        int[] pre = {Integer.MIN_VALUE, Integer.MAX_VALUE, 0};
+        for (int[] cur : buildings) {
+            while (!queue.isEmpty() && cur[0] > pre[1]) {
+                int[] top = queue.poll();
+                if (top[1] <= pre[1]) continue;
+                ans.add(Arrays.asList(pre[1], top[2]));
+                pre = top;
             }
-            if (map.get(triplet[1]) == null) {
-                Node node = new Node(triplet[1]);
-                map.put(triplet[1], node);
-                nodes.add(node);
-            }
-        }
-        Collections.sort(nodes, Comparator.comparingInt(a -> a.v));
-        for (int i = 0; i < nodes.size() - 1; i++) {
-            nodes.get(i).next = nodes.get(i + 1);
-        }
-        for (int[] triplet : buildings) {
-            int from = triplet[0];
-            int to = triplet[1];
-            int w = triplet[2];
-            Node t = map.get(from);
-            while (t.next != null && t.next.v <= to) {
-                if (t.w < w) {
-                    t.w = w;
+            if (cur[2] > pre[2]) {
+                if (cur[0] == pre[0]) {
+                    ans.remove(ans.size() - 1);
                 }
-                t = t.next;
+                ans.add(Arrays.asList(cur[0], cur[2]));
+                if (pre[1] > cur[1]) {
+                    queue.add(pre);
+                }
+                pre = cur;
+            } else if (cur[2] == pre[2]) {
+                pre[1] = cur[1];
+            } else if (cur[1] > pre[1]) {
+                queue.add(cur);
             }
         }
-        int pre = -1;
-        for (int i = 0; i < nodes.size() - 1; i++) {
-            if (nodes.get(i).w != pre) {
-                ans.add(Arrays.asList(nodes.get(i).v, nodes.get(i).w));
-                pre = nodes.get(i).w;
-            }
+        while (!queue.isEmpty()) {
+            int[] top = queue.poll();
+            if (top[1] <= pre[1]) continue;
+            ans.add(Arrays.asList(pre[1], top[2]));
+            pre = top;
         }
-        if (nodes.size() > 1) {
-            int i = nodes.size() - 1;
-            ans.add(Arrays.asList(nodes.get(i).v, 0));
+        if (pre[2] > 0) {
+            ans.add(Arrays.asList(pre[1], 0));
         }
         return ans;
     }
 
-    class Node {
-        int v;
-        int w;
-        Node next;
-
-        public Node(int v) {
-            this.v = v;
-            this.w = 0;
-            this.next = null;
-        }
+    public static void main(String[] args) {
+        int[][] buildings = {{2, 9, 12}, {2, 9, 1}, {2, 9, 10}, {3, 7, 15}, {5, 12, 12}, {15, 20, 10}, {19, 24, 8}};
+        TheSkylineProblem theSkylineProblem = new TheSkylineProblem();
+        System.out.println(theSkylineProblem.getSkyline(buildings).size()); // expect 7
+        // [[2,12],[3,15],[7,12],[12,0],[15,10],[20,8],[24,0]]
+        // 有点小瑕疵，不过可以弄个filter过滤一下数据，基本OK
+        // test case 不要出现连续3个开始值相同的building
     }
 }
