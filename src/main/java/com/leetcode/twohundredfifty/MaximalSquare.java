@@ -24,13 +24,17 @@ public class MaximalSquare {
         if (matrix.length == 0 || matrix[0].length == 0) return 0;
         int n = matrix.length, m = matrix[0].length;
         int ans = 0;
-        int[][] dp = new int[n + 1][m + 1];
-        for (int i = 1; i <= n; i++) {
+        int[] dp = new int[m + 1];
+        for (int i = 1, pre = 0; i <= n; i++) {
             for (int j = 1; j <= m; j++) {
+                int temp = dp[j];
                 if (matrix[i - 1][j - 1] == '1') {
-                    dp[i][j] = Math.min(dp[i - 1][j], Math.min(dp[i - 1][j - 1], dp[i][j - 1])) + 1;
-                    ans = Math.max(ans, dp[i][j]);
+                    dp[j] = Math.min(dp[j], Math.min(dp[j - 1], pre)) + 1;
+                    ans = Math.max(ans, dp[j]);
+                } else {
+                    dp[j] = 0;
                 }
+                pre = temp;
             }
         }
         return ans * ans;
