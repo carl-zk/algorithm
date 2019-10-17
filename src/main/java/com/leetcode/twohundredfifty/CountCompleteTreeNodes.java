@@ -27,6 +27,17 @@ public class CountCompleteTreeNodes {
 
     public int countNodes(TreeNode root) {
         if (root == null) return 0;
-        return 1 + countNodes(root.left) + countNodes(root.right);
+        int lh = leftHeight(root);
+        int rh = rightHeight(root);
+        int s = (1 << rh) - 1;
+        return lh == rh ? s: 1 + countNodes(root.left) + countNodes(root.right);
+    }
+
+    private int leftHeight(TreeNode root) {
+        return root == null ? 0 : 1 + leftHeight(root.left);
+    }
+
+    private int rightHeight(TreeNode root) {
+        return root == null ? 0 : 1 + rightHeight(root.right);
     }
 }
