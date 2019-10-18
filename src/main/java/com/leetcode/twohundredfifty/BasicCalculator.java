@@ -1,7 +1,6 @@
 package com.leetcode.twohundredfifty;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
 /**
  * @auther carl
@@ -10,52 +9,56 @@ public class BasicCalculator {
 
     public int calculate(String s) {
         if (s.length() == 0) return 0;
-        int i = 0, j;
-        List<String> list = new ArrayList<>();
-        while (i < s.length()) {
-            if (s.charAt(i) == '+' || s.charAt(i) == '-') {
-                list.add(String.valueOf(s.charAt(i)));
+        Stack<Integer> numbers = new Stack<>();
+        Stack<Character> operators = new Stack<>();
+        int i = 0;
+        char[] chars = s.toCharArray();
+
+        while (i < chars.length) {
+            if (chars[i] == ' ') {
+                i++;
+            } else if (chars[i] == '(') {
+                operators.push('(');
+                i++;
+            } else if (chars[i] == ')' || chars[i] == '+' || chars[i] == '-') {
+                while (!operators.isEmpty() && operators.peek() != '(') {
+                    calc(numbers, operators);
+                }
+                if (chars[i] == ')') {
+                    operators.pop();
+                } else {
+                    operators.push(chars[i]);
+                }
                 i++;
             } else {
-                j = i + 1;
-                while (j < s.length() && s.charAt(j) >= '0' && s.charAt(j) <= '9') {
-                j++;
+                int j = i;
+                while (j < chars.length && chars[j] >= '0' && chars[j] <= '9') {
+                    j++;
+                }
+                numbers.push(Integer.valueOf(String.valueOf(chars, i, j - i)));
+                i = j;
             }
-            list.add(new String(s.getBytes(), i, j - i));
-            i = j;
+        }
+        while (!operators.isEmpty()) {
+            calc(numbers, operators);
+        }
+        return numbers.peek();
+    }
+
+    private void calc(Stack<Integer> numbers, Stack<Character> operators) {
+        char opt = operators.pop();
+        int sec = numbers.pop();
+        int fir = numbers.pop();
+        if (opt == '+') {
+            numbers.push(fir + sec);
+        } else {
+            numbers.push(fir - sec);
         }
     }
-        return solve(list);
-}
 
-    private int solve(List<String> list) {
-        if (list.isEmpty()) return 0;
-        if (list.size() == 1) return Integer.valueOf(list.get(0));
-        String first = list.get(0);
-        if (first.charAt(0) == '(') {
-            int match = 1;
-            List<String> partial = new ArrayList<>();
-            int i = 1;
-            for (; i < list.size() && match > 0; i++) {
-                if (list.get(i).charAt(0) == '(') match++;
-                if (list.get(i).charAt(0) == ')') match--;
-                partial.add(list.get(i));
-            }
-            while (i > 0) {
-                list.remove(0);
-                i--;
-            }
-            if (list.isEmpty()) {
-                return solve(partial);
-            }
-            char op = list.get(0).charAt(0);
-            list.remove(0);
-            return op == '+' ? solve(partial) + solve(list) : solve(partial) - solve(list);
-        }
-        int a = Integer.valueOf(list.get(0));
-        list.remove(0);
-        char op = list.get(0).charAt(0);
-        list.remove(0);
-        return op == '+' ? a + solve(list) : a - solve(list);
+    public static void main(String[] args) {
+        BasicCalculator bc = new BasicCalculator();
+        //System.out.println(bc.calculate("1 + (2- 3)"));
+        System.out.println(bc.calculate(" 2-1 + 2 "));
     }
 }
