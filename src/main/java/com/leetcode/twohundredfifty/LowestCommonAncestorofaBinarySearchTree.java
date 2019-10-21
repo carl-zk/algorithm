@@ -1,11 +1,5 @@
 package com.leetcode.twohundredfifty;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
  * https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
  * <p>
@@ -40,20 +34,12 @@ import java.util.Set;
 public class LowestCommonAncestorofaBinarySearchTree {
 
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        Set<TreeNode> fir = new HashSet<>();
-        List<TreeNode> sec = new ArrayList<>();
-        search(root, p, fir);
-        search(root, q, sec);
-        for (int i = sec.size() - 1; i >= 0; i--) {
-            if (fir.contains(sec.get(i))) return sec.get(i);
+        if (p.val < root.val && q.val < root.val) {
+            return lowestCommonAncestor(root.left, p, q);
+        } else if (p.val > root.val && q.val > root.val) {
+            return lowestCommonAncestor(root.right, p, q);
+        } else {
+            return root;
         }
-        return null;
-    }
-
-    private void search(TreeNode root, TreeNode t, Collection<TreeNode> col) {
-        col.add(root);
-        if (root.val == t.val) return;
-        if (root.val < t.val) search(root.right, t, col);
-        else search(root.left, t, col);
     }
 }
