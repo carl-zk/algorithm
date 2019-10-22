@@ -1,8 +1,5 @@
 package com.leetcode.twohundredfifty;
 
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-
 /**
  * https://leetcode.com/problems/sliding-window-maximum/
  * <p>
@@ -35,33 +32,26 @@ public class SlidingWindowMaximum {
     public int[] maxSlidingWindow(int[] nums, int k) {
         if (nums.length == 0) return new int[0];
 
-        PriorityQueue<Node> queue = new PriorityQueue<>((a, b) -> b.value - a.value);
-        LinkedList<Node> list = new LinkedList<>();
         int len = nums.length;
         int[] ans = new int[len - k + 1];
-        Node head, tail;
-        for (int i = 0; i < k; i++) {
-            Node node = new Node(nums[i]);
-            queue.add(node);
-            list.add(node);
-        }
-        int i = 0;
-        ans[i++] = queue.peek().value;
-        for (int j = k; j < len; j++) {
-            queue.remove(list.removeFirst());
-            Node node = new Node(nums[j]);
-            queue.add(node);
-            list.add(node);
-            ans[i++] = queue.peek().value;
+        int maxId = 0;
+        int pos = 0;
+        for (int i = 0; i < len; i++) {
+            if (nums[i] > nums[maxId]) {
+                maxId = i;
+            }
+            if (i - maxId >= k) {
+                maxId = i;
+                for (int j = i - k + 1; j < i; j++) {
+                    if (nums[j] > nums[maxId]) {
+                        maxId = j;
+                    }
+                }
+            }
+            if (i + 1 >= k) {
+                ans[pos++] = nums[maxId];
+            }
         }
         return ans;
-    }
-
-    class Node {
-        int value;
-
-        public Node(int value) {
-            this.value = value;
-        }
     }
 }
