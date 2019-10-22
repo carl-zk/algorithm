@@ -37,38 +37,23 @@ import java.util.Set;
  * @author carl
  */
 public class LowestCommonAncestorofaBinaryTree {
-    Set<TreeNode> first = new HashSet<>();
-    int find = 0;
-    List<TreeNode> path = new ArrayList<>();
+    TreeNode ans;
 
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        search(root, p.val, q.val);
-        for (int i = path.size() - 1; i >= 0; i--) {
-            if (first.contains(path.get(i))) return path.get(i);
-        }
-        return root;
+        ans = null;
+        traversal(root, p, q);
+        return ans;
     }
 
-    private void search(TreeNode root, int p, int q) {
-        if (root == null || find == 2) return;
-        path.add(root);
-        if (root.val == p || root.val == q) {
-            find++;
-            if (find == 1) {
-                first = new HashSet<>(path);
-            } else {
-                return;
-            }
+    private int traversal(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) return 0;
+        int l = traversal(root.left, p, q);
+        int r = traversal(root.right, p, q);
+        int mid = root == p || root == q ? 1 : 0;
+        int sum = l + r + mid;
+        if (sum > 1 && ans == null) {
+            ans = root;
         }
-        search(root.left, p, q);
-        if (find == 2) return;
-        if (root.left != null) {
-            path.remove(path.size() - 1);
-        }
-        search(root.right, p, q);
-        if (find == 2) return;
-        if (root.right != null) {
-            path.remove(path.size() - 1);
-        }
+        return sum;
     }
 }
