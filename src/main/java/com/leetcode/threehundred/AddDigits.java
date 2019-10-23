@@ -19,14 +19,7 @@ package com.leetcode.threehundred;
 public class AddDigits {
 
     public int addDigits(int num) {
-        int ans = 0;
-        while (num > 0) {
-            ans += num % 10;
-            num /= 10;
-            if (ans >= 10) {
-                ans = ans / 10 + ans % 10;
-            }
-        }
-        return ans;
+        int ans = num % 9;
+        return num == 0 ? 0 : ans == 0 ? 9 : ans;
     }
 }
