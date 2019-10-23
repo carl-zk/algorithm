@@ -27,24 +27,16 @@ package com.leetcode.twohundredfifty;
 public class Searcha2DMatrixII {
 
     public boolean searchMatrix(int[][] matrix, int target) {
-        for (int[] nums : matrix) {
-            if (search(nums, target)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean search(int[] nums, int target) {
-        int h = 0, t = nums.length - 1, m;
-        while (h <= t) {
-            m = (h + t) >> 1;
-            if (nums[m] == target) {
-                return true;
-            } else if (nums[m] < target) {
-                h = m + 1;
+        if (matrix.length == 0 || matrix[0].length == 0) return false;
+        int m = matrix.length;
+        int i = 0;
+        int j = matrix[0].length - 1;
+        while (i < m && j >= 0) {
+            if (matrix[i][j] == target) return true;
+            else if (matrix[i][j] > target) {
+                j--;
             } else {
-                t = m - 1;
+                i++;
             }
         }
         return false;
