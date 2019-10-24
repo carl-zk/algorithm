@@ -24,15 +24,14 @@ package com.leetcode.threehundred;
 public class FirstBadVersion {
 
     public int firstBadVersion(int n) {
-        if (isBadVersion(1)) return 1;
-        long s = 1, e = n;
-        while (s <= e) {
-            long m = (s + e) >> 1;
-            if (isBadVersion((int) m)) {
-                e = m - 1;
+        int s = 1, e = n;
+        while (s < e) {
+            int m = s + (e - s) / 2;
+            if (isBadVersion(m)) {
+                e = m;
             } else s = m + 1;
         }
-        return (int) s;
+        return s;
     }
 
     boolean isBadVersion(int version) {
