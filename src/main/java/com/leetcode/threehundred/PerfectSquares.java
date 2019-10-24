@@ -25,12 +25,9 @@ public class PerfectSquares {
         dp[1] = 1;
         for (int i = 2; i <= n; i++) {
             dp[i] = i;
-            for (int j = 1; 2 * j <= i; j++) {
-                if (j * j == i) {
-                    dp[i] = 1;
-                    break;
-                }
-                dp[i] = Math.min(dp[i], dp[j] + dp[i - j]);
+            int sqrt = (int) Math.sqrt(i);
+            for (int j = 1; j <= sqrt; j++) {
+                dp[i] = Math.min(dp[i], 1 + dp[i - j * j]);
             }
         }
         return dp[n];
