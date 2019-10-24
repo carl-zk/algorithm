@@ -24,12 +24,15 @@ import java.util.Arrays;
 public class HIndex {
 
     public int hIndex(int[] citations) {
-        Arrays.sort(citations);
-        for (int i = citations.length; i >= 1; i--) {
-            if (citations[citations.length - i] >= i) {
-                return i;
-            }
+        int n = citations.length;
+        int[] papers = new int[n + 1];
+        for (int c : citations) {
+            papers[Math.min(n, c)]++;
         }
-        return 0;
+        int h = n;
+        for (int s = papers[n]; h > s; s += papers[h]) {
+            h--;
+        }
+        return h;
     }
 }
