@@ -1,9 +1,7 @@
 package com.leetcode.threehundred;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * https://leetcode.com/problems/integer-to-english-words/
@@ -31,13 +29,12 @@ import java.util.Map;
  */
 public class IntegertoEnglishWords {
     String[] gape = {"Thousand", "Million", "Billion"};
-    String[] str = {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
+    String[] dict1 = {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
             "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
-    Map<Integer, String> map = new HashMap<>();
+    String[] dict2 = {"", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
 
     public String numberToWords(int num) {
         if (num == 0) return "Zero";
-        init();
         List<Integer> list = new ArrayList<>();
         while (num > 0) {
             list.add(num % 1000);
@@ -59,27 +56,16 @@ public class IntegertoEnglishWords {
     private String parse(int num) {
         StringBuilder sb = new StringBuilder();
         if (num >= 100) {
-            sb.append(str[num / 100]).append(" Hundred");
+            sb.append(dict1[num / 100]).append(" Hundred");
             num %= 100;
         }
-        if (num / 10 != 0 && num >= 20) {
-            sb.append(sb.length() > 0 ? " " : "").append(map.get(num - (num % 10)));
+        if (num >= 20) {
+            sb.append(sb.length() > 0 ? " " : "").append(dict2[num / 10]);
             num %= 10;
         }
         if (num > 0) {
-            sb.append(sb.length() > 0 ? " " : "").append(str[num]);
+            sb.append(sb.length() > 0 ? " " : "").append(dict1[num]);
         }
         return sb.toString();
-    }
-
-    private void init() {
-        map.put(20, "Twenty");
-        map.put(30, "Thirty");
-        map.put(40, "Forty");
-        map.put(50, "Fifty");
-        map.put(60, "Sixty");
-        map.put(70, "Seventy");
-        map.put(80, "Eighty");
-        map.put(90, "Ninety");
     }
 }
