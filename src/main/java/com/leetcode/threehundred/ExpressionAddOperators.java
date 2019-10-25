@@ -33,84 +33,43 @@ import java.util.*;
 public class ExpressionAddOperators {
     List<String> ans;
     char[] operators = {'+', '-', '*'};
+    long target;
 
     public List<String> addOperators(String num, int target) {
         if (num.length() == 0) return Collections.emptyList();
         ans = new ArrayList<>();
+        this.target = target;
         char[] temp = new char[1 << 10];
-        temp[0] = num.charAt(0);
-        solve(num.toCharArray(), 1, temp, 1, target);
+        solve(num.toCharArray(), 0, temp, 0, 0, '+', 0, 0);
         return ans;
     }
 
-    private void solve(char[] nums, int cur, char[] temp, int len, int target) {
-        if (cur == nums.length) {
-            //System.out.println(String.valueOf(temp, 0, len));
-            long res = calc(temp, len);
-            if (res == target) {
-                ans.add(String.valueOf(temp, 0, len));
+    private void solve(char[] digits, int index, char[] expression, int len, long preOperand, char preOperator, long curOperand, long result) {
+        if (index == digits.length) {
+            if (result == target) {
+                ans.add(String.valueOf(expression, 0, len));
             }
             return;
         }
-        int lastNum = 0;
-        for (int i = len - 1, j = 1; i >= 0 && '0' <= temp[i] && temp[i] <= '9'; i--, j *= 10) {
-            lastNum += j * (temp[i] - '0');
+        curOperand = curOperand * 10 + (digits[index] - '0');
+        if (preOperand != 0) {
+            expression[len] = digits[index];
+            solve(digits, index + 1, expression, len + 1, preOperand, '+', curOperand, preOperand + curOperand);
         }
-        if (lastNum != 0 || temp[len - 1] < '0' || temp[len - 1] > '9') {
-            temp[len] = nums[cur];
-            solve(nums, cur + 1, temp, len + 1, target);
-        }
-        for (char opt : operators) {
-            temp[len] = opt;
-            temp[len + 1] = nums[cur];
-            solve(nums, cur + 1, temp, len + 2, target);
-        }
-    }
+        if (len > 0) {
+            expression[len] = '+';
+            expression[len + 1] = digits[index];
+            solve(digits, index + 1, expression, len + 2, curOperand, '+', 0, result + curOperand);
 
-    private long calc(char[] temp, int len) {
-        Stack<Long> nums = new Stack<>();
-        Stack<Character> signs = new Stack<>();
-        int i = 0;
-        while (i < len) {
-            if (temp[i] == '+' || temp[i] == '-') {
-                while (!signs.isEmpty()) {
-                    calc(nums, signs);
-                }
-                signs.push(temp[i]);
-                i++;
-            } else if (temp[i] == '*') {
-                while (!signs.isEmpty() && signs.peek() == '*') {
-                    calc(nums, signs);
-                }
-                signs.push(temp[i]);
-                i++;
-            } else {
-                int j = i + 1;
-                while (j < len && '0' <= temp[j] && temp[j] <= '9') {
-                    j++;
-                }
-                nums.push(Long.valueOf(String.valueOf(temp, i, j - i)));
-                i = j;
+            expression[len] = '-';
+            expression[len + 1] = digits[index];
+            solve(digits, index + 1, expression, len + 2, -curOperand, '-', 0, result - curOperand);
+
+            expression[len] = '*';
+            expression[len + 1] = digits[index];
+            if (preOperator == '*') {
+                solve(digits, index + 1, expression, len + 2, curOperand, '*', 0, result + preOperand - curOperand);
             }
-        }
-        while (!signs.isEmpty()) {
-            calc(nums, signs);
-        }
-        return nums.peek();
-    }
-
-    private void calc(Stack<Long> nums, Stack<Character> sings) {
-        long sec = nums.pop();
-        long fir = nums.pop();
-        switch (sings.pop()) {
-            case '+':
-                nums.push(fir + sec);
-                break;
-            case '-':
-                nums.push(fir - sec);
-                break;
-            default:
-                nums.push(fir * sec);
         }
     }
 
