@@ -1,6 +1,8 @@
 package com.leetcode.threehundred;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * https://leetcode.com/problems/expression-add-operators/
@@ -32,44 +34,51 @@ import java.util.*;
  */
 public class ExpressionAddOperators {
     List<String> ans;
-    char[] operators = {'+', '-', '*'};
     long target;
 
     public List<String> addOperators(String num, int target) {
         if (num.length() == 0) return Collections.emptyList();
         ans = new ArrayList<>();
         this.target = target;
-        char[] temp = new char[1 << 10];
-        solve(num.toCharArray(), 0, temp, 0, 0, '+', 0, 0);
+        List<String> expression = new ArrayList<>();
+        solve(num.toCharArray(), 0, expression, 0, 0, 0);
         return ans;
     }
 
-    private void solve(char[] digits, int index, char[] expression, int len, long preOperand, char preOperator, long curOperand, long result) {
+    private void solve(char[] digits, int index, List<String> expression, long preOperand, long curOperand, long result) {
         if (index == digits.length) {
-            if (result == target) {
-                ans.add(String.valueOf(expression, 0, len));
+            if (result == target && curOperand == 0) {
+                StringBuilder sb = new StringBuilder();
+                expression.subList(1, expression.size()).forEach(x -> sb.append(x));
+                ans.add(sb.toString());
             }
             return;
         }
         curOperand = curOperand * 10 + (digits[index] - '0');
-        if (preOperand != 0) {
-            expression[len] = digits[index];
-            solve(digits, index + 1, expression, len + 1, preOperand, '+', curOperand, preOperand + curOperand);
+        String curStr = String.valueOf(curOperand);
+        // NO OP
+        if (curOperand != 0) {
+            solve(digits, index + 1, expression, preOperand, curOperand, result);
         }
-        if (len > 0) {
-            expression[len] = '+';
-            expression[len + 1] = digits[index];
-            solve(digits, index + 1, expression, len + 2, curOperand, '+', 0, result + curOperand);
+        // ADD
+        expression.add("+");
+        expression.add(curStr);
+        solve(digits, index + 1, expression, curOperand, 0, result + curOperand);
+        expression.remove(expression.size() - 1);
+        expression.remove(expression.size() - 1);
 
-            expression[len] = '-';
-            expression[len + 1] = digits[index];
-            solve(digits, index + 1, expression, len + 2, -curOperand, '-', 0, result - curOperand);
+        if (expression.size() > 0) {
+            expression.add("-");
+            expression.add(curStr);
+            solve(digits, index + 1, expression, -curOperand, 0, result - curOperand);
+            expression.remove(expression.size() - 1);
+            expression.remove(expression.size() - 1);
 
-            expression[len] = '*';
-            expression[len + 1] = digits[index];
-            if (preOperator == '*') {
-                solve(digits, index + 1, expression, len + 2, curOperand, '*', 0, result + preOperand - curOperand);
-            }
+            expression.add("*");
+            expression.add(curStr);
+            solve(digits, index + 1, expression, preOperand * curOperand, 0, result - preOperand + (preOperand * curOperand));
+            expression.remove(expression.size() - 1);
+            expression.remove(expression.size() - 1);
         }
     }
 
