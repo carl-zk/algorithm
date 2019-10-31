@@ -2,9 +2,6 @@ package com.leetcode.threehundred;
 
 import com.leetcode.TreeNode;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
  * <p>
@@ -30,56 +27,37 @@ import java.util.List;
  * @auther carl
  */
 public class Codec {
-    static final TreeNode NIL = new TreeNode(0);
-    static final String NIL_STR = "nil";
 
     public String serialize(TreeNode root) {
-        if (root == null) return "";
-
-        List<TreeNode> all = new ArrayList<>();
-        List<TreeNode> cur = new ArrayList<>();
-        cur.add(root);
-        while (!cur.isEmpty()) {
-            List<TreeNode> next = new ArrayList<>();
-            for (TreeNode node : cur) {
-                all.add(node);
-                if (node != NIL) {
-                    next.add(node.left == null ? NIL : node.left);
-                    next.add(node.right == null ? NIL : node.right);
-                }
-            }
-            cur = next;
-        }
-        while (!all.isEmpty() && all.get(all.size() - 1) == NIL) {
-            all.remove(all.size() - 1);
-        }
         StringBuilder sb = new StringBuilder();
-        all.forEach(x -> sb.append(',').append(x == NIL ? NIL_STR : x.val));
-        return sb.substring(1);
+        build(root, sb);
+        return sb.substring(0, sb.length() - 1);
+    }
+
+    private void build(TreeNode root, StringBuilder sb) {
+        if (root == null) {
+            sb.append('#').append(',');
+            return;
+        }
+        sb.append(root.val).append(',');
+        build(root.left, sb);
+        build(root.right, sb);
     }
 
     // Decodes your encoded data to tree.
     public TreeNode deserialize(String data) {
-        if ("".equals(data)) return null;
+        return solve(data.split(","), new int[]{0});
+    }
 
-        String[] values = data.split(",");
-        TreeNode[] nodes = new TreeNode[values.length];
-        int p = 0, q = 1;
-        nodes[0] = new TreeNode(Integer.parseInt(values[p]));
-        while (q < values.length) {
-            while (nodes[p] == null) {
-                p++;
-            }
-            nodes[q] = NIL_STR.equals(values[q]) ? null : new TreeNode(Integer.parseInt(values[q]));
-            nodes[p].left = nodes[q];
-            q++;
-            if (q == values.length) return nodes[0];
-            nodes[q] = NIL_STR.equals(values[q]) ? null : new TreeNode(Integer.parseInt(values[q]));
-            nodes[p].right = nodes[q];
-            q++;
-            p++;
+    private TreeNode solve(String[] strs, int[] index) {
+        if ("#".equals(strs[index[0]])) {
+            index[0]++;
+            return null;
         }
-        return nodes[0];
+        TreeNode node = new TreeNode(Integer.parseInt(strs[index[0]++]));
+        node.left = solve(strs, index);
+        node.right = solve(strs, index);
+        return node;
     }
 
     public static void main(String[] args) {
@@ -91,6 +69,7 @@ public class Codec {
         root.right.right = new TreeNode(5);
         String data = codec.serialize(root);
         System.out.println(data);
-        codec.deserialize(data);
+        root = codec.deserialize(data);
+        System.out.println(1 + '0');
     }
 }
