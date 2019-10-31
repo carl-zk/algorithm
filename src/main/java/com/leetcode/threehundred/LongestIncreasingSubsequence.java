@@ -1,5 +1,7 @@
 package com.leetcode.threehundred;
 
+import java.util.Arrays;
+
 /**
  * https://leetcode.com/problems/longest-increasing-subsequence/
  * <p>
@@ -23,17 +25,19 @@ public class LongestIncreasingSubsequence {
     public int lengthOfLIS(int[] nums) {
         if (nums.length == 0) return 0;
         int n = nums.length;
-        int[] count = new int[n];
-        int ans = 1;
-        for (int i = 0; i < n; i++) {
-            count[i] = 1;
-            for (int j = 0; j < i; j++) {
-                if (nums[i] > nums[j]) {
-                    count[i] = Math.max(count[i], count[j] + 1);
-                }
-            }
-            ans = Math.max(ans, count[i]);
+        int[] dp = new int[n];
+        int len = 0;
+        for (int num : nums) {
+            int i = Arrays.binarySearch(dp, 0, len, num);
+            if (i < 0) i = -(i + 1);
+            dp[i] = num;
+            if (i == len) len++;
         }
-        return ans;
+        return len;
+    }
+
+    public static void main(String[] args) {
+        LongestIncreasingSubsequence lis = new LongestIncreasingSubsequence();
+        System.out.println(lis.lengthOfLIS(new int[]{10, 9, 2, 5, 3, 7, 101, 18}));
     }
 }
