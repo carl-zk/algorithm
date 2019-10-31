@@ -38,13 +38,8 @@ public class BullsandCows {
             if (gue[i] == sec[i]) {
                 bulls++;
             } else {
-                count[sec[i]]++;
-            }
-        }
-        for (int i = 0; i < gue.length; i++) {
-            if (gue[i] != sec[i] && count[gue[i]] > 0) {
-                cows++;
-                count[gue[i]]--;
+                if (count[sec[i]]++ < 0) cows++;
+                if (count[gue[i]]-- > 0) cows++;
             }
         }
         return bulls + "A" + cows + "B";
