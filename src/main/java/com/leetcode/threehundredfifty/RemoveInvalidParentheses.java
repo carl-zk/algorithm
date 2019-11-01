@@ -26,39 +26,44 @@ import java.util.*;
  */
 public class RemoveInvalidParentheses {
     Set<String> ans;
-    int max;
 
     public List<String> removeInvalidParentheses(String s) {
         ans = new HashSet<>();
-        max = 0;
-        solve(s.toCharArray(), 0, new char[s.length()], 0, 0, 0);
+        int leftRem = 0, rightRem = 0;
+        for (char c : s.toCharArray()) {
+            if (c == '(') {
+                leftRem++;
+            } else if (c == ')') {
+                rightRem = leftRem == 0 ? rightRem + 1 : rightRem;
+                leftRem = leftRem == 0 ? leftRem : leftRem - 1;
+            }
+        }
+        solve(s.toCharArray(), 0, new char[s.length()], 0, 0, 0, leftRem, rightRem);
         return new ArrayList<>(ans);
     }
 
-    private void solve(char[] cs, int index, char[] temp, int len, int left, int right) {
+    private void solve(char[] cs, int index, char[] temp, int len, int left, int right, int leftRem, int rightRem) {
         if (right > left) return;
         if (index == cs.length) {
-            if (left == right) {
-                if (len < max) return;
-                if (len > max) {
-                    max = len;
-                    ans = new HashSet<>();
-                }
+            if (leftRem == 0 && rightRem == 0) {
                 ans.add(new String(temp, 0, len));
             }
             return;
         }
+        // filter non-qualified expressions
+        if ((cs[index] == '(' && leftRem > 0) || (cs[index] == ')' && rightRem > 0)) {
+            solve(cs, index + 1, temp, len, left, right,
+                    leftRem - (cs[index] == '(' ? 1 : 0), rightRem - (cs[index] == ')' ? 1 : 0));
+        }
+
+        temp[len] = cs[index];
+
         if (cs[index] == '(') {
-            temp[len] = cs[index];
-            solve(cs, index + 1, temp, len + 1, left + 1, right);
-            solve(cs, index + 1, temp, len, left, right);
+            solve(cs, index + 1, temp, len + 1, left + 1, right, leftRem, rightRem);
         } else if (cs[index] == ')') {
-            temp[len] = cs[index];
-            solve(cs, index + 1, temp, len + 1, left, right + 1);
-            solve(cs, index + 1, temp, len, left, right);
+            solve(cs, index + 1, temp, len + 1, left, right + 1, leftRem, rightRem);
         } else {
-            temp[len] = cs[index];
-            solve(cs, index + 1, temp, len + 1, left, right);
+            solve(cs, index + 1, temp, len + 1, left, right, leftRem, rightRem);
         }
     }
 
