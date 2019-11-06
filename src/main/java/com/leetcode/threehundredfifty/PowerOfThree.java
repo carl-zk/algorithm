@@ -29,16 +29,17 @@ package com.leetcode.threehundredfifty;
 public class PowerOfThree {
 
     public boolean isPowerOfThree(int n) {
-        if (n == 0) return false;
-        long m = 1;
-        while (m < n) {
-            m *= 3;
-        }
-        return m == n;
+
+        return n > 0 && 1162261467 % n == 0;
     }
 
     public static void main(String[] args) {
         PowerOfThree powerOfThree = new PowerOfThree();
         System.out.println(powerOfThree.isPowerOfThree(45));
+
+        int t = Integer.MAX_VALUE;
+        System.out.println(t);
+
+        System.out.println(Math.pow(3.0, 19.0));
     }
 }
