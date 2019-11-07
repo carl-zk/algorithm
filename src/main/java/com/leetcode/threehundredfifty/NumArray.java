@@ -22,7 +22,7 @@ package com.leetcode.threehundredfifty;
  * @auther carl
  */
 public class NumArray {
-    int[] tree;
+/*    int[] tree;
     int n;
 
     public NumArray(int[] nums) {
@@ -69,5 +69,51 @@ public class NumArray {
             r /= 2;
         }
         return sum;
+    }*/
+
+    int[] nums;
+    int[] BITree;
+    int n;
+
+    public NumArray(int[] nums) {
+        this.nums = nums;
+        this.n = nums.length;
+        BITree = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            init(i, nums[i]);
+        }
+    }
+
+    private void init(int i, int diff) {
+        i++;
+        while (i <= n) {
+            BITree[i] += diff;
+            i += (i & -i);
+        }
+    }
+
+    public void update(int i, int val) {
+        int diff = val - nums[i];
+        nums[i] = val;
+        init(i, diff);
+    }
+
+    public int sumRange(int i, int j) {
+        return getSum(j) - getSum(i - 1);
+    }
+
+    private int getSum(int i) {
+        i++;
+        int sum = 0;
+        while (i > 0) {
+            sum += BITree[i];
+            i -= (i & -i);
+        }
+        return sum;
+    }
+
+    public static void main(String[] args) {
+        int i = 2;
+        System.out.println(i - (i & (-i)));
     }
 }
