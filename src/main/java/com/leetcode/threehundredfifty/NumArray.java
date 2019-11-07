@@ -1,36 +1,73 @@
 package com.leetcode.threehundredfifty;
 
 /**
- * https://leetcode.com/problems/range-sum-query-immutable/
+ * https://leetcode.com/problems/range-sum-query-mutable/
  * <p>
  * Given an integer array nums, find the sum of the elements between indices i and j (i ≤ j), inclusive.
  * <p>
- * Example:
- * Given nums = [-2, 0, 3, -5, 2, -1]
+ * The update(i, val) function modifies nums by updating the element at index i to val.
  * <p>
- * sumRange(0, 2) -> 1
- * sumRange(2, 5) -> -1
- * sumRange(0, 5) -> -3
+ * Example:
+ * <p>
+ * Given nums = [1, 3, 5]
+ * <p>
+ * sumRange(0, 2) -> 9
+ * update(1, 2)
+ * sumRange(0, 2) -> 8
  * Note:
- * You may assume that the array does not change.
- * There are many calls to sumRange function.
+ * <p>
+ * The array is only modifiable by the update function.
+ * You may assume the number of calls to update and sumRange function is distributed evenly.
  *
  * @auther carl
  */
 public class NumArray {
-    int[] nums;
-    long[] sum;
+    int[] tree;
+    int n;
 
     public NumArray(int[] nums) {
-        this.nums = nums;
-        this.sum = new long[nums.length + 1];
-        sum[0] = 0;
-        for (int i = 0; i < nums.length; i++) {
-            sum[i + 1] = sum[i] + nums[i];
+        n = nums.length;
+        tree = new int[n << 1];
+        buildTree(nums);
+    }
+
+    private void buildTree(int[] nums) {
+        for (int i = n, j = 0; j < n; i++, j++) {
+            tree[i] = nums[j];
+        }
+        for (int i = n - 1; i > -1; i--) {
+            tree[i] = tree[2 * i] + tree[2 * i + 1];
+        }
+    }
+
+    public void update(int i, int val) {
+        i += n;
+        tree[i] = val;
+        int p = i >> 1;
+
+        while (p > 0) {
+            tree[p] = tree[2 * p] + tree[2 * p + 1];
+            p >>= 1;
         }
     }
 
     public int sumRange(int i, int j) {
-        return (int) (sum[j + 1] - sum[i]);
+        int l = i + n;
+        int r = j + n;
+        int sum = 0;
+
+        while (l <= r) {
+            if ((l % 2) == 1) {
+                sum += tree[l];
+                l++;
+            }
+            if ((r % 2) == 0) {
+                sum += tree[r];
+                r--;
+            }
+            l /= 2;
+            r /= 2;
+        }
+        return sum;
     }
 }
