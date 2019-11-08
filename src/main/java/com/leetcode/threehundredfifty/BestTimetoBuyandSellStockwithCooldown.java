@@ -1,35 +1,33 @@
 package com.leetcode.threehundredfifty;
 
 /**
+ * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+ * <p>
+ * Say you have an array for which the ith element is the price of a given stock on day i.
+ * <p>
+ * Design an algorithm to find the maximum profit. You may complete as many transactions as you like (ie, buy one and sell one share of the stock multiple times) with the following restrictions:
+ * <p>
+ * You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
+ * After you sell your stock, you cannot buy stock on next day. (ie, cooldown 1 day)
+ * Example:
+ * <p>
+ * Input: [1,2,3,0,2]
+ * Output: 3
+ * Explanation: transactions = [buy, sell, cooldown, buy, sell]
+ *
  * @auther carl
  */
 public class BestTimetoBuyandSellStockwithCooldown {
-    int maxProfit = Integer.MIN_VALUE;
-    int[][] mem;
 
     public int maxProfit(int[] prices) {
-        mem = new int[prices.length][prices.length];
-        solve(prices, 0, -1, 0);
-        return maxProfit;
-    }
+        int sell = 0, preSell = 0, buy = Integer.MIN_VALUE, preBuy = 0;
 
-    private void solve(int[] prices, int index, int lastBuyAt, int profit) {
-        if (index >= prices.length) {
-            maxProfit = Math.max(maxProfit, profit);
-            return;
+        for (int i = 0; i < prices.length; i++) {
+            preBuy = buy;
+            buy = Math.max(preSell - prices[i], preBuy);
+            preSell = sell;
+            sell = Math.max(preBuy + prices[i], preSell);
         }
-        if (lastBuyAt != -1 && profit < mem[index][lastBuyAt]) return;
-        if (lastBuyAt != -1) {
-            mem[index][lastBuyAt] = profit;
-        }
-        if (lastBuyAt != -1) {
-            if (prices[index] > prices[lastBuyAt]) {
-                solve(prices, index + 2, -1, profit + prices[index] - prices[lastBuyAt]);
-            }
-            solve(prices, index + 1, lastBuyAt, profit);
-        } else {
-            solve(prices, index + 1, index, profit);
-            solve(prices, index + 1, lastBuyAt, profit);
-        }
+        return sell;
     }
 }
