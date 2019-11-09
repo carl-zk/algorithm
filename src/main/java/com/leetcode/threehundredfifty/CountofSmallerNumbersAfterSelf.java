@@ -1,8 +1,7 @@
 package com.leetcode.threehundredfifty;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.PriorityQueue;
 
 /**
  * https://leetcode.com/problems/count-of-smaller-numbers-after-self/
@@ -24,38 +23,37 @@ import java.util.PriorityQueue;
 public class CountofSmallerNumbersAfterSelf {
 
     public List<Integer> countSmaller(int[] nums) {
-        PriorityQueue<int[]> que = new PriorityQueue<>((a, b) -> {
-            if (b[0] == a[0]) {
-                return b[1] - a[1];
-            }
-            return b[0] - a[0];
-        });
-        List<Integer> ans = new ArrayList<>(nums.length);
-        List<Integer> remains = new ArrayList<>();
-        for (int i = 0; i < nums.length; i++) {
-            ans.add(0);
-            que.add(new int[]{nums[i], i});
-            remains.add(i);
+        int l = nums.length, max = Integer.MIN_VALUE, min = Integer.MAX_VALUE;
+        for (int num : nums) {
+            max = Math.max(max, num);
+            min = Math.min(min, num);
         }
-
-        while (!que.isEmpty()) {
-            int[] peek = que.poll();
-            ans.set(peek[1], binaryCount(remains, 0, remains.size() - 1, peek[1]));
+        Integer[] ans = new Integer[l];
+        int sz = max - min + 1;
+        int[] tree = new int[sz];
+        for (int i = l - 1; i >= 0; i--) {
+            int cur = nums[i] - min;
+            ans[i] = sumAll(tree, cur - 1);
+            update(tree, cur);
         }
-        return ans;
+        return Arrays.asList(ans);
     }
 
-    private int binaryCount(List<Integer> remains, int start, int end, int key) {
-        int index = remains.size() - 1;
-        while (start <= end) {
-            index = (start + end) >> 1;
-            if (remains.get(index) == key) {
-                break;
-            } else if (remains.get(index) < key) {
-                start = index + 1;
-            } else end = index - 1;
+    private int sumAll(int[] tree, int k) {
+        k++;
+        int sum = 0;
+        while (k > 0) {
+            sum += tree[k];
+            k -= k & -k;
         }
-        remains.remove(index);
-        return remains.size() - index;
+        return sum;
+    }
+
+    private void update(int[] tree, int k) {
+        k++;
+        while (k < tree.length) {
+            tree[k]++;
+            k += k & -k;
+        }
     }
 }
