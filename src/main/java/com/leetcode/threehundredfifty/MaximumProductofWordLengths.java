@@ -1,6 +1,6 @@
 package com.leetcode.threehundredfifty;
 
-import java.util.Arrays;
+import java.util.BitSet;
 
 /**
  * https://leetcode.com/problems/maximum-product-of-word-lengths/
@@ -29,21 +29,16 @@ public class MaximumProductofWordLengths {
 
     public int maxProduct(String[] words) {
         int ans = 0;
-        Arrays.sort(words, (a, b) -> b.length() - a.length());
+        BitSet[] bitSet = new BitSet[words.length];
         for (int i = 0; i < words.length; i++) {
-            boolean[] flag = new boolean[256];
+            bitSet[i] = new BitSet(256);
             for (char c : words[i].toCharArray()) {
-                flag[c] = true;
+                bitSet[i].set(c);
             }
+        }
+        for (int i = 0; i < words.length; i++) {
             for (int j = i + 1; j < words.length; j++) {
-                boolean du = false;
-                for (char c : words[j].toCharArray()) {
-                    if (flag[c]) {
-                        du = true;
-                        break;
-                    }
-                }
-                if (!du) {
+                if (!bitSet[i].intersects(bitSet[j])) {
                     ans = Math.max(ans, words[i].length() * words[j].length());
                 }
             }
