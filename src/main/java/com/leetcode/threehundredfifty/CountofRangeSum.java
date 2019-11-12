@@ -25,13 +25,32 @@ public class CountofRangeSum {
         for (int i = 0; i < n; i++) {
             sum[i + 1] = sum[i] + nums[i];
         }
-        int ans = 0;
-        for (int i = 1; i < sum.length; i++) {
-            for (int j = i; j < sum.length; j++) {
-                long total = sum[j] - sum[i - 1];
-                ans += lower <= total && total <= upper ? 1 : 0;
-            }
+        long[] copy = new long[sum.length];
+        return mergeSort(sum, copy, 0, n, lower, upper);
+    }
+
+    private int mergeSort(long[] sums, long[] copy, int start, int end, int lower, int upper) {
+        if (start >= end) return 0;
+        int mid = start + (end - start) / 2;
+        int count = mergeSort(sums, copy, start, mid, lower, upper) +
+                mergeSort(sums, copy, mid + 1, end, lower, upper);
+        count += merge(sums, copy, start, mid, end, lower, upper);
+        return count;
+    }
+
+    private int merge(long[] sums, long[] copy, int start, int mid, int end, int lower, int upper) {
+        int l = mid + 1, r = mid + 1;
+        int index = start, j = mid + 1;
+        int count = 0;
+        for (int i = start; i <= mid; i++) {
+            while (l <= end && sums[l] - sums[i] < lower) l++;
+            while (r <= end && sums[r] - sums[i] <= upper) r++;
+            while (j <= end && sums[j] < sums[i]) copy[index++] = sums[j++];
+            count += r - l;
+            copy[index++] = sums[i];
         }
-        return ans;
+        System.arraycopy(sums, j, copy, index, end - j + 1);
+        System.arraycopy(copy, start, sums, start, end - start + 1);
+        return count;
     }
 }
