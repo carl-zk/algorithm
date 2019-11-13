@@ -41,24 +41,11 @@ public class VerifyPreorderSerializationofaBinaryTree {
 
     public boolean isValidSerialization(String preorder) {
         String[] nodes = preorder.split(",");
-        if (nodes.length == 0) return false;
-        if ("#".equals(nodes[0])) return nodes.length == 1;
-        Stack<String> stack = new Stack<>();
-        stack.push(nodes[0]);
-        for (int i = 1; i < nodes.length; i++) {
-            if (stack.isEmpty()) return false;
-            if ("#".equals(nodes[i])) {
-                while (!stack.isEmpty() && "r".equals(stack.peek())) {
-                    stack.pop();
-                }
-                if (!stack.isEmpty()) {
-                    stack.pop();
-                    stack.push("r");
-                }
-            } else {
-                stack.push(nodes[i]);
-            }
+        int diff = 1;
+        for (String node : nodes) {
+            if (--diff < 0) return false;
+            if (!"#".equals(node)) diff += 2;
         }
-        return stack.isEmpty();
+        return diff == 0;
     }
 }
