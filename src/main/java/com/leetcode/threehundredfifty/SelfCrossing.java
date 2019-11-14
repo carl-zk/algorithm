@@ -50,8 +50,7 @@ public class SelfCrossing {
             c = b;
             b = a;
             a = g;
-            if (b > 0 && c > 0 && c <= a && d >= b) return true;
-            if (a > 0 && b > 0 && c > 0 && d >= b && e <= c && e + a >= c && b + f >= d) return true;
+            if (d >= b && b > 0 && (c <= a || e <= c && b + f >= d && e + a >= c)) return true;
         }
         return false;
     }
