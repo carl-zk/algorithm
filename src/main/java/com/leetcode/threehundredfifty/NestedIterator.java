@@ -1,8 +1,9 @@
 package com.leetcode.threehundredfifty;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Stack;
 
 /**
  * https://leetcode.com/problems/flatten-nested-list-iterator/
@@ -27,32 +28,32 @@ import java.util.List;
  * @auther carl
  */
 public class NestedIterator implements Iterator<Integer> {
-    ArrayList<Integer> list = new ArrayList<>();
-    int index;
+    Stack<ListIterator<NestedInteger>> stack;
 
     public NestedIterator(List<NestedInteger> nestedList) {
-        this.index = 0;
-        flat(nestedList);
+        stack = new Stack<>();
+        stack.push(nestedList.listIterator());
     }
 
     @Override
     public Integer next() {
-        return list.get(index++);
+        return stack.peek().next().getInteger();
     }
 
     @Override
     public boolean hasNext() {
-        return index < list.size();
-    }
-
-    private void flat(List<NestedInteger> nestedList) {
-        for (NestedInteger nested : nestedList) {
-            if (nested.isInteger()) {
-                list.add(nested.getInteger());
+        while (!stack.isEmpty()) {
+            if (!stack.peek().hasNext()) {
+                stack.pop();
             } else {
-                flat(nested.getList());
+                NestedInteger x = stack.peek().next();
+                if (x.isInteger()) {
+                    return stack.peek().previous() == x;
+                }
+                stack.push(x.getList().listIterator());
             }
         }
+        return false;
     }
 
     interface NestedInteger {
