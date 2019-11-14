@@ -39,10 +39,17 @@ import com.leetcode.TreeNode;
 public class HouseRobberIII {
 
     public int rob(TreeNode root) {
-        if (root == null) return 0;
-        int in = root.val + (root.left == null ? 0 : rob(root.left.left) + rob(root.left.right)) +
-                (root.right == null ? 0 : rob(root.right.left) + rob(root.right.right));
-        int ex = rob(root.left) + rob(root.right);
-        return Math.max(in, ex);
+        int[] res = helper(root);
+        return Math.max(res[0], res[1]);
+    }
+
+    private int[] helper(TreeNode root) {
+        if (root == null) return new int[2];
+        int[] left = helper(root.left);
+        int[] right = helper(root.right);
+        int[] res = new int[2];
+        res[0] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        res[1] = root.val + left[0] + right[0];
+        return res;
     }
 }
