@@ -1,11 +1,9 @@
 package com.leetcode.threehundredfifty;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 
 /**
  * https://leetcode.com/problems/top-k-frequent-elements/
@@ -30,36 +28,32 @@ import java.util.PriorityQueue;
 public class TopKFrequentElements {
 
     public List<Integer> topKFrequent(int[] nums, int k) {
-        List<Integer> ans = new ArrayList<>(k);
-        Map<Integer, Node> map = new HashMap<>(nums.length);
-        PriorityQueue<Node> que = new PriorityQueue<>(Comparator.comparingInt(a -> a.count));
+        List<Integer> ans = new ArrayList<>();
+        Map<Integer, Integer> map = new HashMap<>(nums.length);
+        ArrayList[] bucket = new ArrayList[nums.length + 1];
 
         for (int i = 0; i < nums.length; i++) {
-            Node node = map.get(nums[i]);
-            if (node == null) {
-                node = new Node(nums[i]);
-            }
-            node.count++;
-            map.put(nums[i], node);
+            int count = map.getOrDefault(nums[i], 0);
+            map.put(nums[i], ++count);
         }
 
-        for (Map.Entry<Integer, Node> entry : map.entrySet()) {
-            que.add(entry.getValue());
-            if (que.size() > k) que.poll();
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (bucket[entry.getValue()] == null) {
+                bucket[entry.getValue()] = new ArrayList();
+            }
+            bucket[entry.getValue()].add(entry.getKey());
         }
-        while (!que.isEmpty()) {
-            ans.add(que.poll().num);
+        for (int i = nums.length; i > 0; i--) {
+            if (bucket[i] != null) {
+                ans.addAll(bucket[i]);
+            }
+            if (ans.size() >= k) {
+                while (ans.size() > k) {
+                    ans.remove(ans.size() - 1);
+                }
+                return ans;
+            }
         }
         return ans;
-    }
-
-    class Node {
-        int num;
-        int count;
-
-        public Node(int num) {
-            this.num = num;
-            this.count = 0;
-        }
     }
 }
