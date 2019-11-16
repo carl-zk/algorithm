@@ -1,7 +1,6 @@
 package com.leetcode.fourhundred;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -38,16 +37,20 @@ import java.util.PriorityQueue;
 public class FindKPairswithSmallestSums {
 
     public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
-        PriorityQueue<int[]> que = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
-        for (int i = 0; i < nums1.length; i++) {
-            for (int j = 0; j < nums2.length; j++) {
-                que.add(new int[]{nums1[i] + nums2[j], nums1[i], nums2[j]});
-            }
-        }
         List<List<Integer>> ans = new LinkedList<>();
-        for (int i = 0; i < k && !que.isEmpty(); i++) {
+        if (nums1.length == 0 || nums2.length == 0) return ans;
+
+        PriorityQueue<int[]> que = new PriorityQueue<>(k, (a, b) -> a[0] + a[1] - b[0] - b[1]);
+
+        for (int i = 0; i < nums1.length && i < k; i++) {
+            que.add(new int[]{nums1[i], nums2[0], 0});
+        }
+
+        while (k-- > 0 && !que.isEmpty()) {
             int[] p = que.poll();
-            ans.add(Arrays.asList(p[1], p[2]));
+            ans.add(Arrays.asList(p[0], p[1]));
+            if (p[2] + 1 == nums2.length) continue;
+            que.add(new int[]{p[0], nums2[p[2] + 1], p[2] + 1});
         }
         return ans;
     }
