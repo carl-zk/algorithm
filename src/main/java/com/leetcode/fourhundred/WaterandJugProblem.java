@@ -1,8 +1,5 @@
 package com.leetcode.fourhundred;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * https://leetcode.com/problems/water-and-jug-problem/
  * <p>
@@ -29,18 +26,13 @@ import java.util.Set;
 public class WaterandJugProblem {
 
     public boolean canMeasureWater(int x, int y, int z) {
-        return solve(x, 0, y, 0, z, new HashSet<>());
+        if (z == 0) return true;
+        if (x == 0 || y == 0) return x + y == z;
+
+        return x + y >= z && z % gcd(x, y) == 0;
     }
 
-    private boolean solve(int x, int leftx, int y, int lefty, int z, Set<String> set) {
-        String key = new StringBuilder().append(x).append(leftx).append(y).append(lefty).toString();
-        if (set.contains(key)) return false;
-        set.add(key);
-        if (leftx + lefty == z) return true;
-        if (solve(x, x, y, lefty, z, set) || solve(x, leftx, y, y, z, set)) return true;
-        if (solve(x, 0, y, lefty, z, set) || solve(x, leftx, y, 0, z, set)) return true;
-        if (solve(x, 0, y, Math.min(y, leftx + lefty), z, set) ||
-                solve(x, Math.min(x, leftx + lefty), y, Math.max(0, lefty + leftx - x), z, set)) return true;
-        return false;
+    private int gcd(int x, int y) {
+        return x % y == 0 ? y : gcd(y, x % y);
     }
 }
