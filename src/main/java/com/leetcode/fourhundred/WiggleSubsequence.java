@@ -31,21 +31,14 @@ package com.leetcode.fourhundred;
 public class WiggleSubsequence {
 
     public int wiggleMaxLength(int[] nums) {
-        if (nums.length == 0) return 0;
-        int pre = 0, cur = 1;
-        while (cur < nums.length && nums[cur] == nums[pre]) cur++;
-        if (cur == nums.length) return 1;
-        boolean isUp = nums[cur] > nums[pre];
-        int ans = 2;
-        for (pre = cur++; cur < nums.length; cur++) {
-            if (nums[cur] == nums[pre]) continue;
-
-            if (isUp && nums[cur] > nums[pre] || (!isUp && nums[cur] < nums[pre])) {
-                pre = cur;
-            } else {
-                isUp = !isUp;
-                pre = cur;
+        if (nums.length < 2) return nums.length;
+        int preDiff = nums[1] - nums[0];
+        int ans = preDiff == 0 ? 1 : 2;
+        for (int i = 2; i < nums.length; i++) {
+            int diff = nums[i] - nums[i - 1];
+            if (preDiff <= 0 && diff > 0 || preDiff >= 0 && diff < 0) {
                 ans++;
+                preDiff = diff;
             }
         }
         return ans;
