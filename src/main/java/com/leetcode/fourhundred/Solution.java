@@ -27,26 +27,35 @@ import java.util.Random;
  */
 public class Solution {
     ListNode head;
-    ListNode cur;
     Random random;
 
     public Solution(ListNode head) {
         this.head = head;
-        this.cur = head;
         this.random = new Random();
     }
 
     /**
-     * Returns a random node's value.
+     * Reservoir Sample
      */
     public int getRandom() {
-        int jump = random.nextInt(10);
-        while (jump-- > 0) {
-            if (cur == null) cur = head;
-            cur = cur.next;
+        return selectKItems(head);
+    }
+
+    private int selectKItems(ListNode cur) {
+        int i, k = 1;
+        int[] reservoir = new int[k];
+        for (i = 0; i < k; i++, cur = cur.next) {
+            reservoir[i] = cur.val;
         }
-        if (cur == null) cur = head;
-        int v = cur.val;
-        return v;
+
+        for (; cur != null; i++, cur = cur.next) {
+            int j = random.nextInt(i + 1);
+
+            if (j < k) {
+                reservoir[j] = cur.val;
+            }
+        }
+
+        return reservoir[0];
     }
 }
