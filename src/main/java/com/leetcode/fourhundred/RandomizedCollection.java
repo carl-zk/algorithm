@@ -59,11 +59,7 @@ public class RandomizedCollection {
     public boolean insert(int val) {
         boolean notExists = !map.containsKey(val) || map.get(val).size() == 0;
         list.add(val);
-        map.compute(val, (k, v) -> {
-            v = v == null ? new HashSet<>() : v;
-            v.add(list.size() - 1);
-            return v;
-        });
+        map.compute(val, (k, v) -> v == null ? new HashSet<>() : v).add(list.size() - 1);
         return notExists;
     }
 
@@ -74,10 +70,7 @@ public class RandomizedCollection {
         if (!map.containsKey(val) || map.get(val).size() == 0) return false;
         Set<Integer> indexes = map.get(val);
         int index = indexes.iterator().next();
-        map.compute(val, (k, v) -> {
-            v.remove(index);
-            return v;
-        });
+        map.compute(val, (k, v) -> v).remove(index);
         int lastVal = list.get(list.size() - 1);
         list.set(index, lastVal);
         map.compute(lastVal, (k, v) -> {
