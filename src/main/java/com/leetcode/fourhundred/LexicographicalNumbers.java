@@ -19,48 +19,17 @@ public class LexicographicalNumbers {
 
     public List<Integer> lexicalOrder(int n) {
         ans = new ArrayList<>();
-        Trie root = new Trie();
-
-        for (int i = 1; i <= n; i++) {
-            build(root, i);
+        for (int i = 1; i < 10; i++) {
+            helper(i, n);
         }
-
-        traversal(root);
-
         return ans;
     }
 
-    private void build(Trie root, int val) {
-        for (char c : Integer.toString(val).toCharArray()) {
-            if (root.next[c - '0'] == null)
-                root.next[c - '0'] = new Trie();
-            root = root.next[c - '0'];
-        }
-        root.val = val;
-        root.count++;
-    }
-
-    private void traversal(Trie root) {
-        if (root.count > 0) {
-            for (int i = 0; i < root.count; i++) {
-                ans.add(root.val);
-            }
-        }
+    private void helper(int cur, int n) {
+        if (cur > n) return;
+        ans.add(cur);
         for (int i = 0; i < 10; i++) {
-            if (root.next[i] != null) {
-                traversal(root.next[i]);
-            }
-        }
-    }
-
-    class Trie {
-        int val;
-        int count;
-        Trie[] next;
-
-        public Trie() {
-            this.count = 0;
-            next = new Trie[10];
+            helper(cur * 10 + i, n);
         }
     }
 }
