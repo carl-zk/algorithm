@@ -1,61 +1,61 @@
 package com.leetcode.fourhundred;
 
-import com.leetcode.ListNode;
-
+import java.util.Arrays;
 import java.util.Random;
 
 /**
- * https://leetcode.com/problems/linked-list-random-node/
+ * https://leetcode.com/problems/shuffle-an-array/
  * <p>
- * Given a singly linked list, return a random node's value from the linked list. Each node must have the same probability of being chosen.
- * <p>
- * Follow up:
- * What if the linked list is extremely large and its length is unknown to you? Could you solve this efficiently without using extra space?
+ * Shuffle a set of numbers without duplicates.
  * <p>
  * Example:
  * <p>
- * // Init a singly linked list [1,2,3].
- * ListNode head = new ListNode(1);
- * head.next = new ListNode(2);
- * head.next.next = new ListNode(3);
- * Solution solution = new Solution(head);
+ * // Init an array with set 1, 2, and 3.
+ * int[] nums = {1,2,3};
+ * Solution solution = new Solution(nums);
  * <p>
- * // getRandom() should return either 1, 2, or 3 randomly. Each element should have equal probability of returning.
- * solution.getRandom();
+ * // Shuffle the array [1,2,3] and return its result. Any permutation of [1,2,3] must equally likely to be returned.
+ * solution.shuffle();
+ * <p>
+ * // Resets the array back to its original configuration [1,2,3].
+ * solution.reset();
+ * <p>
+ * // Returns the random shuffling of array [1,2,3].
+ * solution.shuffle();
  *
- * @author carl
+ * @auther carl
  */
 public class Solution {
-    ListNode head;
+    int[] origin;
     Random random;
 
-    public Solution(ListNode head) {
-        this.head = head;
-        this.random = new Random();
+    public Solution(int[] nums) {
+        origin = Arrays.copyOf(nums, nums.length);
+        random = new Random();
     }
 
     /**
-     * Reservoir Sample
+     * Resets the array to its original configuration and return it.
      */
-    public int getRandom() {
-        return selectKItems(head);
+    public int[] reset() {
+        return Arrays.copyOf(origin, origin.length);
     }
 
-    private int selectKItems(ListNode cur) {
-        int i, k = 1;
-        int[] reservoir = new int[k];
-        for (i = 0; i < k; i++, cur = cur.next) {
-            reservoir[i] = cur.val;
-        }
-
-        for (; cur != null; i++, cur = cur.next) {
+    /**
+     * Returns a random shuffling of the array.
+     */
+    public int[] shuffle() {
+        int[] shuf = Arrays.copyOf(origin, origin.length);
+        for (int i = 1; i < shuf.length; i++) {
             int j = random.nextInt(i + 1);
-
-            if (j < k) {
-                reservoir[j] = cur.val;
-            }
+            swap(shuf, i, j);
         }
+        return shuf;
+    }
 
-        return reservoir[0];
+    private void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
     }
 }
