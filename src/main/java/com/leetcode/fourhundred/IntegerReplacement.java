@@ -1,8 +1,5 @@
 package com.leetcode.fourhundred;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * https://leetcode.com/problems/integer-replacement/
  * <p>
@@ -38,26 +35,21 @@ import java.util.Map;
  * @author carl
  */
 public class IntegerReplacement {
-    Map<Long, Integer> map = new HashMap<>();
 
     public int integerReplacement(int n) {
-        return solve(n, 0);
-    }
-
-    private int solve(long n, int times) {
-        if (map.containsKey(n)) return map.get(n) + times;
-        while (n % 2 == 0) {
-            n >>= 1;
-            times++;
+        int count = 0;
+        long num = n;
+        while (num > 1) {
+            if (num % 2 == 0) {
+                num >>= 1;
+            } else if (num != 3 && (num + 1) % 4 == 0) {
+                num++;
+            } else {
+                num--;
+            }
+            count++;
         }
-
-        if (n == 1) {
-            map.put(n, times);
-            return times;
-        }
-        int min = Math.min(solve(n - 1, times + 1), solve(n + 1, times + 1));
-        map.put(n, min);
-        return min;
+        return count;
     }
 }
 
