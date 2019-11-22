@@ -37,7 +37,6 @@ package com.leetcode.fourhundredfifty;
  * @author carl
  */
 public class FrogJump {
-    boolean can = false;
 
     public boolean canCross(int[] stones) {
         if (stones[1] > 1) return false;
@@ -46,30 +45,27 @@ public class FrogJump {
             if (stones[i] > stones[i - 1] + i + 2) return false;
         }
 
-        solve(stones, 0, 1);
-
-        return can;
+        return solve(stones, 0, 1);
     }
 
-    private void solve(int[] stones, int index, int jump) {
-        if (can || jump == 0) return;
+    private boolean solve(int[] stones, int index, int jump) {
 
         if (index == stones.length - 1) {
-            can = true;
-            return;
+            return true;
         }
 
         int reach = stones[index] + jump;
 
-        for (int i = index + 1; !can && i < stones.length; i++) {
+        for (int i = index + 1; i < stones.length; i++) {
             if (stones[i] < reach) continue;
 
             if (stones[i] > reach) break;
 
             // swap jump+1 and jump-1 will get TLE.
-            solve(stones, i, jump + 1);
-            solve(stones, i, jump);
-            solve(stones, i, jump - 1);
+            if (solve(stones, i, jump + 1) ||
+                    solve(stones, i, jump) ||
+                    solve(stones, i, jump - 1)) return true;
         }
+        return false;
     }
 }
