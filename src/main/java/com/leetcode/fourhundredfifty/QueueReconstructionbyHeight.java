@@ -1,7 +1,7 @@
 package com.leetcode.fourhundredfifty;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -26,27 +26,14 @@ import java.util.List;
 public class QueueReconstructionbyHeight {
 
     public int[][] reconstructQueue(int[][] people) {
-        Arrays.sort(people, (a, b) -> a[1] != b[1] ? a[1] - b[1] : a[0] - b[0]);
+        Arrays.sort(people, (a, b) -> a[0] != b[0] ? b[0] - a[0] : a[1] - b[1]);
 
-        List<int[]> list = new LinkedList<>();
+        List<int[]> list = new ArrayList<>();
 
         for (int[] p : people) {
-            int i = 0;
-            for (int k = 0; i < list.size(); i++) {
-                if (k < p[1] && list.get(i)[0] >= p[0]) k++;
-                else if (k == p[1] && list.get(i)[0] >= p[0]) break;
-            }
-            list.add(i, p);
+            list.add(p[1], p);
         }
-
-        int[][] ans = new int[people.length][2];
-        int i = 0;
-        for (int[] p : list) {
-            ans[i][0] = p[0];
-            ans[i][1] = p[1];
-            i++;
-        }
-        return ans;
+        return list.toArray(new int[people.length][2]);
     }
 
     public static void main(String[] args) {
