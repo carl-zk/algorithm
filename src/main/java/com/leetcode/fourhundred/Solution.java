@@ -1,61 +1,51 @@
 package com.leetcode.fourhundred;
 
-import java.util.Arrays;
 import java.util.Random;
 
 /**
- * https://leetcode.com/problems/shuffle-an-array/
+ * https://leetcode.com/problems/random-pick-index/
  * <p>
- * Shuffle a set of numbers without duplicates.
+ * Given an array of integers with possible duplicates, randomly output the index of a given target number. You can assume that the given target number must exist in the array.
+ * <p>
+ * Note:
+ * The array size can be very large. Solution that uses too much extra space will not pass the judge.
  * <p>
  * Example:
  * <p>
- * // Init an array with set 1, 2, and 3.
- * int[] nums = {1,2,3};
+ * int[] nums = new int[] {1,2,3,3,3};
  * Solution solution = new Solution(nums);
  * <p>
- * // Shuffle the array [1,2,3] and return its result. Any permutation of [1,2,3] must equally likely to be returned.
- * solution.shuffle();
+ * // pick(3) should return either index 2, 3, or 4 randomly. Each index should have equal probability of returning.
+ * solution.pick(3);
  * <p>
- * // Resets the array back to its original configuration [1,2,3].
- * solution.reset();
- * <p>
- * // Returns the random shuffling of array [1,2,3].
- * solution.shuffle();
+ * // pick(1) should return 0. Since in the array only nums[0] is equal to 1.
+ * solution.pick(1);
  *
- * @auther carl
+ * @author carl
  */
 public class Solution {
-    int[] origin;
+    int[] nums;
     Random random;
 
     public Solution(int[] nums) {
-        origin = Arrays.copyOf(nums, nums.length);
+        this.nums = nums;
         random = new Random();
     }
 
-    /**
-     * Resets the array to its original configuration and return it.
-     */
-    public int[] reset() {
-        return Arrays.copyOf(origin, origin.length);
-    }
+    public int pick(int target) {
+        int[] indexes = new int[10];
+        int size = 0;
 
-    /**
-     * Returns a random shuffling of the array.
-     */
-    public int[] shuffle() {
-        int[] shuf = Arrays.copyOf(origin, origin.length);
-        for (int i = 1; i < shuf.length; i++) {
-            int j = random.nextInt(i + 1);
-            swap(shuf, i, j);
+        for (int i = 0; i < nums.length; i++) {
+            if (target == nums[i]) {
+                if (size == 10) {
+                    int id = random.nextInt(size);
+                    indexes[id] = i;
+                } else {
+                    indexes[size++] = i;
+                }
+            }
         }
-        return shuf;
-    }
-
-    private void swap(int[] arr, int i, int j) {
-        int temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
+        return indexes[random.nextInt(size)];
     }
 }

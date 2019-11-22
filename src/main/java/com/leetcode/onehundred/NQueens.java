@@ -20,12 +20,12 @@ import java.util.List;
  * <p>
  * Input: 4
  * Output: [
- * [".Q..",  // Solution 1
+ * [".Q..",  // Solution2 1
  * "...Q",
  * "Q...",
  * "..Q."],
  * <p>
- * ["..Q.",  // Solution 2
+ * ["..Q.",  // Solution2 2
  * "Q...",
  * "...Q",
  * ".Q.."]

@@ -17,12 +17,12 @@ import java.util.Arrays;
  * Output: 2
  * Explanation: There are two distinct solutions to the 4-queens puzzle as shown below.
  * [
- * [".Q..",  // Solution 1
+ * [".Q..",  // Solution2 1
  * "...Q",
  * "Q...",
  * "..Q."],
  * <p>
- * ["..Q.",  // Solution 2
+ * ["..Q.",  // Solution2 2
  * "Q...",
  * "...Q",
  * ".Q.."]
