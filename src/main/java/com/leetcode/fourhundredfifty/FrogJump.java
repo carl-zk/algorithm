@@ -1,10 +1,5 @@
 package com.leetcode.fourhundredfifty;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * https://leetcode.com/problems/frog-jump/
  * <p>
@@ -42,30 +37,39 @@ import java.util.Set;
  * @author carl
  */
 public class FrogJump {
-    Map<Integer, Set<Integer>> map = new HashMap<>();
+    boolean can = false;
 
     public boolean canCross(int[] stones) {
         if (stones[1] > 1) return false;
 
-        return solve(stones, 1, 1);
+        for (int i = 2; i < stones.length; i++) {
+            if (stones[i] > stones[i - 1] + i + 2) return false;
+        }
+
+        solve(stones, 0, 1);
+
+        return can;
     }
 
-    private boolean solve(int[] stones, int index, int k) {
-        if (map.containsKey(index) && map.get(index).contains(k)) return false;
-        map.compute(index, (key, v) -> {
-            v = v == null ? new HashSet<>() : v;
-            v.add(k);
-            return v;
-        });
+    private void solve(int[] stones, int index, int jump) {
+        if (can || jump == 0) return;
 
-        if (index == stones.length - 1) return true;
-
-        for (int i = index + 1; i < stones.length; i++) {
-            int units = stones[i] - stones[index];
-            if (k - 1 <= units && units <= k + 1) {
-                if (solve(stones, i, units)) return true;
-            }
+        if (index == stones.length - 1) {
+            can = true;
+            return;
         }
-        return false;
+
+        int reach = stones[index] + jump;
+
+        for (int i = index + 1; !can && i < stones.length; i++) {
+            if (stones[i] < reach) continue;
+
+            if (stones[i] > reach) break;
+
+            // swap jump+1 and jump-1 will get TLE.
+            solve(stones, i, jump + 1);
+            solve(stones, i, jump);
+            solve(stones, i, jump - 1);
+        }
     }
 }
