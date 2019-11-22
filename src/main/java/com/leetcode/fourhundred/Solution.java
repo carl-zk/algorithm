@@ -33,19 +33,18 @@ public class Solution {
     }
 
     public int pick(int target) {
-        int[] indexes = new int[10];
+        int index = -1;
         int size = 0;
 
         for (int i = 0; i < nums.length; i++) {
-            if (target == nums[i]) {
-                if (size == 10) {
-                    int id = random.nextInt(size);
-                    indexes[id] = i;
-                } else {
-                    indexes[size++] = i;
-                }
+
+            if (target != nums[i]) {
+                continue;
+            }
+            if (random.nextInt(++size) == 0) {
+                index = i;
             }
         }
-        return indexes[random.nextInt(size)];
+        return index;
     }
 }
