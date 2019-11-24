@@ -29,24 +29,12 @@ public class BattleshipsinaBoard {
 
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
-                if (board[i][j] == 'a') {
-                    board[i][j] = 'X';
-                } else if (board[i][j] == 'X') {
-                    total++;
-                    dfs(board, i, j);
-                }
+                if (board[i][j] == '.') continue;
+                if (i > 0 && board[i - 1][j] == 'X') continue;
+                if (j > 0 && board[i][j - 1] == 'X') continue;
+                total++;
             }
         }
         return total;
-    }
-
-    private void dfs(char[][] board, int i, int j) {
-        int[][] dirs = {{1, 0}, {0, 1}};
-        for (int[] dir : dirs) {
-            int x = i + dir[0], y = j + dir[1];
-            if (x >= board.length || y >= board[0].length || board[x][y] == '.' || board[x][y] == 'a') continue;
-            board[x][y] = 'a';
-            dfs(board, x, y);
-        }
     }
 }
