@@ -1,5 +1,8 @@
 package com.leetcode.fourhundredfifty;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/
  * <p>
@@ -22,13 +25,23 @@ package com.leetcode.fourhundredfifty;
 public class MaximumXORofTwoNumbersinanArray {
 
     public int findMaximumXOR(int[] nums) {
-        int max = Integer.MIN_VALUE;
+        int res = 0;
+        int mask = 0;
 
-        for (int i = 0; i < nums.length; i++) {
-            for (int j = 0; j < nums.length; j++) {
-                max = Math.max(max, nums[i] ^ nums[j]);
+        for (int i = 31; i >= 0; i--) {
+            mask |= (1 << i);
+            Set<Integer> set = new HashSet<>();
+            for (int num : nums) {
+                set.add(num & mask);
+            }
+            int greedy = res | (1 << i);
+            for (int prefix : set) {
+                if (set.contains(greedy ^ prefix)) {
+                    res = greedy;
+                    break;
+                }
             }
         }
-        return max;
+        return res;
     }
 }
