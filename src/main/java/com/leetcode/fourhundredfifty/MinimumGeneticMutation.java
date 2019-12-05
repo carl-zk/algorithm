@@ -1,8 +1,8 @@
 package com.leetcode.fourhundredfifty;
 
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.PriorityQueue;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -61,40 +61,40 @@ public class MinimumGeneticMutation {
         if (!bankSet.contains(end) || start.length() != end.length()) return -1;
         if (start.equals(end)) return 0;
 
-        PriorityQueue<Node> que = new PriorityQueue<>(Comparator.comparingInt(a -> a.level));
-        que.add(new Node(0, start));
+        int level = 0;
+        Queue<String> que = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        que.add(start);
+        que.add(null);
+        visited.add(start);
+        bankSet.remove(start);
 
         for (; !que.isEmpty(); ) {
-            Node p = que.poll();
-            char[] chars = p.gene.toCharArray();
-
-            if (p.level > chars.length) continue;
+            String p = que.poll();
+            if (p == null) {
+                level++;
+                if (!que.isEmpty()) {
+                    que.add(null);
+                }
+                continue;
+            }
+            char[] chars = p.toCharArray();
 
             for (int i = 0; i < chars.length; i++) {
                 char old = chars[i];
-
                 for (char c : GENES) {
                     chars[i] = c;
-                    String gene = String.valueOf(chars);
-
-                    if (end.equals(gene)) return p.level + 1;
-                    if (c == old || !bankSet.contains(gene)) continue;
-
-                    que.add(new Node(p.level + 1, gene));
+                    String next = new String(chars);
+                    if (end.equals(next)) return level + 1;
+                    if (bankSet.contains(next) && !visited.contains(next)) {
+                        que.add(next);
+                        bankSet.remove(next);
+                        visited.add(next);
+                    }
                 }
                 chars[i] = old;
             }
         }
         return -1;
-    }
-
-    class Node {
-        int level;
-        String gene;
-
-        public Node(int level, String gene) {
-            this.level = level;
-            this.gene = gene;
-        }
     }
 }
