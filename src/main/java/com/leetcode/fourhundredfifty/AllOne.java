@@ -1,7 +1,7 @@
 package com.leetcode.fourhundredfifty;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,8 +27,8 @@ public class AllOne {
      * Initialize your data structure here.
      */
     public AllOne() {
-        head = new Bucket(Integer.MAX_VALUE);
-        tail = new Bucket(-1);
+        head = new Bucket(0);
+        tail = new Bucket(0);
         head.next = tail;
         tail.pre = head;
         map = new HashMap<>();
@@ -38,46 +38,27 @@ public class AllOne {
      * Inserts a new key <Key> with value 1. Or increments an existing key by 1.
      */
     public void inc(String key) {
-        Bucket cur = map.get(key);
-        if (cur == null) {
-            if (tail.pre == head || tail.pre.count > 1) {
-                cur = new Bucket(1);
-                cur.keys.add(key);
-                insertBefore(tail, cur);
-                map.put(key, cur);
-            } else {
-                tail.pre.keys.add(key);
-                map.put(key, tail.pre);
-            }
-        } else {
-            Bucket pre;
-            if (cur.pre == head || cur.pre.count > cur.count + 1) {
-                pre = new Bucket(cur.count + 1);
-                pre.keys.add(key);
-                insertBefore(cur, pre);
-            } else {
-                pre = cur.pre;
-                pre.keys.add(key);
-            }
-            cur.keys.remove(key);
-            if (cur.keys.isEmpty()) {
-                remove(cur);
-            }
-            map.put(key, pre);
+        Bucket cur = map.getOrDefault(key, tail);
+        Bucket pre = cur.pre;
+        if (pre.count != cur.count + 1) {
+            pre = new Bucket(cur.count + 1);
+            pre.insertBefore(cur);
         }
-
+        removeKey(cur, key);
+        addKey(pre, key);
     }
 
-    private void insertBefore(Bucket node, Bucket newNode) {
-        newNode.pre = node.pre;
-        node.pre.next = newNode;
-        newNode.next = node;
-        node.pre = newNode;
+    private void addKey(Bucket node, String key) {
+        node.keys.add(key);
+        map.put(key, node);
     }
 
-    private void remove(Bucket node) {
-        node.pre.next = node.next;
-        node.next.pre = node.pre;
+    private void removeKey(Bucket node, String key) {
+        node.keys.remove(key);
+        if (node != tail && node.keys.isEmpty()) {
+            node.remove();
+        }
+        map.remove(key);
     }
 
     /**
@@ -87,28 +68,16 @@ public class AllOne {
         Bucket cur = map.get(key);
         if (cur == null) return;
         if (cur.count == 1) {
-            cur.keys.remove(key);
-            map.remove(key);
-        } else if (cur.next == tail || cur.next.count < cur.count - 1) {
-            Bucket next = new Bucket(cur.count - 1);
-            next.keys.add(key);
-            insertAfter(cur, next);
-            map.put(key, next);
-        } else {
-            cur.next.keys.add(key);
-            map.put(key, cur.next);
+            removeKey(cur, key);
+            return;
         }
-        cur.keys.remove(key);
-        if (cur.keys.isEmpty()) {
-            remove(cur);
+        Bucket next = cur.next;
+        if (next.count != cur.count - 1) {
+            next = new Bucket(cur.count - 1);
+            next.insertAfter(cur);
         }
-    }
-
-    private void insertAfter(Bucket node, Bucket newNode) {
-        newNode.next = node.next;
-        node.next.pre = newNode;
-        node.next = newNode;
-        newNode.pre = node;
+        removeKey(cur, key);
+        addKey(next, key);
     }
 
     /**
@@ -133,8 +102,27 @@ public class AllOne {
 
         public Bucket(int count) {
             this.count = count;
-            this.keys = new HashSet<>();
+            this.keys = new LinkedHashSet<>();
             pre = next = null;
+        }
+
+        private void insertBefore(Bucket node) {
+            node.pre.next = this;
+            this.pre = node.pre;
+            this.next = node;
+            node.pre = this;
+        }
+
+        private void insertAfter(Bucket node) {
+            this.next = node.next;
+            node.next.pre = this;
+            this.pre = node;
+            node.next = this;
+        }
+
+        private void remove() {
+            this.pre.next = this.next;
+            this.next.pre = this.pre;
         }
     }
 
