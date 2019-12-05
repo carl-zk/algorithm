@@ -51,29 +51,19 @@ import java.util.TreeMap;
 public class FindRightInterval {
 
     public int[] findRightInterval(int[][] intervals) {
-        TreeMap<Integer, Node> treeMap = new TreeMap<>();
+        TreeMap<Integer, Integer> treeMap = new TreeMap<>();
 
         for (int i = 0; i < intervals.length; i++) {
-            treeMap.put(intervals[i][0], new Node(intervals[i], i));
+            treeMap.put(intervals[i][0], i);
         }
 
         int[] ans = new int[intervals.length];
+        Map.Entry<Integer, Integer> e;
 
         for (int i = 0; i < intervals.length; i++) {
-            Map.Entry<Integer, Node> e = treeMap.ceilingEntry(intervals[i][1]);
-            Node r = e == null ? null : e.getValue();
-            ans[i] = r == null ? -1 : r.index;
+            e = treeMap.ceilingEntry(intervals[i][1]);
+            ans[i] = e == null ? -1 : e.getValue();
         }
         return ans;
-    }
-
-    class Node {
-        int[] val;
-        int index;
-
-        public Node(int[] val, int index) {
-            this.val = val;
-            this.index = index;
-        }
     }
 }
