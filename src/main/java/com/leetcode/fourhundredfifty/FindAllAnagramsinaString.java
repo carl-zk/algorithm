@@ -42,37 +42,23 @@ public class FindAllAnagramsinaString {
 
     public List<Integer> findAnagrams(String s, String p) {
         List<Integer> ans = new LinkedList<>();
-        int[] dict = new int[256];
         int[] counter = new int[256];
-        int len = p.length();
 
         for (char c : p.toCharArray()) {
-            dict[c]++;
+            counter[c]++;
         }
 
-        char[] chars = s.toCharArray();
-        int i = 0, sz = 0;
+        char[] ss = s.toCharArray();
+        int left = 0, right = 0;
 
-        for (int j = 0; j < chars.length; j++) {
-            char c = chars[j];
-
-            if (dict[c] > 0) {
-                counter[c]++;
-                sz++;
-                for (; counter[c] > dict[c]; ) {
-                    counter[chars[i++]]--;
-                    sz--;
-                }
-                if (sz == len) {
-                    ans.add(i);
-                    counter[chars[i++]]--;
-                    sz--;
-                }
+        while (right < ss.length) {
+            if (counter[ss[right]] > 0) {
+                counter[ss[right++]]--;
             } else {
-                for (; i <= j; ) {
-                    counter[chars[i++]]--;
-                }
-                sz = 0;
+                counter[ss[left++]]++;
+            }
+            if (right - left == p.length()) {
+                ans.add(left);
             }
         }
         return ans;
