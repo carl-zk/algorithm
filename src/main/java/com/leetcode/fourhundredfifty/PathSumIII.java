@@ -2,6 +2,9 @@ package com.leetcode.fourhundredfifty;
 
 import com.leetcode.TreeNode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * https://leetcode.com/problems/path-sum-iii/
  * <p>
@@ -34,30 +37,25 @@ import com.leetcode.TreeNode;
  * @author carl
  */
 public class PathSumIII {
-    int ans = 0;
+    Map<Integer, Integer> preSumCountMap = new HashMap<>();
 
     public int pathSum(TreeNode root, int sum) {
-        traversal(root, sum);
-        return ans;
+        preSumCountMap.put(0, 1);
+        return solve(root, sum, 0);
     }
 
-    private void traversal(TreeNode root, int sum) {
-        if (root == null) return;
+    private int solve(TreeNode root, int target, int sum) {
+        if (root == null) return 0;
 
-        solve(root, sum, 0);
+        sum += root.val;
 
-        traversal(root.left, sum);
-        traversal(root.right, sum);
-    }
+        int count = preSumCountMap.getOrDefault(sum - target, 0);
 
-    private void solve(TreeNode start, int target, int sum) {
-        if (start == null) return;
+        preSumCountMap.put(sum, preSumCountMap.getOrDefault(sum, 0) + 1);
 
-        sum += start.val;
+        count += solve(root.left, target, sum) + solve(root.right, target, sum);
 
-        if (target == sum) ans++;
-
-        solve(start.left, target, sum);
-        solve(start.right, target, sum);
+        preSumCountMap.put(sum, preSumCountMap.get(sum) - 1);
+        return count;
     }
 }
