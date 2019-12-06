@@ -36,8 +36,7 @@ package com.leetcode.fourhundredfifty;
 public class ArrangingCoins {
 
     public int arrangeCoins(int n) {
-        double t = n;
-        int ans = (int) Math.floor(Math.sqrt(t * 2 + 0.25) - 0.5);
+        int ans = (int) ((Math.sqrt((long) n * 8 + 1) - 1) / 2);
         return ans;
     }
 }
