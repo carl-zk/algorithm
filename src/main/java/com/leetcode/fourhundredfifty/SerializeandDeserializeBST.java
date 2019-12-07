@@ -25,17 +25,6 @@ public class SerializeandDeserializeBST {
         return sb.toString();
     }
 
-    // Decodes your encoded data to tree.
-    public TreeNode deserialize(String data) {
-        if (data.length() == 0) return null;
-        String[] ss = data.split(",");
-        TreeNode root = new TreeNode(Integer.valueOf(ss[0]));
-        for (int i = 1; i < ss.length; i++) {
-            insert(root, Integer.valueOf(ss[i]));
-        }
-        return root;
-    }
-
     private void serialize(TreeNode root, StringBuilder sb) {
         if (root == null) return;
         sb.append(root.val).append(',');
@@ -43,23 +32,19 @@ public class SerializeandDeserializeBST {
         serialize(root.right, sb);
     }
 
-    private void insert(TreeNode root, int val) {
-        TreeNode node = new TreeNode(val);
-        TreeNode p = root;
-        while (p != null) {
-            if (val < p.val) {
-                if (p.left == null) {
-                    p.left = node;
-                    break;
-                }
-                p = p.left;
-            } else {
-                if (p.right == null) {
-                    p.right = node;
-                    break;
-                }
-                p = p.right;
-            }
-        }
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if (data.length() == 0) return null;
+        String[] ss = data.split(",");
+        int[] index = {0};
+        return deserialize(ss, index, Long.MAX_VALUE);
+    }
+
+    private TreeNode deserialize(String[] ss, int[] index, long max) {
+        if (index[0] >= ss.length || Integer.valueOf(ss[index[0]]) >= max) return null;
+        TreeNode node = new TreeNode(Integer.valueOf(ss[index[0]++]));
+        node.left = deserialize(ss, index, node.val);
+        node.right = deserialize(ss, index, max);
+        return node;
     }
 }
