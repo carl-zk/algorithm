@@ -50,11 +50,11 @@ public class ArithmeticSlicesIISubsequence {
         int res = 0;
         Map<Integer, Integer>[] dp = new Map[A.length];
         for (int i = 0; i < A.length; i++) {
-            dp[i] = new HashMap<>();
+            dp[i] = new HashMap<>(i);
             for (int j = 0; j < i; j++) {
-                long diff = (long) A[i] - A[j];
-                if (diff >= Integer.MAX_VALUE || diff <= Integer.MIN_VALUE) continue;
-                int d = A[i] - A[j];
+                long diff = (long) A[i] - (long) A[j];
+                if (diff < Integer.MIN_VALUE || diff > Integer.MAX_VALUE) continue;
+                int d = (int) diff;
                 int c1 = dp[i].getOrDefault(d, 0);
                 int c2 = dp[j].getOrDefault(d, 0);
                 res += c2;
