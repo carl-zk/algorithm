@@ -1,6 +1,6 @@
 package com.leetcode.fivehundred;
 
-import java.util.Arrays;
+import java.util.PriorityQueue;
 // @formatter:off
 /**
  * https://leetcode.com/problems/sort-characters-by-frequency/
@@ -46,20 +46,23 @@ import java.util.Arrays;
 // @formatter:on
 
 public class SortCharactersByFrequency {
+    char[] ans;
+    int index = 0;
 
     public String frequencySort(String s) {
-        StringBuilder sb = new StringBuilder(s.length());
-        StringBuilder[] builders = new StringBuilder[256];
-        for (int i = 0; i < builders.length; i++) {
-            builders[i] = new StringBuilder();
+        ans = new char[s.length()];
+        int[] counter = new int[128];
+        for (char c : s.toCharArray()) counter[c]++;
+        PriorityQueue<int[]> que = new PriorityQueue<>((a, b) -> b[0] - a[0]);
+        for (int i = 0; i < counter.length; i++) {
+            que.add(new int[]{counter[i], i});
         }
-        for (char c : s.toCharArray()) {
-            builders[c].append(c);
+        while (!que.isEmpty()) {
+            int[] e = que.poll();
+            for (int i = 0; i < e[0]; i++) {
+                ans[index++] = (char) e[1];
+            }
         }
-        Arrays.sort(builders, (a, b) -> b.length() - a.length());
-        for (int i = 0; i < builders.length && builders[i].length() > 0; i++) {
-            sb.append(builders[i]);
-        }
-        return sb.toString();
+        return new String(ans);
     }
 }
