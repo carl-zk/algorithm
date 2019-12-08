@@ -45,34 +45,30 @@ public class CircularArrayLoop {
         if (nums.length < 2) return false;
         int n = nums.length;
         for (int i = 0; i < n; i++) {
-            nums[i] %= n;
-        }
-        for (int i = 0; i < n; i++) {
-            if (nums[i] == n) continue;
-            int slow = i, fast = next(nums, slow, n);
-            if (nums[fast] != n && (nums[fast] ^ nums[i]) >= 0) {
-                fast = next(nums, fast, n);
+            if (nums[i] == 0) continue;
+            int slow = i;
+            int fast = next(nums, slow);
+            while (nums[slow] * nums[fast] > 0 && nums[slow] * nums[next(nums, fast)] > 0) {
+                if (slow == fast) {
+                    if (slow == next(nums, slow)) break;
+                    return true;
+                }
+                slow = next(nums, slow);
+                fast = next(nums, next(nums, fast));
             }
-            while (slow != fast) {
-                if (nums[slow] == n || (nums[slow] ^ nums[i]) < 0) break;
-                if (nums[fast] == n || (nums[fast] ^ nums[i]) < 0) break;
-                slow = next(nums, slow, n);
-                fast = next(nums, fast, n);
-                if (nums[fast] == n || (nums[fast] ^ nums[i]) < 0) break;
-                fast = next(nums, fast, n);
-            }
-            if (slow == fast && slow != next(nums, slow, n)) return true;
-            int sign = nums[i], next = i;
-            while (nums[next] != n && (nums[next] ^ sign) >= 0) {
-                int j = next(nums, next, n);
-                nums[next] = n;
-                next = j;
+            int val = nums[i];
+            slow = i;
+            while (val * nums[slow] > 0) {
+                int next = next(nums, slow);
+                nums[slow] = 0;
+                slow = next;
             }
         }
         return false;
     }
 
-    private int next(int[] nums, int i, int n) {
+    private int next(int[] nums, int i) {
+        int n = nums.length;
         return (nums[i] > 0 ? i + nums[i] : n + (nums[i] % n) + i) % n;
     }
 
