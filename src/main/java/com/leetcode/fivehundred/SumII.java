@@ -35,17 +35,18 @@ import java.util.Map;
 public class SumII {
 
     public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
-        Map<Integer, Integer> m1 = new HashMap<>(A.length * B.length);
-        Map<Integer, Integer> m2 = new HashMap<>(C.length * D.length);
+        Map<Integer, Integer> m1 = new HashMap<>();
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < B.length; j++) {
-                m1.put(A[i] + B[j], m1.getOrDefault(A[i] + B[j], 0) + 1);
-                m2.put(C[i] + D[j], m2.getOrDefault(C[i] + D[j], 0) + 1);
+                int s = A[i] + B[j];
+                m1.put(s, m1.getOrDefault(s, 0) + 1);
             }
         }
         int ans = 0;
-        for (Map.Entry<Integer, Integer> entry : m1.entrySet()) {
-            ans += entry.getValue() * m2.getOrDefault(-entry.getKey(), 0);
+        for (int c : C) {
+            for (int d : D) {
+                ans += m1.getOrDefault(-1 * (c + d), 0);
+            }
         }
         return ans;
     }
