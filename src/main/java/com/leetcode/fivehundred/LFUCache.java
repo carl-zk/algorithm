@@ -24,64 +24,20 @@ public class LFUCache {
     int capacity;
     int size;
     Map<Integer, Node> map;
-    Map<Integer, FNode> freqMap;
-    FNode head, tail;
+    FreqManager freqManager;
 
     public LFUCache(int capacity) {
         this.capacity = capacity;
         this.size = 0;
         map = new HashMap<>();
-        freqMap = new HashMap<>();
-        head = new FNode(0);
-        tail = new FNode(0);
-        head.next = tail;
-        tail.pre = head;
+        freqManager = new FreqManager();
     }
 
     public int get(int key) {
-        if (!map.containsKey(key)) return -1;
         Node node = map.get(key);
-        FNode cur = freqMap.get(node.freq);
-        FNode pre = cur.pre;
-        if (pre.freq != cur.freq + 1) {
-            pre = new FNode(cur.freq + 1);
-            insertBefore(pre, cur);
-        }
-        removeFromFNode(cur, node);
-        node.freq += 1;
-        insert(pre, node);
+        if (node == null) return -1;
+        freqManager.update(node);
         return node.val;
-    }
-
-    private void insertBefore(FNode pre, FNode cur) {
-        cur.pre.next = pre;
-        pre.pre = cur.pre;
-        pre.next = cur;
-        cur.pre = pre;
-        freqMap.put(pre.freq, pre);
-    }
-
-    private void insert(FNode fNode, Node node) {
-        node.next = fNode.head.next;
-        fNode.head.next.pre = node;
-        node.pre = fNode.head;
-        fNode.head.next = node;
-    }
-
-    private void removeFromFNode(FNode fNode, Node node) {
-        node.pre.next = node.next;
-        node.next.pre = node.pre;
-        node.pre = node.next = null;
-        if (fNode.head.next == fNode.tail) {
-            freeFNode(fNode);
-        }
-    }
-
-    private void freeFNode(FNode fNode) {
-        freqMap.remove(fNode.freq);
-        fNode.pre.next = fNode.next;
-        fNode.next.pre = fNode.pre;
-        fNode.pre = fNode.next = null;
     }
 
     public void put(int key, int value) {
@@ -90,29 +46,16 @@ public class LFUCache {
         if (node == null) {
             size++;
             if (size > capacity) {
-                map.remove(tail.pre.tail.pre.key);
-                removeFromFNode(tail.pre, tail.pre.tail.pre);
+                Node least = freqManager.removeLeast();
+                map.remove(least.key);
                 size--;
             }
             node = new Node(key, value);
-            FNode fNode = tail.pre;
-            if (fNode.freq != 1) {
-                fNode = new FNode(1);
-                insertBefore(fNode, tail);
-            }
+            freqManager.add(node);
             map.put(key, node);
-            insert(fNode, node);
         } else {
-            FNode cur = freqMap.get(node.freq);
-            FNode pre = cur.pre;
-            if (pre.freq != cur.freq + 1) {
-                pre = new FNode(cur.freq + 1);
-                insertBefore(pre, cur);
-            }
-            removeFromFNode(cur, node);
-            node.freq += 1;
             node.val = value;
-            insert(pre, node);
+            freqManager.update(node);
         }
     }
 
@@ -130,19 +73,97 @@ public class LFUCache {
         }
     }
 
-    class FNode {
-        int freq;
-        Node head;
-        Node tail;
-        FNode pre, next;
+    /**
+     * frequency manager
+     */
+    class FreqManager {
+        Map<Integer, FNode> freqMap;
+        FNode head, tail;
 
-        public FNode(int freq) {
-            this.freq = freq;
-            head = new Node(0, 0);
-            tail = new Node(0, 0);
+        public FreqManager() {
+            freqMap = new HashMap<>();
+            head = new FNode(0);
+            tail = new FNode(0);
             head.next = tail;
             tail.pre = head;
-            pre = next = null;
+        }
+
+        public FNode getByFreq(int freq) {
+            return freqMap.get(freq);
+        }
+
+        public void add(Node node) {
+            FNode fNode = tail.pre;
+            if (fNode.freq != 1) {
+                fNode = new FNode(1);
+                insertBefore(fNode, tail);
+            }
+            insert(fNode, node);
+        }
+
+        private void insertBefore(FNode pre, FNode cur) {
+            cur.pre.next = pre;
+            pre.pre = cur.pre;
+            pre.next = cur;
+            cur.pre = pre;
+            freqMap.put(pre.freq, pre);
+        }
+
+        private void insert(FNode fNode, Node node) {
+            node.next = fNode.head.next;
+            fNode.head.next.pre = node;
+            node.pre = fNode.head;
+            fNode.head.next = node;
+        }
+
+        public Node removeLeast() {
+            Node least = tail.pre.tail.pre;
+            removeFromFNode(tail.pre, least);
+            return least;
+        }
+
+        private void removeFromFNode(FNode fNode, Node node) {
+            node.pre.next = node.next;
+            node.next.pre = node.pre;
+            node.pre = node.next = null;
+            if (fNode.head.next == fNode.tail) {
+                freeFNode(fNode);
+            }
+        }
+
+        private void freeFNode(FNode fNode) {
+            freqMap.remove(fNode.freq);
+            fNode.pre.next = fNode.next;
+            fNode.next.pre = fNode.pre;
+            fNode.pre = fNode.next = null;
+        }
+
+        public void update(Node node) {
+            FNode cur = getByFreq(node.freq);
+            FNode pre = cur.pre;
+            if (pre.freq != cur.freq + 1) {
+                pre = new FNode(cur.freq + 1);
+                insertBefore(pre, cur);
+            }
+            removeFromFNode(cur, node);
+            node.freq += 1;
+            insert(pre, node);
+        }
+
+        class FNode {
+            int freq;
+            Node head;
+            Node tail;
+            FNode pre, next;
+
+            public FNode(int freq) {
+                this.freq = freq;
+                head = new Node(0, 0);
+                tail = new Node(0, 0);
+                head.next = tail;
+                tail.pre = head;
+                pre = next = null;
+            }
         }
     }
 }
