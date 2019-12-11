@@ -26,58 +26,56 @@ import java.util.List;
  * @author carl
  */
 public class ConcatenatedWords {
+    Node root;
 
     public List<String> findAllConcatenatedWordsInADict(String[] words) {
+        root = new Node();
         List<String> ans = new LinkedList<>();
-        Trie trie = new Trie();
+        build(words);
         for (String word : words) {
-            trie.add(word);
-        }
-        for (String word : words) {
-            if (trie.search(word.toCharArray(), 0) > 1) {
+            if (search(word.toCharArray(), 0, 0)) {
                 ans.add(word);
             }
         }
         return ans;
     }
 
-    class Trie {
-        Node root = new Node();
-
-        void add(String s) {
+    void build(String[] words) {
+        for (String w : words) {
             Node p = root;
-            for (char c : s.toCharArray()) {
-                if (p.next[c] == null) {
-                    p.next[c] = new Node();
+            for (char c : w.toCharArray()) {
+                if (p.next[c - 'a'] == null) {
+                    p.next[c - 'a'] = new Node();
                 }
-                p = p.next[c];
+                p = p.next[c - 'a'];
             }
-            p.count++;
+            p.isEnd = true;
         }
+    }
 
-        int search(char[] chars, int start) {
-            Node p = root;
-            for (int i = start; i < chars.length; i++) {
-                if (p.next[chars[i]] == null) return -chars.length;
-                if (p.next[chars[i]].count > 0) {
-                    if (i == chars.length - 1) return 1;
-                    if (search(chars, i + 1) > 0) {
-                        return 2;
-                    }
+    boolean search(char[] chars, int start, int count) {
+        Node p = root;
+        for (int i = start; i < chars.length; i++) {
+            if (p.next[chars[i] - 'a'] == null) return false;
+            p = p.next[chars[i] - 'a'];
+            if (p.isEnd) {
+                if (i == chars.length - 1) return count > 0;
+                if (search(chars, i + 1, count + 1)) {
+                    return true;
                 }
-                p = p.next[chars[i]];
             }
-            return 0;
         }
+        return false;
+    }
 
-        class Node {
-            int count;
-            Node[] next;
+    class Node {
+        boolean isEnd;
+        Node[] next;
 
-            public Node() {
-                this.count = 0;
-                this.next = new Node[128];
-            }
+        public Node() {
+            this.isEnd = false;
+            // if 128, will get 98ms; if 26, 47ms. Oh Java.
+            this.next = new Node[26];
         }
     }
 }
