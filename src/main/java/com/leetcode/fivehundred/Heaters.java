@@ -1,6 +1,6 @@
 package com.leetcode.fivehundred;
 
-import java.util.TreeSet;
+import java.util.Arrays;
 
 /**
  * https://leetcode.com/problems/heaters/
@@ -37,14 +37,16 @@ import java.util.TreeSet;
 public class Heaters {
 
     public int findRadius(int[] houses, int[] heaters) {
-        TreeSet<Integer> treeSet = new TreeSet<>();
-        for (int x : heaters) treeSet.add(x);
+        Arrays.sort(heaters);
         int radius = 0;
         for (int x : houses) {
-            Integer left = treeSet.floor(x), right = treeSet.ceiling(x);
-            left = left == null ? Integer.MAX_VALUE : x - left;
-            right = right == null ? Integer.MAX_VALUE : right - x;
-            radius = Math.max(radius, Math.min(left, right));
+            int index = Arrays.binarySearch(heaters, x);
+            if (index < 0) {
+                index = ~index;
+                int left = index - 1 >= 0 ? x - heaters[index - 1] : Integer.MAX_VALUE;
+                int right = index < heaters.length ? heaters[index] - x : Integer.MAX_VALUE;
+                radius = Math.max(radius, Math.min(left, right));
+            }
         }
         return radius;
     }
