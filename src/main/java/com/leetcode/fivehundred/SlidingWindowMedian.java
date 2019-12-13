@@ -1,6 +1,8 @@
 package com.leetcode.fivehundred;
 
-import java.util.Arrays;
+import java.util.Comparator;
+import java.util.TreeSet;
+import java.util.function.Supplier;
 
 /**
  * https://leetcode.com/problems/sliding-window-median/
@@ -36,43 +38,31 @@ public class SlidingWindowMedian {
 
     public double[] medianSlidingWindow(int[] nums, int k) {
         double[] ans = new double[nums.length - k + 1];
-        for (int i = 0; i <= nums.length - k; i++) {
-            ans[i] = calMedian(Arrays.copyOfRange(nums, i, i + k));
+        Comparator<Integer> comparator = (i, j) -> nums[i] == nums[j] ? j - i : Integer.compare(nums[j], nums[i]);
+        TreeSet<Integer> left = new TreeSet<>(comparator);
+        TreeSet<Integer> right = new TreeSet<>(comparator.reversed());
+        Runnable balance = () -> {
+            while (left.size() > right.size()) {
+                right.add(left.pollFirst());
+            }
+        };
+        Supplier<Double> median = () -> k % 2 == 0 ? ((double) nums[left.first()] + nums[right.first()]) / 2 : (double) nums[right.first()];
+        for (int i = 0; i < k; i++) {
+            left.add(i);
+        }
+        balance.run();
+        int i = 0;
+        ans[i++] = median.get();
+        for (int j = k; j < nums.length; j++) {
+            if (!left.remove(j - k)) right.remove(j - k);
+            right.add(j);
+            left.add(right.pollFirst());
+            balance.run();
+            ans[i++] = median.get();
         }
         return ans;
     }
 
-    private double calMedian(int[] a) {
-        int start = 0, end = a.length - 1, k = start + (end - start) / 2;
-        while (start <= end) {
-            int mid = start + (end - start) / 2;
-            swap(a, mid, end);
-            int j = start;
-            for (int i = start; i < end; i++) {
-                if (a[i] < a[end]) {
-                    swap(a, j++, i);
-                }
-            }
-            swap(a, j, end);
-            if (j == k) break;
-            else if (j < k) start = j + 1;
-            else end = j - 1;
-        }
-        double first = a[k], sec = first;
-        if (a.length % 2 == 0) {
-            for (int i = k + 1; i < a.length; i++) {
-                a[k + 1] = Math.min(a[k + 1], a[i]);
-            }
-            sec = a[k + 1];
-        }
-        return (first + sec) / 2;
-    }
-
-    private void swap(int[] a, int i, int j) {
-        int t = a[i];
-        a[i] = a[j];
-        a[j] = t;
-    }
 
     public static void main(String[] args) {
         SlidingWindowMedian swm = new SlidingWindowMedian();
