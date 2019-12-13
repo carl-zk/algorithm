@@ -24,15 +24,12 @@ package com.leetcode.fivehundred;
 public class TotalHammingDistance {
 
     public int totalHammingDistance(int[] nums) {
-        int[] ones = new int[31];
-        for (int num : nums) {
-            for (int i = 0; i < ones.length; i++) {
-                ones[i] += num & 1;
-                num >>= 1;
-            }
-        }
         int ans = 0;
-        for (int one : ones) {
+        for (int i = 0; i < 32; i++) {
+            int one = 0;
+            for (int j = 0; j < nums.length; j++) {
+                one += (nums[j] >> i) & 1;
+            }
             ans += one * (nums.length - one);
         }
         return ans;
