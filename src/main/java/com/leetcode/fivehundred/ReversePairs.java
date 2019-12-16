@@ -1,7 +1,5 @@
 package com.leetcode.fivehundred;
 
-import java.util.Arrays;
-
 /**
  * https://leetcode.com/problems/reverse-pairs/
  *
@@ -10,48 +8,23 @@ import java.util.Arrays;
 public class ReversePairs {
 
     public int reversePairs(int[] nums) {
-        int[] sorted = Arrays.copyOf(nums, nums.length);
-        Arrays.sort(sorted);
-        BITree biTree = new BITree(sorted.length + 1);
-        int ans = 0;
-        for (int num : nums) {
-            ans += biTree.search(index(sorted, 2 * (long) num + 1));
-            biTree.insert(index(sorted, num));
-        }
-        return ans;
+        return solve(nums, 0, nums.length - 1);
     }
 
-    int index(int[] sorted, long val) {
-        int l = 0, r = sorted.length - 1;
-        while (l <= r) {
-            int m = (l + r) >> 1;
-            if (sorted[m] >= val) r = m - 1;
-            else l = m + 1;
+    private int solve(int[] nums, int l, int r) {
+        if (l >= r) return 0;
+        int m = (l + r) >> 1;
+        int total = solve(nums, l, m) + solve(nums, m + 1, r);
+        int[] merge = new int[r - l + 1];
+        int i = l, j = m + 1, q = m + 1, k = 0;
+        while (i <= m) {
+            while (q <= r && nums[i] > 2L * nums[q]) q++;
+            total += q - (m + 1);
+            while (j <= r && nums[i] >= nums[j]) merge[k++] = nums[j++];
+            merge[k++] = nums[i++];
         }
-        return l + 1;
-    }
-
-    class BITree {
-        int[] bit;
-
-        public BITree(int n) {
-            this.bit = new int[n];
-        }
-
-        int search(int i) {
-            int sum = 0;
-            while (i < bit.length) {
-                sum += bit[i];
-                i += i & -i;
-            }
-            return sum;
-        }
-
-        void insert(int i) {
-            while (i > 0) {
-                bit[i] += 1;
-                i -= i & -i;
-            }
-        }
+        System.arraycopy(nums, j, merge, k, r - j + 1);
+        System.arraycopy(merge, 0, nums, l, merge.length);
+        return total;
     }
 }
