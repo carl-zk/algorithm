@@ -25,7 +25,7 @@ public class LongestUncommonSubsequenceII {
         Arrays.sort(strs, (a, b) -> b.length() - a.length());
         for (String s : strs) {
             if (map.get(s) == 1 && !set.contains(s)) return s.length();
-            else subStrs(s.toCharArray(), 0, s.length() - 1, set);
+            else if (!set.contains(s)) subStrs(s.toCharArray(), 0, s.length() - 1, set);
         }
         return -1;
     }
