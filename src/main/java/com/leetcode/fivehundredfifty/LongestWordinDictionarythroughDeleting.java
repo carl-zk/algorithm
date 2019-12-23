@@ -1,60 +1,42 @@
 package com.leetcode.fivehundredfifty;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * @author carl
  */
 public class LongestWordinDictionarythroughDeleting {
-    String ans = "";
+    Map<Character, TreeSet<Integer>> map = new HashMap<>();
 
     public String findLongestWord(String s, List<String> d) {
         Collections.sort(d, (a, b) -> {
             if (a.length() != b.length()) return b.length() - a.length();
-            for (int i = 0; i < a.length(); i++) {
-                if (a.charAt(i) != b.charAt(i)) return a.charAt(i) < b.charAt(i) ? -1 : 1;
-            }
-            return -1;
+            else return a.compareTo(b);
         });
         char[] cs = s.toCharArray();
-        for (String wd : d) {
-            int i = 0, j = 0;
-            for (; i < cs.length && j < wd.length(); i++) {
-                if (cs[i] == wd.charAt(j)) j++;
-            }
-            if (j == wd.length()) {
-                return wd;
-            }
+        for (int i = 0; i < cs.length; i++) {
+            map.computeIfAbsent(cs[i], k -> new TreeSet<>()).add(i);
         }
-        //solve(s.toCharArray(), 0, d, "");
+
+        for (String wd : d) {
+            if (contains(wd.toCharArray())) return wd;
+        }
         return "";
     }
 
-    private void solve(char[] cs, int index, List<String> d, String str) {
-        if (str.length() > ans.length()) {
-            ans = str;
-        } else if (str.length() == ans.length()) {
-            ans = minStr(ans, str);
+    private boolean contains(char[] wd) {
+        int i = 0;
+        Integer cur = -1;
+        while (i < wd.length) {
+            Integer next = map.getOrDefault(wd[i], new TreeSet<>()).ceiling(cur);
+            if (next == null) return false;
+            cur = next + 1;
+            i++;
         }
-        for (String wd : d) {
-            int i = index, j = 0;
-            for (; i < cs.length && j < wd.length(); i++) {
-                if (cs[i] == wd.charAt(j)) j++;
-            }
-            if (j == wd.length()) {
-                solve(cs, i, d, str + wd);
-            }
-        }
-    }
-
-    private String minStr(String a, String b) {
-        char[] ca = a.toCharArray(), cb = b.toCharArray();
-        for (int i = 0; i < ca.length; i++) {
-            if (ca[i] != cb[i]) {
-                return ca[i] < cb[i] ? a : b;
-            }
-        }
-        return a;
+        return true;
     }
 }
