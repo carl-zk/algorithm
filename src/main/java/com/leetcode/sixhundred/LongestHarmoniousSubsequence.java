@@ -11,15 +11,13 @@ public class LongestHarmoniousSubsequence {
     public int findLHS(int[] nums) {
         int ans = 0;
         Map<Integer, Integer> map = new HashMap<>();
-        for (int i = nums.length - 1; i > -1; i--) {
-            int eq = map.getOrDefault(nums[i], 0);
-            int less = map.getOrDefault(nums[i] - 1, 0);
-            int more = map.getOrDefault(nums[i] + 1, 0);
-            int diff = Math.max(less, more);
-            if (diff > 0) {
-                ans = Math.max(ans, diff + eq + 1);
+        for (int i : nums) {
+            map.put(i, map.getOrDefault(i, 0) + 1);
+        }
+        for (Map.Entry<Integer, Integer> e : map.entrySet()) {
+            if (map.containsKey(e.getKey() + 1)) {
+                ans = Math.max(ans, map.get(e.getKey() + 1) + e.getValue());
             }
-            map.put(nums[i], eq + 1);
         }
         return ans;
     }
